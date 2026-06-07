@@ -9,7 +9,7 @@ async function isAuthenticated() {
   return await verifyToken(session) !== null;
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!(await isAuthenticated())) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -33,7 +33,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     if (!(await isAuthenticated())) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
