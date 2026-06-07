@@ -1,0 +1,43 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { verifyToken } from '@/lib/auth';
+import { cookies } from 'next/headers';
+
+export async function GET() {
+  try {
+    const session = (await cookies()).get('session')?.value;
+    if (!session || await verifyToken(session) === null) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    }
+
+    const messages = await prisma.message.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
+    return NextResponse.json(messages);
+  } catch (error) {
+    return NextResponse.json({ error: 'Error al obtener mensajes' }, { status: 500 });
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    // PUBLIC ENDPOINT - NO AUTH REQUIRED
+    const { name, email, message } = await request.json();
+
+    if (!name || !email || !message) {
+      return NextResponse.json({ error: 'Todos los campos son requeridos' }, { status: 400 });
+    }
+
+    const nuevoMensaje = await prisma.message.create({
+      data: {
+        name,
+        email,
+        message
+      }
+    });
+
+    return NextResponse.json(nuevoMensaje, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ error: 'Error al enviar mensaje' }, { status: 500 });
+  }
+}

@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Program {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model News {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  title     String
+  fileUrl   String
+  type      String   // pdf, doc, xls
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Gallery {
+  id        String   @id @default(cuid())
+  title     String?
+  url       String
+  type      String   // image, video
+  createdAt DateTime @default(now())
+}
+
+model Institution {
+  id        String   @id @default("singleton")
+  aboutUs   String?
+  mission   String?
+  vision    String?
+  updatedAt DateTime @updatedAt
+}
+
+model Alliance {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String
+  website   String?
+  createdAt DateTime @default(now())
+}
+
+model RoadmapAction {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  date        String?
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+}
+
+model FinanceRecord {
+  id          String   @id @default(cuid())
+  type        String
+  description String
+  amount      Float
+  date        DateTime @default(now())
+  proofUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+
