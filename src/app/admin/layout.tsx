@@ -15,7 +15,7 @@ export default function AdminLayout({
   const handleLogout = async () => {
     // A simple client-side clearing, better done via API, but for demo:
     document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    window.location.href = "/admin/login";
+    window.location.href = "/";
   };
 
   if (pathname === '/admin/login') {
