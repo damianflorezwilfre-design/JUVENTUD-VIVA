@@ -55,6 +55,12 @@ model Institution {
   aboutUs   String?
   mission   String?
   vision    String?
+  address   String?
+  phone     String?
+  email     String?
+  facebook  String?
+  instagram String?
+  twitter   String?
   updatedAt DateTime @updatedAt
 }
 

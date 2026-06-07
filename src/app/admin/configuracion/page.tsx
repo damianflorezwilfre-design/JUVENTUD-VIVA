@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Save, Globe, Mail, Phone, MapPin, Link, Share2, Settings, BookOpen } from "lucide-react";
+import { Save, Globe, Mail, Phone, MapPin, Link as LinkIcon, Share2, Settings, BookOpen } from "lucide-react";
 
 export default function AdminConfiguracion() {
   const [loading, setLoading] = useState(false);
@@ -11,6 +11,12 @@ export default function AdminConfiguracion() {
   const [aboutUs, setAboutUs] = useState("");
   const [mission, setMission] = useState("");
   const [vision, setVision] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
 
   useEffect(() => {
     const fetchInstitution = async () => {
@@ -21,6 +27,12 @@ export default function AdminConfiguracion() {
           setAboutUs(data.aboutUs || "");
           setMission(data.mission || "");
           setVision(data.vision || "");
+          setAddress(data.address || "");
+          setPhone(data.phone || "");
+          setEmail(data.email || "");
+          setFacebook(data.facebook || "");
+          setInstagram(data.instagram || "");
+          setTwitter(data.twitter || "");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -39,7 +51,7 @@ export default function AdminConfiguracion() {
       const res = await fetch("/api/institucional", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aboutUs, mission, vision })
+        body: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter })
       });
 
       if (res.ok) {
@@ -77,7 +89,6 @@ export default function AdminConfiguracion() {
         {/* Columna Izquierda: Información General */}
         <div className="lg:col-span-2 space-y-6">
           
-          {/* NUEVO: Información Institucional */}
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
             <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
               <BookOpen className="text-jv-purple mr-3" size={24} />
@@ -90,62 +101,18 @@ export default function AdminConfiguracion() {
               <form className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Quiénes Somos</label>
-                  <textarea 
-                    rows={4}
-                    value={aboutUs}
-                    onChange={(e) => setAboutUs(e.target.value)}
-                    placeholder="Escribe la descripción de la fundación..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                  />
+                  <textarea rows={4} value={aboutUs} onChange={(e) => setAboutUs(e.target.value)} placeholder="Escribe la descripción de la fundación..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Nuestra Misión</label>
-                  <textarea 
-                    rows={4}
-                    value={mission}
-                    onChange={(e) => setMission(e.target.value)}
-                    placeholder="Escribe la misión..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                  />
+                  <textarea rows={4} value={mission} onChange={(e) => setMission(e.target.value)} placeholder="Escribe la misión..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Nuestra Visión</label>
-                  <textarea 
-                    rows={4}
-                    value={vision}
-                    onChange={(e) => setVision(e.target.value)}
-                    placeholder="Escribe la visión..."
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                  />
+                  <textarea rows={4} value={vision} onChange={(e) => setVision(e.target.value)} placeholder="Escribe la visión..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                 </div>
               </form>
             )}
-          </div>
-
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
-            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
-              <Globe className="text-jv-purple mr-3" size={24} />
-              <h3 className="text-xl font-semibold text-white">Información General (Footer)</h3>
-            </div>
-            
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre de la Organización</label>
-                <input 
-                  type="text" 
-                  defaultValue="Fundación Juventud Viva"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Descripción Corta</label>
-                <textarea 
-                  rows={3}
-                  defaultValue="Impulsando el desarrollo y liderazgo de las nuevas generaciones. Juntos construimos un futuro vibrante."
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                />
-              </div>
-            </form>
           </div>
 
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
@@ -157,27 +124,15 @@ export default function AdminConfiguracion() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><Mail size={16} className="mr-2"/> Correo Electrónico</label>
-                <input 
-                  type="email" 
-                  defaultValue="contacto@juventudviva.org"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="contacto@juventudviva.org" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><Phone size={16} className="mr-2"/> Teléfono</label>
-                <input 
-                  type="text" 
-                  defaultValue="+57 300 123 4567"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+57 300 123 4567" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-gray-400 mb-1">Dirección Física</label>
-                <input 
-                  type="text" 
-                  defaultValue="Av. Principal 123, Ciudad Central"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Av. Principal 123, Ciudad Central" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
           </div>
@@ -193,52 +148,18 @@ export default function AdminConfiguracion() {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><Link size={16} className="mr-2"/> Facebook</label>
-                <input 
-                  type="url" 
-                  placeholder="https://facebook.com/..."
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Facebook</label>
+                <input type="url" value={facebook} onChange={(e) => setFacebook(e.target.value)} placeholder="https://facebook.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><Link size={16} className="mr-2"/> Instagram</label>
-                <input 
-                  type="url" 
-                  placeholder="https://instagram.com/..."
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Instagram</label>
+                <input type="url" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="https://instagram.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><Link size={16} className="mr-2"/> Twitter / X</label>
-                <input 
-                  type="url" 
-                  placeholder="https://twitter.com/..."
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                />
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Twitter / X</label>
+                <input type="url" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="https://twitter.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
-          </div>
-
-          <div className="bg-jv-purple/10 border border-jv-purple/30 rounded-2xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <Settings size={100} />
-            </div>
-            <h3 className="text-xl font-semibold text-jv-turquoise mb-2">Estado del Sistema</h3>
-            <p className="text-gray-300 text-sm mb-4">Todos los sistemas operativos.</p>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="flex justify-between border-b border-jv-purple/20 pb-1">
-                <span>Base de Datos</span>
-                <span className="text-green-400 font-medium">Conectada (Neon)</span>
-              </li>
-              <li className="flex justify-between border-b border-jv-purple/20 pb-1">
-                <span>Versión</span>
-                <span>v1.0.0</span>
-              </li>
-              <li className="flex justify-between pb-1">
-                <span>Entorno</span>
-                <span className="text-yellow-400">Desarrollo</span>
-              </li>
-            </ul>
           </div>
         </div>
 

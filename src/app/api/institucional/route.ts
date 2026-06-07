@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { aboutUs, mission, vision } = await request.json();
+    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter } = await request.json();
 
     const updated = await prisma.institution.upsert({
       where: { id: "singleton" },
@@ -46,12 +46,24 @@ export async function PUT(request: Request) {
         aboutUs,
         mission,
         vision,
+        address,
+        phone,
+        email,
+        facebook,
+        instagram,
+        twitter,
       },
       create: {
         id: "singleton",
         aboutUs,
         mission,
         vision,
+        address,
+        phone,
+        email,
+        facebook,
+        instagram,
+        twitter,
       }
     });
 

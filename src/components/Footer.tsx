@@ -1,8 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export default function Footer() {
+export default async function Footer() {
+  const institution = await prisma.institution.findUnique({
+    where: { id: "singleton" }
+  });
+
+  const address = institution?.address || "Av. Principal 123, Ciudad Central";
+  const phone = institution?.phone || "+57 300 123 4567";
+  const email = institution?.email || "contacto@juventudviva.org";
+  
+  const facebook = institution?.facebook || "#";
+  const instagram = institution?.instagram || "#";
+  const twitter = institution?.twitter || "#";
+
   return (
     <footer className="bg-jv-dark border-t border-jv-purple/30 pt-12 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -22,13 +35,13 @@ export default function Footer() {
               Impulsando el desarrollo y liderazgo de las nuevas generaciones. Juntos construimos un futuro vibrante.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-jv-turquoise transition-colors">
+              <a href={facebook} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-turquoise transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
               </a>
-              <a href="#" className="text-gray-400 hover:text-jv-purple transition-colors">
+              <a href={instagram} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-purple transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
               </a>
-              <a href="#" className="text-gray-400 hover:text-jv-turquoise transition-colors">
+              <a href={twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-turquoise transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
               </a>
             </div>
@@ -49,15 +62,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start">
                 <MapPin size={18} className="text-jv-purple mr-2 mt-1 flex-shrink-0" />
-                <span className="text-gray-400 text-sm">Av. Principal 123, Ciudad Central</span>
+                <span className="text-gray-400 text-sm">{address}</span>
               </li>
               <li className="flex items-center">
                 <Phone size={18} className="text-jv-purple mr-2 flex-shrink-0" />
-                <span className="text-gray-400 text-sm">+57 300 123 4567</span>
+                <span className="text-gray-400 text-sm">{phone}</span>
               </li>
               <li className="flex items-center">
                 <Mail size={18} className="text-jv-purple mr-2 flex-shrink-0" />
-                <span className="text-gray-400 text-sm">contacto@juventudviva.org</span>
+                <span className="text-gray-400 text-sm">{email}</span>
               </li>
             </ul>
           </div>
