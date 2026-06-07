@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     } catch (dbError) {
       // Fallback for demo if DB is not set up yet
       if (username === 'admin' && password === 'Admin123*') {
-        const token = await signToken({ id: 'demo-id', username: 'admin' });
+        const token = await signToken({ id: 'demo-id', username: 'admin', role: 'SUPER_ADMIN', modules: '' });
         const response = NextResponse.json({ success: true, message: 'Logged in (Demo mode)' });
         response.cookies.set('session', token, {
           httpOnly: true,
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Credenciales incorrectas' }, { status: 401 });
     }
 
-    const token = await signToken({ id: user.id, username: user.username });
+    const token = await signToken({ id: user.id, username: user.username, role: user.role, modules: user.modules });
 
     const response = NextResponse.json({ success: true, message: 'Logged in successfully' });
     response.cookies.set('session', token, {

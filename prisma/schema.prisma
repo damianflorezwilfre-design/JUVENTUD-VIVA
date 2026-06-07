@@ -10,8 +10,24 @@ model User {
   id        String   @id @default(cuid())
   username  String   @unique
   password  String
+  role      String   @default("SUPER_ADMIN")
+  modules   String   @default("") // Comma separated list of allowed modules
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  requests  EditRequest[]
+}
+
+model EditRequest {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  action       String   // "EDIT" or "DELETE"
+  modelName    String   // "News", "Gallery", "Document", etc.
+  recordId     String   // ID of the record to edit or delete
+  proposedData String?  // JSON string of the proposed changes (null for DELETE)
+  status       String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Program {

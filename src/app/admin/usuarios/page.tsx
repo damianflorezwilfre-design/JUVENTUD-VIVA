@@ -2,13 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { UserPlus, Edit2, Trash2, X, Search, ShieldAlert } from "lucide-react";
+import { UserPlus, Edit2, Trash2, X, Search, ShieldAlert, CheckSquare } from "lucide-react";
 
 type User = {
   id: string;
   username: string;
+  role?: string;
+  modules?: string;
   createdAt?: string;
 };
+
+const AVAILABLE_MODULES = [
+  { id: "documentos", name: "Documentos" },
+  { id: "noticias", name: "Noticias" },
+  { id: "programas", name: "Programas" },
+  { id: "galeria", name: "Galería" },
+  { id: "alianzas", name: "Alianzas" },
+  { id: "hoja-de-ruta", name: "Hoja de Ruta" },
+  { id: "mensajes", name: "Mensajes" },
+  { id: "certificados", name: "Certificados" },
+  { id: "tesoreria", name: "Tesorería" },
+];
 
 export default function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState<User[]>([]);
@@ -20,6 +34,8 @@ export default function AdminUsuarios() {
   // Form State
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedModules, setSelectedModules] = useState<string[]>([]);
+  const [role, setRole] = useState("EDITOR");
 
   const fetchUsuarios = async () => {
     try {
@@ -37,9 +53,8 @@ export default function AdminUsuarios() {
       setIsDemoMode(true);
       // Fallback for Demo without DB
       setUsuarios([
-        { id: "1", username: "admin", createdAt: new Date().toISOString() },
-        { id: "2", username: "editor_noticias", createdAt: new Date().toISOString() },
-        { id: "3", username: "coordinador", createdAt: new Date().toISOString() }
+        { id: "1", username: "admin", role: "SUPER_ADMIN", createdAt: new Date().toISOString() },
+        { id: "2", username: "editor_noticias", role: "EDITOR", modules: "noticias", createdAt: new Date().toISOString() },
       ]);
     } finally {
       setLoading(false);
@@ -55,26 +70,41 @@ export default function AdminUsuarios() {
       setEditingId(user.id);
       setUsername(user.username);
       setPassword(""); // Don't show password, leave blank to not update
+      setRole(user.role || "EDITOR");
+      setSelectedModules(user.modules ? user.modules.split(',') : []);
     } else {
       setEditingId(null);
       setUsername("");
       setPassword("");
+      setRole("EDITOR");
+      setSelectedModules([]);
     }
     setIsModalOpen(true);
+  };
+
+  const handleModuleToggle = (moduleId: string) => {
+    setSelectedModules(prev => 
+      prev.includes(moduleId) 
+        ? prev.filter(m => m !== moduleId)
+        : [...prev, moduleId]
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (isDemoMode) {
-      alert("⚠️ ESTÁS EN MODO DEMO: No tienes la base de datos conectada. El usuario no se guardará de forma real y no podrá iniciar sesión. Por favor configura tu base de datos PostgreSQL.");
+      alert("⚠️ ESTÁS EN MODO DEMO: No tienes la base de datos conectada. El usuario no se guardará de forma real.");
       setIsModalOpen(false);
       return;
     }
 
-    const payload = editingId 
-      ? { username, ...(password ? { password } : {}) } 
-      : { username, password };
+    const payload = { 
+      username, 
+      ...(password ? { password } : {}),
+      role,
+      modules: role === 'SUPER_ADMIN' ? '' : selectedModules.join(',')
+    };
 
     try {
       const url = editingId ? `/api/usuarios/${editingId}` : "/api/usuarios";
@@ -128,7 +158,7 @@ export default function AdminUsuarios() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Gestión de Usuarios</h2>
+          <h2 className="text-2xl font-bold text-white mb-1">Gestión de Usuarios y Permisos</h2>
           <p className="text-gray-400">Administra los accesos de los miembros al portal</p>
         </div>
         <button 
@@ -169,18 +199,19 @@ export default function AdminUsuarios() {
             <thead>
               <tr className="bg-gray-800/50 border-b border-gray-800">
                 <th className="p-4 text-sm font-semibold text-gray-300">Usuario</th>
-                <th className="p-4 text-sm font-semibold text-gray-300">Fecha de Creación</th>
+                <th className="p-4 text-sm font-semibold text-gray-300">Rol</th>
+                <th className="p-4 text-sm font-semibold text-gray-300">Módulos Permitidos</th>
                 <th className="p-4 text-sm font-semibold text-gray-300 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={3} className="p-8 text-center text-gray-500">Cargando usuarios...</td>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">Cargando usuarios...</td>
                 </tr>
               ) : usuarios.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="p-8 text-center text-gray-500">No hay usuarios registrados.</td>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">No hay usuarios registrados.</td>
                 </tr>
               ) : (
                 usuarios.map((user) => (
@@ -191,8 +222,13 @@ export default function AdminUsuarios() {
                       </div>
                       <span>{user.username}</span>
                     </td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${user.role === 'SUPER_ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-jv-turquoise/20 text-jv-turquoise'}`}>
+                        {user.role === 'SUPER_ADMIN' ? 'Administrador' : 'Editor Restringido'}
+                      </span>
+                    </td>
                     <td className="p-4 text-gray-400 text-sm">
-                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                      {user.role === 'SUPER_ADMIN' ? 'Todos los módulos' : (user.modules || 'Ninguno')}
                     </td>
                     <td className="p-4 text-right">
                       <div className="flex justify-end space-x-2">
@@ -218,7 +254,7 @@ export default function AdminUsuarios() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden"
+            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden max-h-[90vh] flex flex-col"
           >
             <div className="p-6 border-b border-gray-800 flex justify-between items-center">
               <h3 className="text-xl font-bold text-white">{editingId ? "Editar Usuario" : "Crear Nuevo Usuario"}</h3>
@@ -227,38 +263,78 @@ export default function AdminUsuarios() {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre de Usuario</label>
-                <input 
-                  required 
-                  type="text" 
-                  value={username} 
-                  onChange={e => setUsername(e.target.value)} 
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                  placeholder="ej. carlos_lopez"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">
-                  {editingId ? "Nueva Contraseña (dejar en blanco para no cambiar)" : "Contraseña"}
-                </label>
-                <input 
-                  required={!editingId} 
-                  type="password" 
-                  value={password} 
-                  onChange={e => setPassword(e.target.value)} 
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                  placeholder="••••••••"
-                />
-              </div>
+            <div className="overflow-y-auto p-6">
+              <form id="user-form" onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Nombre de Usuario</label>
+                  <input 
+                    required 
+                    type="text" 
+                    value={username} 
+                    onChange={e => setUsername(e.target.value)} 
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                    placeholder="ej. carlos_lopez"
+                    disabled={username === 'admin'}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">
+                    {editingId ? "Nueva Contraseña (dejar en blanco para no cambiar)" : "Contraseña"}
+                  </label>
+                  <input 
+                    required={!editingId} 
+                    type="password" 
+                    value={password} 
+                    onChange={e => setPassword(e.target.value)} 
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                    placeholder="••••••••"
+                  />
+                </div>
 
-              <div className="pt-4 flex justify-end space-x-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">Cancelar</button>
-                <button type="submit" className="px-4 py-2 rounded-lg bg-jv-purple hover:bg-jv-turquoise text-white font-semibold transition-colors">Guardar Usuario</button>
-              </div>
-            </form>
+                {username !== 'admin' && (
+                  <>
+                    <div className="pt-4 border-t border-gray-800">
+                      <label className="block text-sm font-medium text-gray-400 mb-2">Rol del Usuario</label>
+                      <select 
+                        value={role} 
+                        onChange={e => setRole(e.target.value)}
+                        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none"
+                      >
+                        <option value="EDITOR">Editor Restringido (Requiere aprobación para editar/eliminar)</option>
+                        <option value="SUPER_ADMIN">Administrador Principal (Acceso total)</option>
+                      </select>
+                    </div>
+
+                    {role === 'EDITOR' && (
+                      <div className="pt-4">
+                        <label className="block text-sm font-medium text-gray-400 mb-2 flex items-center">
+                          <CheckSquare size={16} className="mr-2" /> Módulos Permitidos
+                        </label>
+                        <div className="grid grid-cols-2 gap-2 bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+                          {AVAILABLE_MODULES.map(mod => (
+                            <label key={mod.id} className="flex items-center space-x-2 cursor-pointer group">
+                              <input 
+                                type="checkbox"
+                                checked={selectedModules.includes(mod.id)}
+                                onChange={() => handleModuleToggle(mod.id)}
+                                className="w-4 h-4 rounded border-gray-600 text-jv-purple focus:ring-jv-purple bg-gray-700"
+                              />
+                              <span className="text-gray-300 group-hover:text-white text-sm transition-colors">{mod.name}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </form>
+            </div>
+
+            <div className="p-6 border-t border-gray-800 flex justify-end space-x-3 bg-gray-900">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">Cancelar</button>
+              <button type="submit" form="user-form" className="px-4 py-2 rounded-lg bg-jv-purple hover:bg-jv-turquoise text-white font-semibold transition-colors">Guardar Usuario</button>
+            </div>
           </motion.div>
         </div>
       )}

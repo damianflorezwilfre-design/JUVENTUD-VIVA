@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyToken } from '@/lib/auth';
+import { verifyToken, getSession } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
 async function isAuthenticated() {
@@ -35,11 +35,25 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    if (!(await isAuthenticated())) {
+    const session: any = await getSession();
+    if (!session) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
     const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter } = await request.json();
+
+    if (session.role !== 'SUPER_ADMIN') {
+      await prisma.editRequest.create({
+        data: {
+          userId: session.id,
+          action: 'EDIT',
+          modelName: 'Institution',
+          recordId: 'singleton',
+          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter })
+        }
+      });
+      return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
+    }
 
     const updated = await prisma.institution.upsert({
       where: { id: "singleton" },

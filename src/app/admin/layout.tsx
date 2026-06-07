@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange } from "lucide-react";
 import Image from "next/image";
 
@@ -11,6 +12,17 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    if (pathname !== '/admin/login') {
+      fetch('/api/auth/me')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) setSession(data);
+        });
+    }
+  }, [pathname]);
 
   const handleLogout = async () => {
     // A simple client-side clearing, better done via API, but for demo:
@@ -22,19 +34,25 @@ export default function AdminLayout({
     return <>{children}</>;
   }
 
-  const menu = [
-    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin/dashboard" },
-    { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos" },
-    { name: "Noticias", icon: <Newspaper size={20} />, path: "/admin/noticias" },
-    { name: "Programas", icon: <CalendarRange size={20} />, path: "/admin/programas" },
-    { name: "Galería", icon: <ImageIcon size={20} />, path: "/admin/galeria" },
-    { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas" },
-    { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta" },
-    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes" },
-    { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados" },
-    { name: "Tesorería", icon: <LayoutDashboard size={20} />, path: "/admin/tesoreria" },
-    { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios" },
+  const allMenu = [
+    { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin/dashboard", id: "dashboard" },
+    { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos", id: "documentos" },
+    { name: "Noticias", icon: <Newspaper size={20} />, path: "/admin/noticias", id: "noticias" },
+    { name: "Programas", icon: <CalendarRange size={20} />, path: "/admin/programas", id: "programas" },
+    { name: "Galería", icon: <ImageIcon size={20} />, path: "/admin/galeria", id: "galeria" },
+    { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
+    { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
+    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes" },
+    { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
+    { name: "Tesorería", icon: <LayoutDashboard size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
+    { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
+    { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes" },
   ];
+
+  const allowedModules = session?.modules ? session.modules.split(',') : [];
+  const menu = session?.role === 'SUPER_ADMIN' 
+    ? allMenu 
+    : allMenu.filter(item => allowedModules.includes(item.id) || item.id === 'dashboard');
 
   return (
     <div className="flex h-screen bg-jv-dark text-white overflow-hidden">
@@ -68,10 +86,12 @@ export default function AdminLayout({
         </nav>
 
         <div className="p-4 border-t border-gray-800 space-y-2">
-          <Link href="/admin/configuracion" className="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
-            <Settings size={20} />
-            <span className="font-medium">Configuración</span>
-          </Link>
+          {session?.role === 'SUPER_ADMIN' && (
+            <Link href="/admin/configuracion" className="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+              <Settings size={20} />
+              <span className="font-medium">Configuración</span>
+            </Link>
+          )}
           <button 
             onClick={handleLogout}
             className="flex items-center space-x-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors w-full"

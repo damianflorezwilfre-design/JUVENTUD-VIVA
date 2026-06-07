@@ -21,6 +21,8 @@ export async function GET() {
       select: {
         id: true,
         username: true,
+        role: true,
+        modules: true,
         createdAt: true,
       },
       orderBy: { createdAt: 'desc' }
@@ -38,7 +40,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { username, password } = await request.json();
+    const { username, password, role, modules } = await request.json();
 
     if (!username || !password) {
       return NextResponse.json({ error: 'Usuario y contraseña requeridos' }, { status: 400 });
@@ -60,10 +62,14 @@ export async function POST(request: Request) {
       data: {
         username,
         password: hashedPassword,
+        role: role || 'EDITOR',
+        modules: modules || '',
       },
       select: {
         id: true,
         username: true,
+        role: true,
+        modules: true,
         createdAt: true,
       }
     });
