@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react";
-import { Download, FileText, CheckCircle, GraduationCap } from "lucide-react";
+import { useState, useRef } from "react";
+import { Download, FileText, CheckCircle, GraduationCap, Image as ImageIcon } from "lucide-react";
 import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun } from "docx";
 import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
 
 export default function AdminCertificados() {
   const [name, setName] = useState("");
@@ -11,8 +12,20 @@ export default function AdminCertificados() {
   const [activity, setActivity] = useState("");
   const [date, setDate] = useState("");
   const [leader, setLeader] = useState("Damian Florez");
+  const [signature, setSignature] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
+
+  const handleSignatureUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSignature(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const generateWord = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +124,58 @@ export default function AdminCertificados() {
 
     } catch (error) {
       console.error(error);
-      alert("Hubo un error al generar el certificado.");
+      alert("Hubo un error al generar el certificado en Word.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generatePDF = () => {
+    setLoading(true);
+    try {
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+      });
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("CERTIFICADO DE SERVICIO SOCIAL ESTUDIANTIL OBLIGATORIO", 105, 40, { align: "center" });
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      const text = `Por medio del presente documento, la Fundación Juventud ViVa certifica que el/la joven ${name.toUpperCase()} cumplió satisfactoriamente ${hours} horas de servicio social estudiantil obligatorio con Juventud ViVa, en actividades de impacto comunitario.`;
+      
+      const lines = doc.splitTextToSize(text, 150);
+      doc.text(lines, 30, 70);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Detalles de la Actividad:", 30, 100);
+      
+      doc.setFont("helvetica", "normal");
+      doc.text(`• Fecha: ${date}`, 30, 110);
+      
+      const activityLines = doc.splitTextToSize(`• Labor / Actividad: ${activity}`, 150);
+      doc.text(activityLines, 30, 120);
+
+      const offset = 120 + (activityLines.length * 7);
+      doc.setFont("helvetica", "bold");
+      doc.text(`• Horas cumplidas: ${hours}`, 30, offset);
+
+      doc.text("_______________________________________", 30, offset + 40);
+      doc.text("Firma del líder ViVa", 30, offset + 48);
+      doc.text(leader, 30, offset + 56);
+
+      if (signature) {
+        doc.addImage(signature, "PNG", 35, offset + 20, 50, 20); // Ajusta tamaño y posición según necesidad
+      }
+
+      doc.save(`Certificado_${name.replace(/\s+/g, '_')}.pdf`);
+
+    } catch (error) {
+      console.error(error);
+      alert("Hubo un error al generar el certificado en PDF.");
     } finally {
       setLoading(false);
     }
@@ -182,25 +246,53 @@ export default function AdminCertificados() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Nombre del Líder (Firma)</label>
-              <input 
-                type="text" 
-                required
-                value={leader}
-                onChange={(e) => setLeader(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre del Líder (Firma)</label>
+                <input 
+                  type="text" 
+                  required
+                  value={leader}
+                  onChange={(e) => setLeader(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Firma Digital (Opcional)</label>
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    accept="image/png, image/jpeg"
+                    onChange={handleSignatureUpload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                  />
+                  <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white flex items-center justify-between">
+                    <span className="truncate text-sm text-gray-400">{signature ? "Firma cargada" : "Subir imagen..."}</span>
+                    <ImageIcon size={18} className="text-gray-400" />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <button 
-              type="submit"
-              disabled={loading || !name}
-              className="w-full mt-4 bg-jv-purple hover:bg-jv-turquoise text-white px-6 py-3 rounded-xl flex items-center justify-center transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)] disabled:opacity-50"
-            >
-              <Download size={20} className="mr-2" />
-              {loading ? "Generando Documento..." : "Descargar Certificado en Word"}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+              <button 
+                type="submit"
+                disabled={loading || !name}
+                className="flex-1 bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-3 rounded-xl flex items-center justify-center transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)] disabled:opacity-50 text-sm"
+              >
+                <Download size={18} className="mr-2" />
+                Descargar en Word
+              </button>
+              <button 
+                type="button"
+                onClick={generatePDF}
+                disabled={loading || !name}
+                className="flex-1 bg-red-500 hover:bg-red-400 text-white px-4 py-3 rounded-xl flex items-center justify-center transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(239,68,68,0.3)] disabled:opacity-50 text-sm"
+              >
+                <FileText size={18} className="mr-2" />
+                Descargar en PDF
+              </button>
+            </div>
           </form>
         </div>
 
@@ -214,6 +306,7 @@ export default function AdminCertificados() {
           
           <div className="flex space-x-4 text-sm text-gray-400">
             <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Formato .docx</span>
+            <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Formato .pdf</span>
             <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Listo para imprimir</span>
           </div>
         </div>

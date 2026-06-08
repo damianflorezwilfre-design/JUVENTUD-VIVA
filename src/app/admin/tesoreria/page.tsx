@@ -76,6 +76,34 @@ export default function AdminTesoreria() {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(val);
   };
 
+  const handleExportCSV = () => {
+    if (records.length === 0) {
+      alert("No hay registros para exportar.");
+      return;
+    }
+    
+    const headers = ["Fecha", "Tipo", "Concepto", "Monto", "Fecha de Registro"];
+    const rows = records.map(r => [
+      new Date(r.date).toLocaleDateString('es-ES'),
+      r.type,
+      `"${r.description.replace(/"/g, '""')}"`, // Escapar comillas dobles
+      r.amount.toString(),
+      new Date(r.createdAt).toLocaleDateString('es-ES')
+    ]);
+    
+    const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    
+    // Añadir BOM para que Excel reconozca UTF-8
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Reporte_Tesoreria_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -83,13 +111,22 @@ export default function AdminTesoreria() {
           <h2 className="text-2xl font-bold text-white mb-1">Tesorería</h2>
           <p className="text-gray-400">Control interno de ingresos, gastos y balance general.</p>
         </div>
-        <button 
-          onClick={() => setIsAdding(!isAdding)}
-          className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl flex items-center transition-all duration-300 font-semibold"
-        >
-          <PlusCircle size={20} className="mr-2" />
-          Nuevo Registro
-        </button>
+        <div className="flex space-x-3">
+          <button 
+            onClick={handleExportCSV}
+            className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-xl flex items-center transition-all duration-300 font-semibold"
+          >
+            <Download size={20} className="mr-2" />
+            Exportar Excel
+          </button>
+          <button 
+            onClick={() => setIsAdding(!isAdding)}
+            className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl flex items-center transition-all duration-300 font-semibold"
+          >
+            <PlusCircle size={20} className="mr-2" />
+            Nuevo Registro
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">

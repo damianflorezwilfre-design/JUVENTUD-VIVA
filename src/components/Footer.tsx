@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Heart } from "lucide-react";
 import { prisma } from "@/lib/prisma";
+import SocialTrackingLink from "./SocialTrackingLink";
 
 export default async function Footer() {
   const institution = await prisma.institution.findUnique({
@@ -35,12 +36,12 @@ export default async function Footer() {
               Impulsando el desarrollo y liderazgo de las nuevas generaciones. Juntos construimos un futuro vibrante.
             </p>
             <div className="flex space-x-4">
-              <a href={facebook} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-turquoise transition-colors">
+              <SocialTrackingLink href={facebook} network="fbClick" className="text-gray-400 hover:text-jv-turquoise transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-              </a>
-              <a href={instagram} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-purple transition-colors">
+              </SocialTrackingLink>
+              <SocialTrackingLink href={instagram} network="igClick" className="text-gray-400 hover:text-jv-purple transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              </a>
+              </SocialTrackingLink>
               <a href={twitter} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-jv-turquoise transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
               </a>
@@ -76,19 +77,17 @@ export default async function Footer() {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold text-jv-white mb-4">Boletín</h3>
-            <p className="text-gray-400 text-sm mb-4">Suscríbete para recibir nuestras últimas noticias.</p>
-            <form className="flex flex-col space-y-2">
-              <input
-                type="email"
-                placeholder="Tu correo electrónico"
-                className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white focus:outline-none focus:border-jv-purple transition-colors"
-              />
+            <h3 className="text-lg font-semibold text-jv-white mb-4 flex items-center">
+              Apóyanos con una Donación
+              <Heart size={18} className="ml-2 text-red-400" />
+            </h3>
+            <p className="text-gray-400 text-sm mb-4">Haz tu aporte y ayúdanos a construir un mejor futuro para los jóvenes vulnerables de La Guajira.</p>
+            <form className="flex flex-col space-y-2" action="/contacto">
               <button
-                type="button"
-                className="px-4 py-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-md transition-colors font-medium"
+                type="submit"
+                className="px-4 py-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-xl transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)] hover:shadow-[0_0_15px_rgba(79,221,230,0.5)] flex items-center justify-center"
               >
-                Suscribirse
+                Hacer Donación Ahora
               </button>
             </form>
           </div>

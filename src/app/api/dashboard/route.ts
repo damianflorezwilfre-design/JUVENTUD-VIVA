@@ -18,12 +18,22 @@ export async function GET() {
       prisma.program.count()
     ]);
 
+    // Fetch last 7 days of analytics for the chart
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const analyticsData = await prisma.analytics.findMany({
+      where: { date: { gte: sevenDaysAgo } },
+      orderBy: { date: 'asc' }
+    });
+
     return NextResponse.json({
       users: usersCount,
       documents: documentsCount,
       news: newsCount,
       programs: programsCount,
-      username: session.username
+      username: session.username,
+      analytics: analyticsData
     });
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener estadísticas' }, { status: 500 });

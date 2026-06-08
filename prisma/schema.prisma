@@ -122,4 +122,10 @@ model Message {
   createdAt DateTime @default(now())
 }
 
-
+model Analytics {
+  id           String   @id @default(cuid())
+  date         DateTime @unique @default(now()) @db.Date
+  portalViews  Int      @default(0)
+  fbClicks     Int      @default(0)
+  igClicks     Int      @default(0)
+}

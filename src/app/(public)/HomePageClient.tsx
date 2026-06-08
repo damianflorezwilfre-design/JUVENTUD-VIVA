@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,6 +10,14 @@ import AlianzasSection from "@/components/AlianzasSection";
 import RoadmapSection from "@/components/RoadmapSection";
 
 export default function HomePageClient({ institution }: { institution: any }) {
+  useEffect(() => {
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "view" })
+    }).catch(e => console.error("Error tracking view", e));
+  }, []);
+
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -79,14 +88,14 @@ export default function HomePageClient({ institution }: { institution: any }) {
               href="/nosotros"
               className="px-8 py-4 rounded-full bg-jv-purple hover:bg-jv-turquoise text-white transition-all duration-300 font-semibold text-lg flex items-center justify-center group shadow-[0_0_20px_rgba(155,28,201,0.4)] hover:shadow-[0_0_20px_rgba(79,221,230,0.6)]"
             >
-              Conoce más
+              Nuestra Historia
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/contacto"
               className="px-8 py-4 rounded-full bg-transparent border-2 border-jv-turquoise text-jv-turquoise hover:bg-jv-turquoise/10 transition-all duration-300 font-semibold text-lg flex items-center justify-center"
             >
-              Contáctanos
+              Contacto
             </Link>
           </motion.div>
         </div>

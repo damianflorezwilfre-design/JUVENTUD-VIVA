@@ -3,9 +3,13 @@
 import { motion } from "framer-motion";
 import { FileText, Users, Newspaper, CalendarRange, TrendingUp, Activity } from "lucide-react";
 import { useState, useEffect } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Dashboard() {
-  const [statsData, setStatsData] = useState({ users: 0, documents: 0, news: 0, programs: 0, username: "" });
+  const [statsData, setStatsData] = useState({ users: 0, documents: 0, news: 0, programs: 0, username: "", analytics: [] as any[] });
+  const [activity, setActivity] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,12 +21,26 @@ export default function Dashboard() {
           documents: data.documents || 0,
           news: data.news || 0,
           programs: data.programs || 0,
-          username: data.username || "Usuario"
+          username: data.username || "Usuario",
+          analytics: data.analytics || []
         });
         setLoading(false);
       })
       .catch(err => {
         console.error("Error fetching stats:", err);
+      });
+
+    fetch("/api/dashboard/activity")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setActivity(data);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching activity:", err);
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, []);
@@ -34,12 +52,28 @@ export default function Dashboard() {
     { name: "Programas Activos", value: statsData.programs.toString(), icon: <CalendarRange size={24} className="text-jv-purple" />, change: "Iniciativas en curso" },
   ];
 
-  const recentActivity = [
-    { id: 1, text: "Juan Pérez subió 'Informe_Abril.pdf'", time: "Hace 2 horas" },
-    { id: 2, text: "Admin creó la noticia 'Campaña de reciclaje'", time: "Hace 5 horas" },
-    { id: 3, text: "María actualizó el programa 'Líderes del Mañana'", time: "Ayer" },
-    { id: 4, text: "Admin eliminó una imagen de la galería", time: "Hace 2 días" },
-  ];
+  const processChartData = () => {
+    if (!statsData.analytics || statsData.analytics.length === 0) {
+      return [
+        { name: 'Lun', portal: 0, fb: 0, ig: 0 },
+        { name: 'Mar', portal: 0, fb: 0, ig: 0 },
+        { name: 'Mié', portal: 0, fb: 0, ig: 0 },
+        { name: 'Jue', portal: 0, fb: 0, ig: 0 },
+        { name: 'Vie', portal: 0, fb: 0, ig: 0 },
+        { name: 'Sáb', portal: 0, fb: 0, ig: 0 },
+        { name: 'Dom', portal: 0, fb: 0, ig: 0 },
+      ];
+    }
+    const diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    return statsData.analytics.map((a: any) => ({
+      name: diasSemana[new Date(a.date).getDay()],
+      portal: a.portalViews,
+      fb: a.fbClicks,
+      ig: a.igClicks
+    }));
+  };
+
+  const chartData = processChartData();
 
   return (
     <div>
@@ -50,7 +84,7 @@ export default function Dashboard() {
         </div>
         <div className="bg-gray-800 border border-gray-700 px-4 py-2 rounded-xl flex items-center space-x-2 text-sm text-gray-300">
           <Activity size={16} className="text-jv-turquoise" />
-          <span>Sistema Operativo</span>
+          <span>Sistema en Línea</span>
         </div>
       </div>
 
@@ -77,24 +111,33 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Gráfico Simulado */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-2xl p-6"
         >
-          <h3 className="text-lg font-bold text-white mb-6">Visitas al sitio web</h3>
-          <div className="h-64 flex items-end justify-between space-x-2">
-            {[40, 70, 45, 90, 65, 85, 110].map((height, i) => (
-              <div key={i} className="w-full flex flex-col items-center group">
-                <div 
-                  className="w-full bg-gradient-to-t from-jv-purple/20 to-jv-turquoise/80 rounded-t-sm group-hover:to-jv-turquoise transition-all duration-300"
-                  style={{ height: `${height}%` }}
-                ></div>
-                <span className="text-xs text-gray-500 mt-2 block">Día {i+1}</span>
-              </div>
-            ))}
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-bold text-white">Tráfico e Interacciones (Últimos Días)</h3>
+            <select className="bg-gray-800 border border-gray-700 text-sm text-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:border-jv-purple">
+              <option>Esta semana</option>
+            </select>
+          </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
+                <XAxis dataKey="name" stroke="#9CA3AF" axisLine={false} tickLine={false} />
+                <YAxis stroke="#9CA3AF" axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '0.5rem', color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+                <Line type="monotone" dataKey="portal" name="Visitas al Portal" stroke="#4FDDE6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="fb" name="Clics a Facebook" stroke="#9B1CC9" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="ig" name="Clics a Instagram" stroke="#F87171" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </motion.div>
 
@@ -107,17 +150,21 @@ export default function Dashboard() {
         >
           <h3 className="text-lg font-bold text-white mb-6">Actividad Reciente</h3>
           <div className="space-y-6">
-            {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex space-x-4">
-                <div className="mt-1 w-2 h-2 bg-jv-turquoise rounded-full flex-shrink-0 relative">
-                  <div className="absolute w-0.5 h-10 bg-gray-800 left-1/2 -translate-x-1/2 top-3"></div>
+            {activity.length === 0 ? (
+              <div className="text-gray-500 text-sm py-4">No hay actividad reciente.</div>
+            ) : (
+              activity.map((act, idx) => (
+                <div key={idx} className="relative pl-6 pb-6 border-l border-gray-800 last:border-0 last:pb-0">
+                  <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 rounded-full bg-jv-turquoise"></div>
+                  <p className="text-gray-300 font-medium">
+                    {act.text}
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {formatDistanceToNow(new Date(act.date), { addSuffix: true, locale: es })}
+                  </p>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-300 font-medium">{activity.text}</p>
-                  <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </motion.div>
       </div>

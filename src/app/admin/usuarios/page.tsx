@@ -292,7 +292,7 @@ export default function AdminUsuarios() {
                   />
                 </div>
 
-                {username !== 'admin' && (
+                {!(editingId && username === 'admin') && (
                   <>
                     <div className="pt-4 border-t border-gray-800">
                       <label className="block text-sm font-medium text-gray-400 mb-2">Rol del Usuario</label>
