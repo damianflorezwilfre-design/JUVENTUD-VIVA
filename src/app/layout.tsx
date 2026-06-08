@@ -8,8 +8,24 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "JUVENTUD VIVA - Plataforma Institucional",
-  description: "Fundación JUVENTUD VIVA - Plataforma para la gestión de programas, noticias y documentos públicos.",
+  title: {
+    default: "JUVENTUD VIVA | Villanueva - La Guajira",
+    template: "%s | JUVENTUD VIVA"
+  },
+  description: "Fundación JUVENTUD VIVA - Empoderando a la Nueva Generación en Villanueva, La Guajira. Liderazgo comunitario, acción social y educación continua.",
+  keywords: ["Juventud Viva", "Villanueva", "La Guajira", "Jóvenes", "Liderazgo", "Fundación", "Acción Social", "Colombia"],
+  authors: [{ name: "Juventud ViVa" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: "/logo/juventud-viva.png"
   }

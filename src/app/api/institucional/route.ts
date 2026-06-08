@@ -40,7 +40,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter } = await request.json();
+    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
       await prisma.editRequest.create({
@@ -49,7 +49,7 @@ export async function PUT(request: Request) {
           action: 'EDIT',
           modelName: 'Institution',
           recordId: 'singleton',
-          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter })
+          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc })
         }
       });
       return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
@@ -67,6 +67,12 @@ export async function PUT(request: Request) {
         facebook,
         instagram,
         twitter,
+        feature1Title,
+        feature1Desc,
+        feature2Title,
+        feature2Desc,
+        feature3Title,
+        feature3Desc
       },
       create: {
         id: "singleton",
@@ -79,6 +85,12 @@ export async function PUT(request: Request) {
         facebook,
         instagram,
         twitter,
+        feature1Title,
+        feature1Desc,
+        feature2Title,
+        feature2Desc,
+        feature3Title,
+        feature3Desc
       }
     });
 

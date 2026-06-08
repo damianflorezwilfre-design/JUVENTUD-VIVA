@@ -2,13 +2,36 @@
 
 import { motion } from "framer-motion";
 import { FileText, Users, Newspaper, CalendarRange, TrendingUp, Activity } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Dashboard() {
+  const [statsData, setStatsData] = useState({ users: 0, documents: 0, news: 0, programs: 0, username: "" });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/dashboard")
+      .then(res => res.json())
+      .then(data => {
+        setStatsData({
+          users: data.users || 0,
+          documents: data.documents || 0,
+          news: data.news || 0,
+          programs: data.programs || 0,
+          username: data.username || "Usuario"
+        });
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching stats:", err);
+        setLoading(false);
+      });
+  }, []);
+
   const stats = [
-    { name: "Total Usuarios", value: "3", icon: <Users size={24} className="text-blue-400" />, change: "+1 desde el mes pasado" },
-    { name: "Documentos", value: "12", icon: <FileText size={24} className="text-red-400" />, change: "+3 esta semana" },
-    { name: "Noticias Publicadas", value: "45", icon: <Newspaper size={24} className="text-jv-turquoise" />, change: "+5 este mes" },
-    { name: "Programas Activos", value: "8", icon: <CalendarRange size={24} className="text-jv-purple" />, change: "Sin cambios" },
+    { name: "Total Usuarios", value: statsData.users.toString(), icon: <Users size={24} className="text-blue-400" />, change: "Usuarios registrados" },
+    { name: "Documentos", value: statsData.documents.toString(), icon: <FileText size={24} className="text-red-400" />, change: "Documentos públicos" },
+    { name: "Noticias Publicadas", value: statsData.news.toString(), icon: <Newspaper size={24} className="text-jv-turquoise" />, change: "Artículos en el blog" },
+    { name: "Programas Activos", value: statsData.programs.toString(), icon: <CalendarRange size={24} className="text-jv-purple" />, change: "Iniciativas en curso" },
   ];
 
   const recentActivity = [
@@ -22,7 +45,7 @@ export default function Dashboard() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">Bienvenido al Dashboard</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Bienvenido al Dashboard, {statsData.username}</h2>
           <p className="text-gray-400">Resumen general de la plataforma JUVENTUD VIVA</p>
         </div>
         <div className="bg-gray-800 border border-gray-700 px-4 py-2 rounded-xl flex items-center space-x-2 text-sm text-gray-300">

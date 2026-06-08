@@ -18,6 +18,14 @@ export default function AdminConfiguracion() {
   const [instagram, setInstagram] = useState("");
   const [twitter, setTwitter] = useState("");
 
+  // Features State
+  const [feature1Title, setFeature1Title] = useState("");
+  const [feature1Desc, setFeature1Desc] = useState("");
+  const [feature2Title, setFeature2Title] = useState("");
+  const [feature2Desc, setFeature2Desc] = useState("");
+  const [feature3Title, setFeature3Title] = useState("");
+  const [feature3Desc, setFeature3Desc] = useState("");
+
   useEffect(() => {
     const fetchInstitution = async () => {
       try {
@@ -33,6 +41,12 @@ export default function AdminConfiguracion() {
           setFacebook(data.facebook || "");
           setInstagram(data.instagram || "");
           setTwitter(data.twitter || "");
+          setFeature1Title(data.feature1Title || "Liderazgo Comunitario");
+          setFeature1Desc(data.feature1Desc || "Formamos jóvenes capaces de liderar iniciativas de impacto social.");
+          setFeature2Title(data.feature2Title || "Educación Continua");
+          setFeature2Desc(data.feature2Desc || "Ofrecemos talleres y programas para el desarrollo personal y profesional.");
+          setFeature3Title(data.feature3Title || "Acción Social");
+          setFeature3Desc(data.feature3Desc || "Participamos activamente en la mejora de nuestras comunidades.");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -51,7 +65,10 @@ export default function AdminConfiguracion() {
       const res = await fetch("/api/institucional", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter })
+        body: JSON.stringify({ 
+          aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+          feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc
+        })
       });
 
       if (res.ok) {
@@ -135,6 +152,62 @@ export default function AdminConfiguracion() {
                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Av. Principal 123, Ciudad Central" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
+          </div>
+
+          {/* Tarjetas Editables (Pilares) */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <BookOpen className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Pilares de la Página Principal</h3>
+            </div>
+            
+            {fetching ? (
+              <p className="text-gray-500">Cargando datos...</p>
+            ) : (
+              <form className="space-y-6">
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-turquoise font-semibold mb-3">Tarjeta 1</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={feature1Title} onChange={(e) => setFeature1Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={2} value={feature1Desc} onChange={(e) => setFeature1Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-purple font-semibold mb-3">Tarjeta 2</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={feature2Title} onChange={(e) => setFeature2Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={2} value={feature2Desc} onChange={(e) => setFeature2Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-red-400 font-semibold mb-3">Tarjeta 3</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={feature3Title} onChange={(e) => setFeature3Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={2} value={feature3Desc} onChange={(e) => setFeature3Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
           </div>
         </div>
 

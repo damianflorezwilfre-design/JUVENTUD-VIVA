@@ -68,16 +68,22 @@ model Gallery {
 
 model Institution {
   id        String   @id @default("singleton")
-  aboutUs   String?
-  mission   String?
-  vision    String?
-  address   String?
-  phone     String?
-  email     String?
-  facebook  String?
-  instagram String?
-  twitter   String?
-  updatedAt DateTime @updatedAt
+  aboutUs       String?
+  mission       String?
+  vision        String?
+  address       String?
+  phone         String?
+  email         String?
+  facebook      String?
+  instagram     String?
+  twitter       String?
+  feature1Title String?
+  feature1Desc  String?
+  feature2Title String?
+  feature2Desc  String?
+  feature3Title String?
+  feature3Desc  String?
+  updatedAt     DateTime @updatedAt
 }
 
 model Alliance {
