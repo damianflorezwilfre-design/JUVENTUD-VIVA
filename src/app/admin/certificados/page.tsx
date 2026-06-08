@@ -8,6 +8,9 @@ import jsPDF from "jspdf";
 
 export default function AdminCertificados() {
   const [name, setName] = useState("");
+  const [docType, setDocType] = useState("Cédula de Ciudadanía");
+  const [docNumber, setDocNumber] = useState("");
+  const [certificateType, setCertificateType] = useState("Estudiantil");
   const [hours, setHours] = useState("");
   const [activity, setActivity] = useState("");
   const [date, setDate] = useState("");
@@ -27,46 +30,102 @@ export default function AdminCertificados() {
     }
   };
 
+  const getIntroText = () => {
+    if (certificateType === "Estudiantil") {
+      return "Por medio del presente documento, la Organización Juventud ViVa, con sede en Villanueva, Colombia, certifica que el/la joven:";
+    }
+    return "Por medio del presente documento, la Organización Juventud ViVa, con sede en Villanueva, Colombia, certifica que la persona natural:";
+  };
+
+  const getBodyText = () => {
+    if (certificateType === "Estudiantil") {
+      return `cumplió satisfactoriamente las horas de servicio social estudiantil obligatorio con Juventud ViVa, en actividades de impacto comunitario, conforme a lo establecido por la normativa educativa vigente.`;
+    }
+    return `participó activa y satisfactoriamente como voluntario/a en actividades de impacto comunitario desarrolladas por Juventud ViVa, demostrando compromiso, responsabilidad y vocación de servicio.`;
+  };
+
+  const getTitle = () => {
+    return certificateType === "Estudiantil" 
+      ? "CERTIFICADO DE SERVICIO SOCIAL ESTUDIANTIL"
+      : "CERTIFICADO DE VOLUNTARIADO Y SERVICIO COMUNITARIO";
+  };
+
   const generateWord = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Fetch logo
+      const logoRes = await fetch("/logo/juventud-viva.png");
+      const logoBuffer = await logoRes.arrayBuffer();
+
       const doc = new Document({
         sections: [
           {
             properties: {},
             children: [
               new Paragraph({
-                text: "CERTIFICADO DE SERVICIO SOCIAL ESTUDIANTIL OBLIGATORIO",
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 200 },
+                children: [
+                  new ImageRun({
+                    data: logoBuffer,
+                    type: "png",
+                    transformation: {
+                      width: 150,
+                      height: 150,
+                    },
+                  }),
+                ]
+              }),
+              new Paragraph({
+                text: "ORGANIZACIÓN\nJuventud ViVa\nVillanueva, Colombia  ·  Reforma: Juventud ViVa",
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 400 },
+              }),
+              new Paragraph({
+                text: getTitle(),
                 heading: "Heading1",
                 alignment: AlignmentType.CENTER,
                 spacing: { after: 400, before: 400 },
               }),
               new Paragraph({
                 alignment: AlignmentType.JUSTIFIED,
-                spacing: { line: 360, after: 400 },
+                spacing: { line: 360, after: 200 },
                 children: [
                   new TextRun({
-                    text: "Por medio del presente documento, la Fundación Juventud ViVa certifica que el/la joven ",
+                    text: getIntroText(),
                     size: 24,
                   }),
+                ],
+              }),
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                spacing: { before: 200, after: 100 },
+                children: [
                   new TextRun({
                     text: name.toUpperCase(),
                     bold: true,
                     size: 24,
                   }),
+                ]
+              }),
+              new Paragraph({
+                alignment: AlignmentType.CENTER,
+                spacing: { after: 200 },
+                children: [
                   new TextRun({
-                    text: " cumplió satisfactoriamente ",
+                    text: `${docType}: ${docNumber}`,
                     size: 24,
                   }),
+                ]
+              }),
+              new Paragraph({
+                alignment: AlignmentType.JUSTIFIED,
+                spacing: { line: 360, after: 400 },
+                children: [
                   new TextRun({
-                    text: `${hours} horas`,
-                    bold: true,
-                    size: 24,
-                  }),
-                  new TextRun({
-                    text: " de servicio social estudiantil obligatorio con Juventud ViVa, en actividades de impacto comunitario.",
+                    text: getBodyText(),
                     size: 24,
                   }),
                 ],
@@ -80,14 +139,14 @@ export default function AdminCertificados() {
               new Paragraph({
                 spacing: { after: 100 },
                 children: [
-                  new TextRun({ text: "• Fecha: ", bold: true, size: 24 }),
+                  new TextRun({ text: "• Fecha de actividad: ", bold: true, size: 24 }),
                   new TextRun({ text: date, size: 24 })
                 ]
               }),
               new Paragraph({
                 spacing: { after: 100 },
                 children: [
-                  new TextRun({ text: "• Labor / Actividad: ", bold: true, size: 24 }),
+                  new TextRun({ text: "• Actividad / Labor: ", bold: true, size: 24 }),
                   new TextRun({ text: activity, size: 24 })
                 ]
               }),
@@ -99,19 +158,30 @@ export default function AdminCertificados() {
                 ]
               }),
               new Paragraph({
-                spacing: { before: 1000, after: 100 },
+                spacing: { after: 400 },
                 children: [
-                  new TextRun({ text: "_______________________________________", size: 24 })
+                  new TextRun({ text: "Se expide este certificado a solicitud del interesado/a, para los fines que considere pertinentes.", size: 24 })
+                ]
+              }),
+              new Paragraph({
+                spacing: { before: 800, after: 100 },
+                children: [
+                  new TextRun({ text: "_______________________________", size: 24 })
                 ]
               }),
               new Paragraph({
                 children: [
-                  new TextRun({ text: "Firma del líder ViVa", bold: true, size: 24 }),
+                  new TextRun({ text: leader, bold: true, size: 24 }),
                 ]
               }),
               new Paragraph({
                 children: [
-                  new TextRun({ text: leader, size: 24 }),
+                  new TextRun({ text: "Director / Representante Legal", size: 24 }),
+                ]
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({ text: "Organización Juventud ViVa", size: 24 }),
                 ]
               })
             ],
@@ -120,7 +190,7 @@ export default function AdminCertificados() {
       });
 
       const blob = await Packer.toBlob(doc);
-      saveAs(blob, `Certificado_Servicio_Social_${name.replace(/\s+/g, '_')}.docx`);
+      saveAs(blob, `Certificado_${certificateType}_${name.replace(/\s+/g, '_')}.docx`);
 
     } catch (error) {
       console.error(error);
@@ -130,7 +200,7 @@ export default function AdminCertificados() {
     }
   };
 
-  const generatePDF = () => {
+  const generatePDF = async () => {
     setLoading(true);
     try {
       const doc = new jsPDF({
@@ -139,39 +209,82 @@ export default function AdminCertificados() {
         format: "a4"
       });
 
+      const logoImg = new window.Image();
+      logoImg.src = "/logo/juventud-viva.png";
+      await new Promise((resolve) => {
+        logoImg.onload = resolve;
+        logoImg.onerror = resolve;
+      });
+
+      // Header Logo
+      try {
+        doc.addImage(logoImg, "PNG", 85, 10, 40, 40);
+      } catch (e) {
+        console.error("Error adding logo", e);
+      }
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(10);
+      doc.text("ORGANIZACIÓN\nJuventud ViVa\nVillanueva, Colombia  ·  Reforma: Juventud ViVa", 105, 55, { align: "center" });
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text("CERTIFICADO DE SERVICIO SOCIAL ESTUDIANTIL OBLIGATORIO", 105, 40, { align: "center" });
+      doc.text(getTitle(), 105, 80, { align: "center" });
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      const text = `Por medio del presente documento, la Fundación Juventud ViVa certifica que el/la joven ${name.toUpperCase()} cumplió satisfactoriamente ${hours} horas de servicio social estudiantil obligatorio con Juventud ViVa, en actividades de impacto comunitario.`;
       
-      const lines = doc.splitTextToSize(text, 150);
-      doc.text(lines, 30, 70);
+      const introLines = doc.splitTextToSize(getIntroText(), 150);
+      doc.text(introLines, 30, 100);
 
+      let currentY = 100 + (introLines.length * 6) + 10;
+      
       doc.setFont("helvetica", "bold");
-      doc.text("Detalles de la Actividad:", 30, 100);
+      doc.text(name.toUpperCase(), 105, currentY, { align: "center" });
+      currentY += 6;
       
       doc.setFont("helvetica", "normal");
-      doc.text(`• Fecha: ${date}`, 30, 110);
+      doc.text(`${docType}: ${docNumber}`, 105, currentY, { align: "center" });
+      currentY += 10;
+
+      const bodyLines = doc.splitTextToSize(getBodyText(), 150);
+      doc.text(bodyLines, 30, currentY);
       
-      const activityLines = doc.splitTextToSize(`• Labor / Actividad: ${activity}`, 150);
-      doc.text(activityLines, 30, 120);
+      currentY += (bodyLines.length * 6) + 10;
 
-      const offset = 120 + (activityLines.length * 7);
       doc.setFont("helvetica", "bold");
-      doc.text(`• Horas cumplidas: ${hours}`, 30, offset);
+      doc.text("Detalles de la Actividad:", 30, currentY);
+      currentY += 8;
+      
+      doc.setFont("helvetica", "normal");
+      doc.text(`• Fecha de actividad: ${date}`, 30, currentY);
+      currentY += 8;
+      
+      const activityLines = doc.splitTextToSize(`• Actividad / Labor: ${activity}`, 150);
+      doc.text(activityLines, 30, currentY);
+      currentY += (activityLines.length * 6) + 2;
 
-      doc.text("_______________________________________", 30, offset + 40);
-      doc.text("Firma del líder ViVa", 30, offset + 48);
-      doc.text(leader, 30, offset + 56);
+      doc.text(`• Horas cumplidas: ${hours}`, 30, currentY);
+      currentY += 15;
+
+      const footerLines = doc.splitTextToSize("Se expide este certificado a solicitud del interesado/a, para los fines que considere pertinentes.", 150);
+      doc.text(footerLines, 30, currentY);
+
+      currentY += 30;
+
+      doc.text("_______________________________", 30, currentY);
+      doc.setFont("helvetica", "bold");
+      doc.text(leader, 30, currentY + 6);
+      doc.setFont("helvetica", "normal");
+      doc.text("Director / Representante Legal", 30, currentY + 12);
+      doc.text("Organización Juventud ViVa", 30, currentY + 18);
 
       if (signature) {
-        doc.addImage(signature, "PNG", 35, offset + 20, 50, 20); // Ajusta tamaño y posición según necesidad
+        // Adjust Y based on signature size
+        doc.addImage(signature, "PNG", 35, currentY - 20, 45, 15);
       }
 
-      doc.save(`Certificado_${name.replace(/\s+/g, '_')}.pdf`);
+      doc.save(`Certificado_${certificateType}_${name.replace(/\s+/g, '_')}.pdf`);
 
     } catch (error) {
       console.error(error);
@@ -186,7 +299,7 @@ export default function AdminCertificados() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="text-2xl font-bold text-white mb-1">Generador de Certificados</h2>
-          <p className="text-gray-400">Emite certificados de servicio social estudiantil en formato Word.</p>
+          <p className="text-gray-400">Emite certificados de servicio social o voluntariado.</p>
         </div>
       </div>
 
@@ -194,20 +307,59 @@ export default function AdminCertificados() {
         <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
           <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
             <GraduationCap className="text-jv-purple mr-3" size={24} />
-            <h3 className="text-xl font-semibold text-white">Datos del Estudiante</h3>
+            <h3 className="text-xl font-semibold text-white">Datos del Estudiante / Voluntario</h3>
           </div>
           
           <form onSubmit={generateWord} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo del Joven</label>
-              <input 
-                type="text" 
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Ej. Juan Pérez"
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-              />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Tipo de Certificado</label>
+                <select 
+                  value={certificateType} 
+                  onChange={(e) => setCertificateType(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none"
+                >
+                  <option value="Estudiantil">Estudiantil (Servicio Social)</option>
+                  <option value="Voluntariado">Voluntariado / Comunitario</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
+                <input 
+                  type="text" 
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ej. Juan Pérez"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Tipo de Documento</label>
+                <select 
+                  value={docType} 
+                  onChange={(e) => setDocType(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none"
+                >
+                  <option value="Cédula de Ciudadanía">Cédula de Ciudadanía</option>
+                  <option value="Tarjeta de Identidad">Tarjeta de Identidad</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Número de Documento</label>
+                <input 
+                  type="text" 
+                  required
+                  value={docNumber}
+                  onChange={(e) => setDocNumber(e.target.value)}
+                  placeholder="Ej. 1.234.567.890"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -241,7 +393,7 @@ export default function AdminCertificados() {
                 rows={3}
                 value={activity}
                 onChange={(e) => setActivity(e.target.value)}
-                placeholder="Ej. Apoyo logístico en la jornada de reforestación y recolección de residuos..."
+                placeholder="Ej. Logística comunitaria"
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
               />
             </div>
@@ -264,7 +416,7 @@ export default function AdminCertificados() {
                     type="file" 
                     accept="image/png, image/jpeg"
                     onChange={handleSignatureUpload}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
                   />
                   <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white flex items-center justify-between">
                     <span className="truncate text-sm text-gray-400">{signature ? "Firma cargada" : "Subir imagen..."}</span>
@@ -301,13 +453,12 @@ export default function AdminCertificados() {
           <FileText size={80} className="text-gray-600 mb-4" />
           <h3 className="text-xl font-medium text-gray-300 mb-2">Vista Previa Inactiva</h3>
           <p className="text-gray-500 max-w-sm mb-6">
-            Al hacer clic en descargar, se generará un archivo .docx editable con los márgenes, fuentes y formatos oficiales listos para imprimir y firmar.
+            Al hacer clic en descargar, se generará el certificado de {certificateType === 'Estudiantil' ? 'Servicio Social' : 'Voluntariado'} con los márgenes, fuentes y formatos oficiales listos para imprimir y firmar.
           </p>
           
           <div className="flex space-x-4 text-sm text-gray-400">
             <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Formato .docx</span>
             <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Formato .pdf</span>
-            <span className="flex items-center"><CheckCircle size={14} className="text-green-500 mr-1" /> Listo para imprimir</span>
           </div>
         </div>
       </div>

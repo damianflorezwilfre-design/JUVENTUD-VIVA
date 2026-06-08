@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowRight, Heart, Users, BookOpen } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import AlianzasSection from "@/components/AlianzasSection";
+import TeamSection from "@/components/TeamSection";
 import RoadmapSection from "@/components/RoadmapSection";
 
 export default function HomePageClient({ institution }: { institution: any }) {
@@ -82,7 +83,7 @@ export default function HomePageClient({ institution }: { institution: any }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center pb-24"
           >
             <Link
               href="/nosotros"
@@ -136,6 +137,9 @@ export default function HomePageClient({ institution }: { institution: any }) {
 
       {/* Hoja de Ruta */}
       <RoadmapSection />
+
+      {/* Equipo */}
+      <TeamSection />
 
       {/* Alianzas */}
       <AlianzasSection />

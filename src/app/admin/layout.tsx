@@ -41,6 +41,7 @@ export default function AdminLayout({
     { name: "Programas", icon: <CalendarRange size={20} />, path: "/admin/programas", id: "programas" },
     { name: "Galería", icon: <ImageIcon size={20} />, path: "/admin/galeria", id: "galeria" },
     { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
+    { name: "Equipo", icon: <Users size={20} />, path: "/admin/equipo", id: "equipo" },
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
     { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes" },
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },

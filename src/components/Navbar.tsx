@@ -16,6 +16,7 @@ export default function Navbar() {
     { href: "/noticias", label: "Noticias" },
     { href: "/galeria", label: "Galería" },
     { href: "/documentos", label: "Documentos Públicos" },
+    { href: "/#alianzas", label: "Aliados" },
     { href: "/contacto", label: "Contacto" },
   ];
 

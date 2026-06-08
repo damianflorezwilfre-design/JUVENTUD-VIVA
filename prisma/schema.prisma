@@ -129,3 +129,14 @@ model Analytics {
   fbClicks     Int      @default(0)
   igClicks     Int      @default(0)
 }
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  bio       String?  @db.Text
+  imageUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
