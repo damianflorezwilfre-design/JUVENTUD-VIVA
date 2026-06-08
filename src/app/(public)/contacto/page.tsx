@@ -1,10 +1,26 @@
 "use client"
 export const dynamic = "force-dynamic";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 export default function Contacto() {
+  const [address, setAddress] = useState("Av. Principal 123, Ciudad Central, Colombia");
+  const [phone, setPhone] = useState("+57 300 123 4567\nLun - Vie, 9:00am - 6:00pm");
+  const [email, setEmail] = useState("contacto@juventudviva.org");
+
+  useEffect(() => {
+    fetch("/api/institucional")
+      .then(res => res.json())
+      .then(data => {
+        if (data.address) setAddress(data.address);
+        if (data.phone) setPhone(data.phone);
+        if (data.email) setEmail(data.email);
+      })
+      .catch(e => console.error("Error fetching contact info", e));
+  }, []);
+
   return (
     <div className="py-20 px-4 max-w-7xl mx-auto">
       <motion.div
@@ -33,7 +49,7 @@ export default function Contacto() {
               </div>
               <div>
                 <h3 className="font-semibold text-white text-lg">Dirección</h3>
-                <p className="text-gray-400 mt-1">Av. Principal 123, Ciudad Central<br />Colombia</p>
+                <p className="text-gray-400 mt-1 whitespace-pre-wrap">{address}</p>
               </div>
             </div>
             
@@ -43,7 +59,7 @@ export default function Contacto() {
               </div>
               <div>
                 <h3 className="font-semibold text-white text-lg">Teléfono</h3>
-                <p className="text-gray-400 mt-1">+57 300 123 4567<br />Lun - Vie, 9:00am - 6:00pm</p>
+                <p className="text-gray-400 mt-1 whitespace-pre-wrap">{phone}</p>
               </div>
             </div>
 
@@ -53,7 +69,7 @@ export default function Contacto() {
               </div>
               <div>
                 <h3 className="font-semibold text-white text-lg">Correo Electrónico</h3>
-                <p className="text-gray-400 mt-1">contacto@juventudviva.org<br />info@juventudviva.org</p>
+                <p className="text-gray-400 mt-1 whitespace-pre-wrap">{email}</p>
               </div>
             </div>
           </div>

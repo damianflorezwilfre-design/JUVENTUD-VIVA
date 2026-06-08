@@ -8,6 +8,7 @@ import { ArrowRight, Heart, Users, BookOpen } from "lucide-react";
 import ContactForm from "@/components/ContactForm";
 import AlianzasSection from "@/components/AlianzasSection";
 import TeamSection from "@/components/TeamSection";
+import OrganigramaSection from "@/components/OrganigramaSection";
 import RoadmapSection from "@/components/RoadmapSection";
 
 export default function HomePageClient({ institution }: { institution: any }) {
@@ -36,16 +37,16 @@ export default function HomePageClient({ institution }: { institution: any }) {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24">
         {/* Background Image / Overlay */}
-        <div className="absolute inset-0 bg-jv-dark z-0">
+        <div className="absolute inset-0 bg-jv-dark z-0 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-jv-purple/20 to-jv-turquoise/20 opacity-50"></div>
           {/* Decorative blur circles */}
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-jv-purple/30 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-jv-turquoise/30 rounded-full blur-[120px]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-20">
+        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -83,7 +84,7 @@ export default function HomePageClient({ institution }: { institution: any }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center pb-24"
+            className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link
               href="/nosotros"
@@ -140,6 +141,9 @@ export default function HomePageClient({ institution }: { institution: any }) {
 
       {/* Equipo */}
       <TeamSection />
+
+      {/* Organigrama */}
+      <OrganigramaSection />
 
       {/* Alianzas */}
       <AlianzasSection />

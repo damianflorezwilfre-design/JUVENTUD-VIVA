@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange } from "lucide-react";
+import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange, Wallet } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminLayout({
@@ -45,7 +45,8 @@ export default function AdminLayout({
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
     { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes" },
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
-    { name: "Tesorería", icon: <LayoutDashboard size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
+    { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
+    { name: "Organigrama", icon: <Users size={20} />, path: "/admin/organigrama", id: "organigrama" },
     { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
     { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes" },
   ];
