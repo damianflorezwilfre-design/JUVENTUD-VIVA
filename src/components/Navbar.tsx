@@ -28,6 +28,7 @@ export default function Navbar() {
     { href: "/noticias", label: "Noticias" },
     { href: "/galeria", label: "Galería" },
     { href: "/documentos", label: "Documentos Públicos" },
+    { href: "/transparencia", label: "Transparencia" },
   ];
 
   return (

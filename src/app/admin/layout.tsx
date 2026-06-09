@@ -44,22 +44,22 @@ export default function AdminLayout({
 
   const allMenu = [
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin/dashboard", id: "dashboard" },
+    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes", badge: notifications.unreadMessages },
+    { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes", badge: notifications.pendingRequests },
+    { name: "Voluntarios", icon: <Users size={20} />, path: "/admin/voluntarios", id: "voluntarios" },
+    { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
     { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos", id: "documentos" },
     { name: "Noticias", icon: <Newspaper size={20} />, path: "/admin/noticias", id: "noticias" },
     { name: "Eventos", icon: <CalendarRange size={20} />, path: "/admin/eventos", id: "eventos" },
     { name: "Programas", icon: <CalendarRange size={20} />, path: "/admin/programas", id: "programas" },
     { name: "Galería", icon: <ImageIcon size={20} />, path: "/admin/galeria", id: "galeria" },
-    { name: "Casos de Éxito", icon: <ImageIcon size={20} />, path: "/admin/testimonios", id: "testimonios" },
+    { name: "Historias de Impacto", icon: <ImageIcon size={20} />, path: "/admin/testimonios", id: "testimonios" },
     { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
     { name: "Equipo", icon: <Users size={20} />, path: "/admin/equipo", id: "equipo" },
-    { name: "Voluntarios", icon: <Users size={20} />, path: "/admin/voluntarios", id: "voluntarios" },
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
-    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes", badge: notifications.unreadMessages },
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
-    { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
     { name: "Organigrama", icon: <Users size={20} />, path: "/admin/organigrama", id: "organigrama" },
     { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
-    { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes", badge: notifications.pendingRequests },
   ];
 
   const allowedModules = session?.modules ? session.modules.split(',') : [];

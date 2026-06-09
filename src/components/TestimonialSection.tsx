@@ -35,11 +35,21 @@ export default function TestimonialSection() {
       <div className="absolute top-1/2 left-0 w-64 h-64 bg-jv-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute top-1/2 right-0 w-64 h-64 bg-jv-turquoise/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Lo que dicen <span className="text-transparent bg-clip-text bg-gradient-to-r from-jv-purple to-jv-turquoise">de nosotros</span></h2>
-          <p className="text-lg text-gray-400">El impacto real a través de las voces de quienes lo viven.</p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-jv-white">
+            Historias de <span className="text-transparent bg-clip-text bg-gradient-to-r from-jv-purple to-jv-turquoise">Impacto</span>
+          </h2>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+            Detrás de cada número hay una vida transformada. Conoce a los protagonistas de nuestra historia.
+          </p>
+        </motion.div>
 
         <div className="relative max-w-4xl mx-auto">
           <div className="absolute -left-4 md:-left-12 top-1/2 -translate-y-1/2 z-20">

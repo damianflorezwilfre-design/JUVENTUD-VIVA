@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { title, fileUrl, type } = await request.json();
+    const { title, description, fileUrl, type } = await request.json();
 
     if (!title || !fileUrl || !type) {
       return NextResponse.json({ error: 'Todos los campos son requeridos' }, { status: 400 });
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const nuevoDocumento = await prisma.document.create({
       data: {
         title,
+        description,
         fileUrl,
         type
       }

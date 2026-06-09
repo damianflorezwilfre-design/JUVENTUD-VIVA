@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Mail, MapPin, Phone, Heart } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import SocialTrackingLink from "./SocialTrackingLink";
+import NewsletterForm from "./NewsletterForm";
 
 export default async function Footer() {
   const institution = await prisma.institution.findUnique({
@@ -55,6 +56,7 @@ export default async function Footer() {
               <li><Link href="/programas" className="text-gray-400 hover:text-jv-turquoise transition-colors">Programas</Link></li>
               <li><Link href="/noticias" className="text-gray-400 hover:text-jv-turquoise transition-colors">Noticias</Link></li>
               <li><Link href="/documentos" className="text-gray-400 hover:text-jv-turquoise transition-colors">Documentos Públicos</Link></li>
+              <li><Link href="/transparencia" className="text-gray-400 hover:text-jv-turquoise transition-colors">Transparencia</Link></li>
             </ul>
           </div>
 
@@ -82,7 +84,7 @@ export default async function Footer() {
               <Heart size={18} className="ml-2 text-red-400" />
             </h3>
             <p className="text-gray-400 text-sm mb-4">Haz tu aporte y ayúdanos a construir un mejor futuro para los jóvenes vulnerables de La Guajira.</p>
-            <form className="flex flex-col space-y-2" action="/contacto">
+            <form className="flex flex-col space-y-2 mb-6" action="/contacto">
               <button
                 type="submit"
                 className="px-4 py-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-xl transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)] hover:shadow-[0_0_15px_rgba(79,221,230,0.5)] flex items-center justify-center"
@@ -90,6 +92,8 @@ export default async function Footer() {
                 Hacer Donación Ahora
               </button>
             </form>
+            
+            <NewsletterForm />
           </div>
 
         </div>

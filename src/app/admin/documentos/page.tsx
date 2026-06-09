@@ -20,6 +20,7 @@ export default function AdminDocumentos() {
 
   // Form State
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [type, setType] = useState("pdf");
 
@@ -42,15 +43,17 @@ export default function AdminDocumentos() {
     fetchDocumentos();
   }, []);
 
-  const openModal = (doc?: Document) => {
+  const openModal = (doc?: Document & { description?: string }) => {
     if (doc) {
       setEditingId(doc.id);
       setTitle(doc.title);
+      setDescription(doc.description || "");
       setFileUrl(doc.fileUrl);
       setType(doc.type);
     } else {
       setEditingId(null);
       setTitle("");
+      setDescription("");
       setFileUrl("");
       setType("pdf");
     }
@@ -59,7 +62,7 @@ export default function AdminDocumentos() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { title, fileUrl, type };
+    const payload = { title, description, fileUrl, type };
 
     try {
       const url = editingId ? `/api/documentos/${editingId}` : "/api/documentos";
@@ -200,6 +203,17 @@ export default function AdminDocumentos() {
                   onChange={e => setTitle(e.target.value)} 
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
                   placeholder="Ej. Acta de Asamblea 2026"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Breve Descripción (Opcional)</label>
+                <textarea 
+                  value={description} 
+                  onChange={e => setDescription(e.target.value)} 
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                  placeholder="Explica brevemente el contenido de este documento"
+                  rows={2}
                 />
               </div>
 

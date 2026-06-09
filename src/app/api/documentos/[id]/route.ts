@@ -16,7 +16,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { title, fileUrl, type } = await request.json();
+    const { title, description, fileUrl, type } = await request.json();
     const { id } = await params;
 
     if (session.role !== 'SUPER_ADMIN') {
@@ -26,7 +26,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           action: 'EDIT',
           modelName: 'Document',
           recordId: id,
-          proposedData: JSON.stringify({ title, fileUrl, type })
+          proposedData: JSON.stringify({ title, description, fileUrl, type })
         }
       });
 
@@ -45,6 +45,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       where: { id },
       data: {
         title,
+        description,
         fileUrl,
         type
       }
