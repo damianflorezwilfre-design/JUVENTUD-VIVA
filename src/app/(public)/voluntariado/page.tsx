@@ -21,6 +21,11 @@ export default function Voluntariado() {
       });
       if (res.ok) {
         setSuccess(true);
+        
+        const waMessage = `¡Nuevo Voluntario!\nNombre: ${formData.name}\nWhatsApp: ${formData.phone}\nCorreo: ${formData.email}\nHabilidades: ${formData.skills}\nDisponibilidad: ${formData.availability}`;
+        const waUrl = `https://wa.me/573245083402?text=${encodeURIComponent(waMessage)}`;
+        window.open(waUrl, "_blank");
+
         setFormData({ name: "", email: "", phone: "", skills: "", availability: "" });
       } else {
         alert("Ocurrió un error al enviar tu solicitud. Inténtalo de nuevo.");

@@ -5,7 +5,7 @@ import { FileText, Users, Newspaper, CalendarRange, TrendingUp, Activity } from 
 import { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function Dashboard() {
   const [statsData, setStatsData] = useState({ users: 0, documents: 0, news: 0, programs: 0, username: "", analytics: [] as any[] });
@@ -125,18 +125,18 @@ export default function Dashboard() {
           </div>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+              <BarChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" vertical={false} />
                 <XAxis dataKey="name" stroke="#9CA3AF" axisLine={false} tickLine={false} />
                 <YAxis stroke="#9CA3AF" axisLine={false} tickLine={false} />
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: '0.5rem', color: '#fff' }}
                   itemStyle={{ color: '#fff' }}
+                  cursor={{fill: '#374151', opacity: 0.4}}
                 />
-                <Line type="monotone" dataKey="portal" name="Visitas al Portal" stroke="#4FDDE6" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                <Line type="monotone" dataKey="fb" name="Clics a Facebook" stroke="#9B1CC9" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-                <Line type="monotone" dataKey="ig" name="Clics a Instagram" stroke="#F87171" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
-              </LineChart>
+                <Bar dataKey="portal" name="Visitas al Portal" fill="#4FDDE6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="fb" name="Clics a Facebook" fill="#9B1CC9" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </motion.div>

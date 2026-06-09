@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Users, Trash2, CheckCircle2, Circle, Clock, Briefcase, Phone, Mail } from "lucide-react";
+import { Users, Trash2, CheckCircle2, Circle, Clock, Briefcase, Phone, Mail, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 
 type Volunteer = {
   id: string;
@@ -36,11 +37,24 @@ export default function AdminVoluntarios() {
     fetchVolunteers();
   }, []);
 
+  const handleExport = () => {
+    const worksheet = XLSX.utils.json_to_sheet(volunteers.map(v => ({
+      Nombre: v.name,
+      Correo: v.email,
+      WhatsApp: v.phone,
+      Habilidades: v.skills,
+      Disponibilidad: v.availability,
+      FechaRegistro: new Date(v.createdAt).toLocaleDateString()
+    })));
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Voluntarios");
+    XLSX.writeFile(workbook, "Voluntarios_Juventud_Viva.xlsx");
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm("¿Seguro que deseas eliminar a este postulante?")) return;
 
     try {
-      // The API should probably have a DELETE endpoint or we can skip this for brevity, but let's assume it exists.
       const res = await fetch(`/api/voluntarios/${id}`, { method: "DELETE" });
       if (res.ok) fetchVolunteers();
     } catch (e) {
@@ -55,6 +69,10 @@ export default function AdminVoluntarios() {
           <h2 className="text-2xl font-bold text-white mb-1">Voluntarios Registrados</h2>
           <p className="text-gray-400">Gestiona las personas que desean ser parte de la fundación.</p>
         </div>
+        <button onClick={handleExport} className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl transition-colors font-semibold flex items-center space-x-2">
+          <Download size={20} />
+          <span>Exportar a Excel</span>
+        </button>
       </div>
 
       <div className="space-y-4">

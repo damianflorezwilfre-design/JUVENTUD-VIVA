@@ -9,19 +9,10 @@ export default function ContactForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [waNumber, setWaNumber] = useState("573001234567");
+  const [waNumber] = useState("573245083402");
   
   useEffect(() => {
-    fetch("/api/institucional")
-      .then(res => res.json())
-      .then(data => {
-        if (data.phone) {
-          let clean = data.phone.split('\n')[0].replace(/\D/g, '');
-          if (clean.length === 10) clean = "57" + clean;
-          setWaNumber(clean);
-        }
-      })
-      .catch(() => {});
+    // Number is fixed as requested by admin
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
