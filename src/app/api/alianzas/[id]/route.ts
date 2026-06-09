@@ -28,6 +28,15 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
           proposedData: null
         }
       });
+
+      // Send email notification
+      const { sendEmailNotification } = await import('@/lib/email');
+      await sendEmailNotification(
+        "Nueva Solicitud de Edición - Juventud ViVa",
+        "Un editor ha solicitado un cambio. Revisa el portal de administrador.",
+        "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
+      );
+
       return NextResponse.json({ success: true, message: 'Solicitud de eliminación enviada', isRequest: true });
     }
     await prisma.alliance.delete({

@@ -37,6 +37,18 @@ export async function POST(request: Request) {
       }
     });
 
+    // Send email notification
+    const { sendEmailNotification } = await import('@/lib/email');
+    await sendEmailNotification(
+      "Nuevo Mensaje de Contacto - Juventud ViVa",
+      `Has recibido un nuevo mensaje de ${name} (${email}):\n\n${message}`,
+      `<p>Has recibido un nuevo mensaje de contacto en el portal público de <strong>Juventud ViVa</strong>.</p>
+       <p><strong>Nombre:</strong> ${name}</p>
+       <p><strong>Correo:</strong> ${email}</p>
+       <p><strong>Mensaje:</strong><br/>${message.replace(/\n/g, '<br/>')}</p>
+       <p>Puedes revisarlo en el <a href="https://juventud-viva.vercel.app/admin/mensajes">panel de administrador</a>.</p>`
+    );
+
     return NextResponse.json(nuevoMensaje, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al enviar mensaje' }, { status: 500 });

@@ -52,6 +52,15 @@ export async function PUT(request: Request) {
           proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc })
         }
       });
+
+      // Send email notification
+      const { sendEmailNotification } = await import('@/lib/email');
+      await sendEmailNotification(
+        "Nueva Solicitud de Edición - Juventud ViVa",
+        "Un editor ha solicitado un cambio. Revisa el portal de administrador.",
+        "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
+      );
+
       return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
     }
 
