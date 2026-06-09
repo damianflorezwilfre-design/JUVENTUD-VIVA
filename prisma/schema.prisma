@@ -83,7 +83,15 @@ model Institution {
   feature2Desc  String?
   feature3Title String?
   feature3Desc  String?
-  publicBackground String? // Added for custom public background
+  publicBackground String? 
+  donationLink  String? // Modals info or direct link
+  bankInfo      String? // e.g. "Bancolombia: 1234567"
+  stat1Value    String? // e.g. "500+"
+  stat1Label    String? // e.g. "Jóvenes Impactados"
+  stat2Value    String?
+  stat2Label    String?
+  stat3Value    String?
+  stat3Label    String?
   updatedAt     DateTime @updatedAt
 }
 
@@ -152,4 +160,36 @@ model OrgNode {
   order     Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Volunteer {
+  id           String   @id @default(cuid())
+  name         String
+  email        String
+  phone        String
+  skills       String?  @db.Text
+  availability String?
+  isContacted  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String?
+  quote     String   @db.Text
+  imageUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  date        DateTime
+  location    String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

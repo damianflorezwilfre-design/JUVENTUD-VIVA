@@ -10,6 +10,8 @@ import AlianzasSection from "@/components/AlianzasSection";
 import TeamSection from "@/components/TeamSection";
 import OrganigramaSection from "@/components/OrganigramaSection";
 import RoadmapSection from "@/components/RoadmapSection";
+import ImpactCounters from "@/components/ImpactCounters";
+import TestimonialSection from "@/components/TestimonialSection";
 
 export default function HomePageClient({ institution }: { institution: any }) {
   useEffect(() => {
@@ -40,7 +42,16 @@ export default function HomePageClient({ institution }: { institution: any }) {
       <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24">
         {/* Background Image / Overlay */}
         <div className="absolute inset-0 bg-jv-dark z-0 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-jv-purple/20 to-jv-turquoise/20 opacity-50"></div>
+          {institution?.publicBackground ? (
+            <Image 
+              src={institution.publicBackground} 
+              alt="Fondo Público" 
+              fill 
+              className="object-cover opacity-20" 
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-jv-purple/20 to-jv-turquoise/20 opacity-50"></div>
+          )}
           {/* Decorative blur circles */}
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-jv-purple/30 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-jv-turquoise/30 rounded-full blur-[120px]"></div>
@@ -103,6 +114,9 @@ export default function HomePageClient({ institution }: { institution: any }) {
         </div>
       </section>
 
+      {/* Impact Counters */}
+      <ImpactCounters institution={institution} />
+
       {/* Highlights Section */}
       <section className="py-24 bg-jv-dark relative z-10 border-t border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,6 +158,9 @@ export default function HomePageClient({ institution }: { institution: any }) {
 
       {/* Organigrama */}
       <OrganigramaSection />
+
+      {/* Testimonios */}
+      <TestimonialSection />
 
       {/* Alianzas */}
       <AlianzasSection />

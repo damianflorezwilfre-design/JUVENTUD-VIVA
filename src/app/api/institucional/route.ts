@@ -4,12 +4,6 @@ import { prisma } from '@/lib/prisma';
 import { verifyToken, getSession } from '@/lib/auth';
 import { cookies } from 'next/headers';
 
-async function isAuthenticated() {
-  const session = (await cookies()).get('session')?.value;
-  if (!session) return false;
-  return await verifyToken(session) !== null;
-}
-
 export async function GET() {
   try {
     let institution = await prisma.institution.findUnique({
@@ -43,7 +37,11 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground } = await request.json();
+    const { 
+      aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
+      feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
+      donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label 
+    } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
       await prisma.editRequest.create({
@@ -52,7 +50,11 @@ export async function PUT(request: Request) {
           action: 'EDIT',
           modelName: 'Institution',
           recordId: 'singleton',
-          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground })
+          proposedData: JSON.stringify({ 
+            aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
+            feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
+            donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label
+          })
         }
       });
 
@@ -70,41 +72,15 @@ export async function PUT(request: Request) {
     const updated = await prisma.institution.upsert({
       where: { id: "singleton" },
       update: {
-        aboutUs,
-        mission,
-        vision,
-        address,
-        phone,
-        email,
-        facebook,
-        instagram,
-        twitter,
-        feature1Title,
-        feature1Desc,
-        feature2Title,
-        feature2Desc,
-        feature3Title,
-        feature3Desc,
-        publicBackground
+        aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+        feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
+        donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label
       },
       create: {
         id: "singleton",
-        aboutUs,
-        mission,
-        vision,
-        address,
-        phone,
-        email,
-        facebook,
-        instagram,
-        twitter,
-        feature1Title,
-        feature1Desc,
-        feature2Title,
-        feature2Desc,
-        feature3Title,
-        feature3Desc,
-        publicBackground
+        aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+        feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
+        donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label
       }
     });
 

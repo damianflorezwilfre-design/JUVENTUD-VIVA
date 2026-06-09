@@ -28,6 +28,18 @@ export default function AdminConfiguracion() {
   const [feature3Desc, setFeature3Desc] = useState("");
   const [publicBackground, setPublicBackground] = useState("");
 
+  // Donations
+  const [donationLink, setDonationLink] = useState("");
+  const [bankInfo, setBankInfo] = useState("");
+
+  // Impact Counters
+  const [stat1Value, setStat1Value] = useState("");
+  const [stat1Label, setStat1Label] = useState("");
+  const [stat2Value, setStat2Value] = useState("");
+  const [stat2Label, setStat2Label] = useState("");
+  const [stat3Value, setStat3Value] = useState("");
+  const [stat3Label, setStat3Label] = useState("");
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -61,6 +73,14 @@ export default function AdminConfiguracion() {
           setFeature3Title(data.feature3Title || "Acción Social");
           setFeature3Desc(data.feature3Desc || "Participamos activamente en la mejora de nuestras comunidades.");
           setPublicBackground(data.publicBackground || "");
+          setDonationLink(data.donationLink || "");
+          setBankInfo(data.bankInfo || "");
+          setStat1Value(data.stat1Value || "");
+          setStat1Label(data.stat1Label || "");
+          setStat2Value(data.stat2Value || "");
+          setStat2Label(data.stat2Label || "");
+          setStat3Value(data.stat3Value || "");
+          setStat3Label(data.stat3Label || "");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -81,7 +101,8 @@ export default function AdminConfiguracion() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
-          feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground
+          feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
+          donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label
         })
       });
 
@@ -223,6 +244,62 @@ export default function AdminConfiguracion() {
               </form>
             )}
           </div>
+
+          {/* Contadores de Impacto */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <BookOpen className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Contadores de Impacto</h3>
+            </div>
+            
+            {fetching ? (
+              <p className="text-gray-500">Cargando datos...</p>
+            ) : (
+              <form className="space-y-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-turquoise font-semibold mb-3">Estadística 1</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Número</label>
+                      <input type="text" value={stat1Value} onChange={(e) => setStat1Value(e.target.value)} placeholder="Ej. 500+" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Texto</label>
+                      <input type="text" value={stat1Label} onChange={(e) => setStat1Label(e.target.value)} placeholder="Ej. Jóvenes Impactados" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-purple font-semibold mb-3">Estadística 2</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Número</label>
+                      <input type="text" value={stat2Value} onChange={(e) => setStat2Value(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Texto</label>
+                      <input type="text" value={stat2Label} onChange={(e) => setStat2Label(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-red-400 font-semibold mb-3">Estadística 3</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Número</label>
+                      <input type="text" value={stat3Value} onChange={(e) => setStat3Value(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Texto</label>
+                      <input type="text" value={stat3Label} onChange={(e) => setStat3Label(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Columna Derecha: Redes y Sistema */}
@@ -284,6 +361,28 @@ export default function AdminConfiguracion() {
               )}
             </div>
           </div>
+
+          {/* Donaciones */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <Globe className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Donaciones</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Cuentas Bancarias / Info (Modal)</label>
+                <textarea rows={3} value={bankInfo} onChange={(e) => setBankInfo(e.target.value)} placeholder="Ej. Nequi: 300123...&#10;Bancolombia: Ahorros 123..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                <p className="text-xs text-gray-500 mt-1">Este texto aparecerá en la pequeña ventana cuando el usuario haga clic en Donar.</p>
+              </div>
+              
+              <div className="hidden">
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Link Externo de Donación (Opcional)</label>
+                <input type="url" value={donationLink} onChange={(e) => setDonationLink(e.target.value)} placeholder="https://mercadopago.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
