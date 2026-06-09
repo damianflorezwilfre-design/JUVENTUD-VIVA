@@ -45,6 +45,15 @@ export default async function Home() {
       feature2Desc: "",
       feature3Title: "",
       feature3Desc: "",
+      publicBackground: null,
+      donationLink: null,
+      bankInfo: null,
+      stat1Value: null,
+      stat1Label: null,
+      stat2Value: null,
+      stat2Label: null,
+      stat3Value: null,
+      stat3Label: null,
       updatedAt: new Date()
     };
   }
