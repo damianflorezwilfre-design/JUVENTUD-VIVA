@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Send, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -9,6 +9,20 @@ export default function ContactForm() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [waNumber, setWaNumber] = useState("573001234567");
+  
+  useEffect(() => {
+    fetch("/api/institucional")
+      .then(res => res.json())
+      .then(data => {
+        if (data.phone) {
+          let clean = data.phone.split('\n')[0].replace(/\D/g, '');
+          if (clean.length === 10) clean = "57" + clean;
+          setWaNumber(clean);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +37,11 @@ export default function ContactForm() {
 
       if (res.ok) {
         setStatus("success");
+        
+        const waMessage = `Hola, mi nombre es ${name}.\nCorreo: ${email}\n\n${message}`;
+        const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+        window.open(waUrl, "_blank");
+        
         setName("");
         setEmail("");
         setMessage("");
