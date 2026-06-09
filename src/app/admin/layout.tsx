@@ -96,8 +96,8 @@ export default function AdminLayout({
                 {item.icon}
                 <span className="font-medium">{item.name}</span>
               </div>
-              {item.badge ? (
-                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+              {item.badge !== undefined ? (
+                <span className={`text-white text-xs font-bold px-2 py-0.5 rounded-full ${item.badge > 0 ? 'bg-red-500' : 'bg-gray-700 text-gray-400'}`}>
                   {item.badge}
                 </span>
               ) : null}
