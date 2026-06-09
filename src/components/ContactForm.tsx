@@ -50,6 +50,16 @@ export default function ContactForm() {
         </motion.div>
       )}
 
+      {status === "error" && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl flex items-center justify-center mb-6"
+        >
+          Ocurrió un error al enviar el mensaje. Intenta nuevamente.
+        </motion.div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-400 mb-1">Tu Nombre</label>
