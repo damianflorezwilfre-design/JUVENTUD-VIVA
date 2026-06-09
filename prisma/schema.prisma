@@ -99,6 +99,12 @@ model Institution {
   stat2Label    String?
   stat3Value    String?
   stat3Label    String?
+  transparency1Title String?
+  transparency1Desc  String?
+  transparency2Title String?
+  transparency2Desc  String?
+  transparency3Title String?
+  transparency3Desc  String?
   updatedAt     DateTime @updatedAt
 }
 

@@ -12,20 +12,24 @@ const COLORS = ['#9B1CC9', '#4FDDE6', '#FF5B5B', '#FFC13B', '#4F8A8B'];
 export default function TransparenciaPage() {
   const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [institution, setInstitution] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/transparencia")
-      .then(res => res.json())
-      .then(data => {
-        if (data.chartData) {
-          setChartData(data.chartData);
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+    Promise.all([
+      fetch("/api/transparencia").then(res => res.json()),
+      fetch("/api/institucional").then(res => res.json())
+    ])
+    .then(([transparenciaData, instData]) => {
+      if (transparenciaData.chartData) {
+        setChartData(transparenciaData.chartData);
+      }
+      setInstitution(instData);
+      setLoading(false);
+    })
+    .catch(err => {
+      console.error(err);
+      setLoading(false);
+    });
   }, []);
 
   return (
@@ -49,24 +53,24 @@ export default function TransparenciaPage() {
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-gray-900 border border-gray-800 rounded-3xl p-8 h-96 flex flex-col justify-center shadow-2xl relative overflow-hidden"
+          className="bg-gray-900 border border-gray-800 rounded-3xl p-6 md:p-10 h-[500px] flex flex-col justify-center shadow-2xl relative overflow-hidden"
         >
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-jv-purple to-jv-turquoise"></div>
-          <h3 className="text-2xl font-bold text-white mb-6 text-center">Distribución de Recursos</h3>
+          <h3 className="text-2xl font-bold text-white mb-2 text-center">Distribución de Recursos</h3>
           {loading ? (
             <div className="flex-1 flex justify-center items-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-jv-turquoise"></div>
             </div>
           ) : (
-            <div className="flex-1 w-full">
+            <div className="flex-1 w-full h-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={chartData}
-                    cx="50%"
+                    cx="40%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={120}
+                    innerRadius={90}
+                    outerRadius={140}
                     paddingAngle={5}
                     dataKey="value"
                   >
@@ -79,7 +83,13 @@ export default function TransparenciaPage() {
                     itemStyle={{ color: '#fff' }}
                     formatter={(value: any) => [`${value}%`, 'Presupuesto']}
                   />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                  <Legend 
+                    layout="vertical" 
+                    verticalAlign="middle" 
+                    align="right"
+                    wrapperStyle={{ paddingLeft: "20px", fontSize: "14px" }}
+                    iconType="circle" 
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -97,8 +107,8 @@ export default function TransparenciaPage() {
               <ShieldCheck className="text-jv-purple" size={32} />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">Auditorías Abiertas</h4>
-              <p className="text-gray-400 leading-relaxed">Trabajamos bajo estrictos estándares contables. Nuestros libros están siempre abiertos a revisión para nuestros grandes donantes y fundadores.</p>
+              <h4 className="text-xl font-bold text-white mb-2">{institution?.transparency1Title || "Auditorías Abiertas"}</h4>
+              <p className="text-gray-400 leading-relaxed">{institution?.transparency1Desc || "Trabajamos bajo estrictos estándares contables. Nuestros libros están siempre abiertos a revisión para nuestros grandes donantes y fundadores."}</p>
             </div>
           </div>
           <div className="flex items-start">
@@ -106,8 +116,8 @@ export default function TransparenciaPage() {
               <TrendingUp className="text-jv-turquoise" size={32} />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">Máximo Impacto Directo</h4>
-              <p className="text-gray-400 leading-relaxed">Nos esforzamos por mantener nuestros costos administrativos al mínimo absoluto, asegurando que la mayor parte de tu donación llegue directamente a quienes lo necesitan.</p>
+              <h4 className="text-xl font-bold text-white mb-2">{institution?.transparency2Title || "Máximo Impacto Directo"}</h4>
+              <p className="text-gray-400 leading-relaxed">{institution?.transparency2Desc || "Nos esforzamos por mantener nuestros costos administrativos al mínimo absoluto, asegurando que la mayor parte de tu donación llegue directamente a quienes lo necesitan."}</p>
             </div>
           </div>
           <div className="flex items-start">
@@ -115,8 +125,8 @@ export default function TransparenciaPage() {
               <Heart className="text-red-400" size={32} />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white mb-2">Donantes Comprometidos</h4>
-              <p className="text-gray-400 leading-relaxed">Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes.</p>
+              <h4 className="text-xl font-bold text-white mb-2">{institution?.transparency3Title || "Donantes Comprometidos"}</h4>
+              <p className="text-gray-400 leading-relaxed">{institution?.transparency3Desc || "Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes."}</p>
             </div>
           </div>
         </motion.div>

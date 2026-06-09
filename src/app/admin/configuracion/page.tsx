@@ -40,6 +40,14 @@ export default function AdminConfiguracion() {
   const [stat3Value, setStat3Value] = useState("");
   const [stat3Label, setStat3Label] = useState("");
 
+  // Transparency Features
+  const [transparency1Title, setTransparency1Title] = useState("");
+  const [transparency1Desc, setTransparency1Desc] = useState("");
+  const [transparency2Title, setTransparency2Title] = useState("");
+  const [transparency2Desc, setTransparency2Desc] = useState("");
+  const [transparency3Title, setTransparency3Title] = useState("");
+  const [transparency3Desc, setTransparency3Desc] = useState("");
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -81,6 +89,12 @@ export default function AdminConfiguracion() {
           setStat2Label(data.stat2Label || "");
           setStat3Value(data.stat3Value || "");
           setStat3Label(data.stat3Label || "");
+          setTransparency1Title(data.transparency1Title || "Auditorías Abiertas");
+          setTransparency1Desc(data.transparency1Desc || "Trabajamos bajo estrictos estándares contables. Nuestros libros están siempre abiertos a revisión para nuestros grandes donantes y fundadores.");
+          setTransparency2Title(data.transparency2Title || "Máximo Impacto Directo");
+          setTransparency2Desc(data.transparency2Desc || "Nos esforzamos por mantener nuestros costos administrativos al mínimo absoluto, asegurando que la mayor parte de tu donación llegue directamente a quienes lo necesitan.");
+          setTransparency3Title(data.transparency3Title || "Donantes Comprometidos");
+          setTransparency3Desc(data.transparency3Desc || "Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes.");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -102,7 +116,8 @@ export default function AdminConfiguracion() {
         body: JSON.stringify({ 
           aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-          donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label
+          donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+          transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc
         })
       });
 
@@ -294,6 +309,62 @@ export default function AdminConfiguracion() {
                     <div>
                       <label className="block text-xs font-medium text-gray-400 mb-1">Texto</label>
                       <input type="text" value={stat3Label} onChange={(e) => setStat3Label(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Pilares de Transparencia */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mt-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <BookOpen className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Pilares de Transparencia</h3>
+            </div>
+            
+            {fetching ? (
+              <p className="text-gray-500">Cargando datos...</p>
+            ) : (
+              <form className="space-y-6">
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-turquoise font-semibold mb-3">Pilar 1</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={transparency1Title} onChange={(e) => setTransparency1Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={3} value={transparency1Desc} onChange={(e) => setTransparency1Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-jv-purple font-semibold mb-3">Pilar 2</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={transparency2Title} onChange={(e) => setTransparency2Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={3} value={transparency2Desc} onChange={(e) => setTransparency2Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700">
+                  <h4 className="text-red-400 font-semibold mb-3">Pilar 3</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título</label>
+                      <input type="text" value={transparency3Title} onChange={(e) => setTransparency3Title(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Descripción</label>
+                      <textarea rows={3} value={transparency3Desc} onChange={(e) => setTransparency3Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                     </div>
                   </div>
                 </div>
