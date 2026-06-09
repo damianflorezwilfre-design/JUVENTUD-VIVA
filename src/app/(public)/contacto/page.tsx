@@ -21,6 +21,44 @@ export default function Contacto() {
       .catch(e => console.error("Error fetching contact info", e));
   }, []);
 
+  const [formName, setFormName] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formMessage, setFormMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    try {
+      const res = await fetch("/api/mensajes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          name: formName, 
+          email: formEmail, 
+          message: formPhone ? `Teléfono: ${formPhone}\n\n${formMessage}` : formMessage 
+        })
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormName("");
+        setFormPhone("");
+        setFormEmail("");
+        setFormMessage("");
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
+
   return (
     <div className="py-20 px-4 max-w-7xl mx-auto">
       <motion.div
@@ -80,31 +118,42 @@ export default function Contacto() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {status === "success" && (
+              <div className="bg-green-500/10 border border-green-500/30 text-green-400 p-4 rounded-xl mb-6">
+                ¡Mensaje enviado con éxito! Te responderemos pronto.
+              </div>
+            )}
+            {status === "error" && (
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-xl mb-6">
+                Ocurrió un error al enviar el mensaje. Intenta nuevamente.
+              </div>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">Nombre Completo</label>
-                <input type="text" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors" placeholder="Tu nombre" />
+                <input required value={formName} onChange={e => setFormName(e.target.value)} type="text" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors" placeholder="Tu nombre" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-2">Teléfono</label>
-                <input type="tel" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors" placeholder="Tu teléfono" />
+                <input value={formPhone} onChange={e => setFormPhone(e.target.value)} type="tel" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors" placeholder="Tu teléfono" />
               </div>
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">Correo Electrónico</label>
-              <input type="email" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-turquoise transition-colors" placeholder="tu@correo.com" />
+              <input required value={formEmail} onChange={e => setFormEmail(e.target.value)} type="email" className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-turquoise transition-colors" placeholder="tu@correo.com" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-400 mb-2">Mensaje</label>
-              <textarea rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors resize-none" placeholder="¿En qué te podemos ayudar?"></textarea>
+              <textarea required value={formMessage} onChange={e => setFormMessage(e.target.value)} rows={4} className="w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors resize-none" placeholder="¿En qué te podemos ayudar?"></textarea>
             </div>
 
-            <button type="submit" className="w-full bg-jv-purple hover:bg-jv-turquoise text-white font-bold py-4 rounded-xl flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.3)] hover:shadow-[0_0_15px_rgba(79,221,230,0.5)]">
+            <button disabled={status === "loading" || status === "success"} type="submit" className="w-full bg-jv-turquoise hover:bg-jv-purple text-white font-bold py-4 rounded-xl flex items-center justify-center transition-all duration-300 shadow-[0_0_15px_rgba(79,221,230,0.3)] hover:shadow-[0_0_15px_rgba(155,28,201,0.5)] disabled:opacity-50">
               <Send className="mr-2" size={20} />
-              Enviar Mensaje
+              {status === "loading" ? "Enviando..." : "Enviar Mensaje"}
             </button>
           </form>
         </motion.div>
