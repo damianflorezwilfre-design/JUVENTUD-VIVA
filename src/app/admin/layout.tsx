@@ -13,6 +13,7 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [session, setSession] = useState<any>(null);
+  const [notifications, setNotifications] = useState({ unreadMessages: 0, pendingRequests: 0 });
 
   useEffect(() => {
     if (pathname !== '/admin/login') {
@@ -20,6 +21,13 @@ export default function AdminLayout({
         .then(res => res.ok ? res.json() : null)
         .then(data => {
           if (data) setSession(data);
+        });
+
+      // Poll or fetch notifications once per navigation
+      fetch('/api/admin/notifications')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) setNotifications(data);
         });
     }
   }, [pathname]);
@@ -43,12 +51,12 @@ export default function AdminLayout({
     { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
     { name: "Equipo", icon: <Users size={20} />, path: "/admin/equipo", id: "equipo" },
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
-    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes" },
+    { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes", badge: notifications.unreadMessages },
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
     { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
     { name: "Organigrama", icon: <Users size={20} />, path: "/admin/organigrama", id: "organigrama" },
     { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
-    { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes" },
+    { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes", badge: notifications.pendingRequests },
   ];
 
   const allowedModules = session?.modules ? session.modules.split(',') : [];
@@ -75,14 +83,21 @@ export default function AdminLayout({
             <Link
               key={item.path}
               href={item.path}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
+              className={`flex items-center justify-between px-4 py-3 rounded-xl transition-colors ${
                 pathname === item.path 
                   ? "bg-jv-purple/20 text-jv-turquoise border border-jv-purple/30" 
                   : "text-gray-400 hover:bg-gray-800 hover:text-white"
               }`}
             >
-              {item.icon}
-              <span className="font-medium">{item.name}</span>
+              <div className="flex items-center space-x-3">
+                {item.icon}
+                <span className="font-medium">{item.name}</span>
+              </div>
+              {item.badge ? (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {item.badge}
+                </span>
+              ) : null}
             </Link>
           ))}
         </nav>

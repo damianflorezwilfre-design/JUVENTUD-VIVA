@@ -83,6 +83,7 @@ model Institution {
   feature2Desc  String?
   feature3Title String?
   feature3Desc  String?
+  publicBackground String? // Added for custom public background
   updatedAt     DateTime @updatedAt
 }
 

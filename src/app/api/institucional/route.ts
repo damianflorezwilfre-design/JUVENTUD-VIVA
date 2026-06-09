@@ -23,8 +23,11 @@ export async function GET() {
           aboutUs: "",
           mission: "",
           vision: "",
+          phone: "+57 3245083402"
         }
       });
+    } else if (!institution.phone) {
+      institution.phone = "+57 3245083402";
     }
 
     return NextResponse.json(institution);
@@ -40,7 +43,7 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc } = await request.json();
+    const { aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
       await prisma.editRequest.create({
@@ -49,7 +52,7 @@ export async function PUT(request: Request) {
           action: 'EDIT',
           modelName: 'Institution',
           recordId: 'singleton',
-          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc })
+          proposedData: JSON.stringify({ aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground })
         }
       });
 
@@ -81,7 +84,8 @@ export async function PUT(request: Request) {
         feature2Title,
         feature2Desc,
         feature3Title,
-        feature3Desc
+        feature3Desc,
+        publicBackground
       },
       create: {
         id: "singleton",
@@ -99,7 +103,8 @@ export async function PUT(request: Request) {
         feature2Title,
         feature2Desc,
         feature3Title,
-        feature3Desc
+        feature3Desc,
+        publicBackground
       }
     });
 

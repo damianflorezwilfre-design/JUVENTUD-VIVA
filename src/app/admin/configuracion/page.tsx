@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Save, Globe, Mail, Phone, MapPin, Link as LinkIcon, Share2, Settings, BookOpen } from "lucide-react";
+import { Save, Globe, Mail, Phone, MapPin, Link as LinkIcon, Share2, Settings, BookOpen, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
 
 export default function AdminConfiguracion() {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,18 @@ export default function AdminConfiguracion() {
   const [feature2Desc, setFeature2Desc] = useState("");
   const [feature3Title, setFeature3Title] = useState("");
   const [feature3Desc, setFeature3Desc] = useState("");
+  const [publicBackground, setPublicBackground] = useState("");
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPublicBackground(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     const fetchInstitution = async () => {
@@ -47,6 +60,7 @@ export default function AdminConfiguracion() {
           setFeature2Desc(data.feature2Desc || "Ofrecemos talleres y programas para el desarrollo personal y profesional.");
           setFeature3Title(data.feature3Title || "Acción Social");
           setFeature3Desc(data.feature3Desc || "Participamos activamente en la mejora de nuestras comunidades.");
+          setPublicBackground(data.publicBackground || "");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -67,7 +81,7 @@ export default function AdminConfiguracion() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
-          feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc
+          feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground
         })
       });
 
@@ -232,6 +246,42 @@ export default function AdminConfiguracion() {
                 <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Twitter / X</label>
                 <input type="url" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="https://twitter.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <ImageIcon className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Fondo del Portal Público</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-sm text-gray-400">Selecciona una imagen para que se muestre como fondo fijo en todo el portal público.</p>
+              
+              <div className="relative">
+                <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white flex items-center justify-between hover:bg-gray-700 transition-colors">
+                  <span className="truncate text-sm text-gray-400">
+                    {publicBackground ? "Fondo cargado (haz clic para cambiar)" : "Subir imagen..."}
+                  </span>
+                  <ImageIcon size={18} className="text-gray-400" />
+                </div>
+              </div>
+              
+              {publicBackground && (
+                <div className="mt-4 w-full h-32 rounded-xl overflow-hidden border border-gray-700 relative">
+                  <Image src={publicBackground} alt="Fondo" fill className="object-cover" />
+                </div>
+              )}
+              
+              {publicBackground && (
+                <button 
+                  onClick={() => setPublicBackground("")}
+                  className="w-full mt-2 text-sm text-red-400 hover:text-red-300 bg-red-400/10 hover:bg-red-400/20 py-2 rounded-lg transition-colors"
+                >
+                  Quitar fondo
+                </button>
+              )}
             </div>
           </div>
         </div>
