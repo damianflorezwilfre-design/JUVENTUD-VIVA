@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Save, Globe, Mail, Phone, MapPin, Link as LinkIcon, Share2, Settings, BookOpen, Image as ImageIcon } from "lucide-react";
+import { Save, Globe, Mail, Phone, MapPin, Link as LinkIcon, Share2, Settings, BookOpen, Image as ImageIcon, TrendingUp } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminConfiguracion() {
@@ -47,6 +47,10 @@ export default function AdminConfiguracion() {
   const [transparency2Desc, setTransparency2Desc] = useState("");
   const [transparency3Title, setTransparency3Title] = useState("");
   const [transparency3Desc, setTransparency3Desc] = useState("");
+
+  // Impact Calculator
+  const [calcKitCost, setCalcKitCost] = useState("");
+  const [calcMealCost, setCalcMealCost] = useState("");
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -95,6 +99,8 @@ export default function AdminConfiguracion() {
           setTransparency2Desc(data.transparency2Desc || "Nos esforzamos por mantener nuestros costos administrativos al mínimo absoluto, asegurando que la mayor parte de tu donación llegue directamente a quienes lo necesitan.");
           setTransparency3Title(data.transparency3Title || "Donantes Comprometidos");
           setTransparency3Desc(data.transparency3Desc || "Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes.");
+          setCalcKitCost(data.calcKitCost?.toString() || "50000");
+          setCalcMealCost(data.calcMealCost?.toString() || "15000");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -117,7 +123,8 @@ export default function AdminConfiguracion() {
           aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
-          transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc
+          transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
+          calcKitCost, calcMealCost
         })
       });
 
@@ -367,6 +374,29 @@ export default function AdminConfiguracion() {
                       <textarea rows={3} value={transparency3Desc} onChange={(e) => setTransparency3Desc(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                     </div>
                   </div>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* Calculadora de Impacto */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mt-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <TrendingUp className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Calculadora de Impacto</h3>
+            </div>
+            
+            {fetching ? (
+              <p className="text-gray-500">Cargando datos...</p>
+            ) : (
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Costo de 1 Kit Escolar ($ COP)</label>
+                  <input type="number" value={calcKitCost} onChange={(e) => setCalcKitCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Costo de 1 Desayuno ($ COP)</label>
+                  <input type="number" value={calcMealCost} onChange={(e) => setCalcMealCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
                 </div>
               </form>
             )}

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { type, description, amount, date, proofUrl } = await request.json();
+    const { type, description, amount, date, proofUrl, donorDocument } = await request.json();
 
     if (!type || !description || !amount) {
       return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
@@ -43,7 +43,8 @@ export async function POST(request: Request) {
         description,
         amount: parseFloat(amount),
         date: date ? new Date(date) : new Date(),
-        proofUrl: proofUrl || null
+        proofUrl: proofUrl || null,
+        donorDocument: donorDocument || null
       }
     });
 

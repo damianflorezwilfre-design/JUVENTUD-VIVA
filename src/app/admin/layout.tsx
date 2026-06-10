@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange, Wallet } from "lucide-react";
+import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange, Wallet, Heart, MapPin, MessageSquare, Briefcase } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminLayout({
@@ -50,10 +50,14 @@ export default function AdminLayout({
     { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
     { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos", id: "documentos" },
     { name: "Noticias", icon: <Newspaper size={20} />, path: "/admin/noticias", id: "noticias" },
+    { name: "Padrinazgos", icon: <Heart size={20} />, path: "/admin/padrinazgos", id: "padrinazgos" },
+    { name: "Mapa de Impacto", icon: <MapPin size={20} />, path: "/admin/mapa", id: "mapa" },
     { name: "Eventos", icon: <CalendarRange size={20} />, path: "/admin/eventos", id: "eventos" },
     { name: "Programas", icon: <CalendarRange size={20} />, path: "/admin/programas", id: "programas" },
     { name: "Galería", icon: <ImageIcon size={20} />, path: "/admin/galeria", id: "galeria" },
     { name: "Historias de Impacto", icon: <ImageIcon size={20} />, path: "/admin/testimonios", id: "testimonios" },
+    { name: "Muro Público", icon: <MessageSquare size={20} />, path: "/admin/muro", id: "muro" },
+    { name: "Oportunidades", icon: <Briefcase size={20} />, path: "/admin/oportunidades", id: "oportunidades" },
     { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
     { name: "Equipo", icon: <Users size={20} />, path: "/admin/equipo", id: "equipo" },
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },

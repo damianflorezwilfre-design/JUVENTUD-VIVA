@@ -54,9 +54,10 @@ export default async function Footer() {
             <ul className="space-y-2">
               <li><Link href="/nosotros" className="text-gray-400 hover:text-jv-turquoise transition-colors">Sobre Nosotros</Link></li>
               <li><Link href="/programas" className="text-gray-400 hover:text-jv-turquoise transition-colors">Programas</Link></li>
-              <li><Link href="/noticias" className="text-gray-400 hover:text-jv-turquoise transition-colors">Noticias</Link></li>
-              <li><Link href="/documentos" className="text-gray-400 hover:text-jv-turquoise transition-colors">Documentos Públicos</Link></li>
               <li><Link href="/transparencia" className="text-gray-400 hover:text-jv-turquoise transition-colors">Transparencia</Link></li>
+              <li><Link href="/apadrina" className="text-gray-400 hover:text-jv-turquoise transition-colors">Causas de Padrinazgo</Link></li>
+              <li><Link href="/certificados" className="text-gray-400 hover:text-jv-turquoise transition-colors">Certificados Tributarios</Link></li>
+              <li><Link href="/voluntarios/ranking" className="text-gray-400 hover:text-jv-turquoise transition-colors">Salón de la Fama</Link></li>
             </ul>
           </div>
 
@@ -84,7 +85,7 @@ export default async function Footer() {
               <Heart size={18} className="ml-2 text-red-400" />
             </h3>
             <p className="text-gray-400 text-sm mb-4">Haz tu aporte y ayúdanos a construir un mejor futuro para los jóvenes vulnerables de La Guajira.</p>
-            <form className="flex flex-col space-y-2 mb-6" action="/contacto">
+            <form className="flex flex-col space-y-2 mb-6" action="/donaciones">
               <button
                 type="submit"
                 className="px-4 py-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-xl transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)] hover:shadow-[0_0_15px_rgba(79,221,230,0.5)] flex items-center justify-center"

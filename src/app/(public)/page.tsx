@@ -54,6 +54,14 @@ export default async function Home() {
       stat2Label: null,
       stat3Value: null,
       stat3Label: null,
+      transparency1Title: null,
+      transparency1Desc: null,
+      transparency2Title: null,
+      transparency2Desc: null,
+      transparency3Title: null,
+      transparency3Desc: null,
+      calcKitCost: 50000,
+      calcMealCost: 15000,
       updatedAt: new Date()
     };
   }

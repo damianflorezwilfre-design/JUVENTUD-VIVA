@@ -105,6 +105,8 @@ model Institution {
   transparency2Desc  String?
   transparency3Title String?
   transparency3Desc  String?
+  calcKitCost        Float?   @default(50000)
+  calcMealCost       Float?   @default(15000)
   updatedAt     DateTime @updatedAt
 }
 
@@ -126,13 +128,14 @@ model RoadmapAction {
 }
 
 model FinanceRecord {
-  id          String   @id @default(cuid())
-  type        String
-  description String
-  amount      Float
-  date        DateTime @default(now())
-  proofUrl    String?
-  createdAt   DateTime @default(now())
+  id            String   @id @default(cuid())
+  type          String
+  description   String
+  amount        Float
+  donorDocument String?
+  date          DateTime @default(now())
+  proofUrl      String?
+  createdAt     DateTime @default(now())
 }
 
 model Message {
@@ -182,6 +185,8 @@ model Volunteer {
   phone        String
   skills       String?  @db.Text
   availability String?
+  points       Int      @default(0)
+  imageUrl     String?
   isContacted  Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
@@ -205,4 +210,46 @@ model Event {
   imageUrl    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Sponsorship {
+  id            String   @id @default(cuid())
+  title         String
+  description   String   @db.Text
+  goalAmount    Float?
+  currentAmount Float    @default(0)
+  imageUrl      String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model MapPin {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  lat         Float
+  lng         Float
+  location    String
+  imageUrl    String?
+  date        DateTime @default(now())
+}
+
+model Opportunity {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  description String   @db.Text
+  type        String   // "BECA" or "EMPLEO"
+  link        String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model WallMessage {
+  id          String   @id @default(cuid())
+  name        String
+  message     String   @db.Text
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }

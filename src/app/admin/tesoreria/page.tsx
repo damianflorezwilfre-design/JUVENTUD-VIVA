@@ -12,6 +12,7 @@ type FinanceRecord = {
   date: string;
   proofUrl: string | null;
   createdAt: string;
+  donorDocument?: string | null;
 };
 
 export default function AdminTesoreria() {
@@ -24,6 +25,8 @@ export default function AdminTesoreria() {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
+  const [proofUrl, setProofUrl] = useState("");
+  const [donorDocument, setDonorDocument] = useState("");
 
   const fetchRecords = async () => {
     try {
@@ -47,11 +50,20 @@ export default function AdminTesoreria() {
     e.preventDefault();
     if (!description || !amount) return;
 
+    const payload = { 
+      type, 
+      description, 
+      amount, 
+      date: date || undefined, 
+      proofUrl, 
+      donorDocument: type === 'INGRESO' ? donorDocument : undefined 
+    };
+
     try {
       const res = await fetch("/api/tesoreria", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, description, amount, date: date || undefined })
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
@@ -59,6 +71,8 @@ export default function AdminTesoreria() {
         setDescription("");
         setAmount("");
         setDate("");
+        setProofUrl("");
+        setDonorDocument("");
         fetchRecords();
       } else {
         alert("Error al guardar el registro.");
@@ -82,18 +96,18 @@ export default function AdminTesoreria() {
       return;
     }
     
-    const headers = ["Fecha", "Tipo", "Concepto", "Monto", "Fecha de Registro"];
+    const headers = ["Fecha", "Tipo", "Concepto", "NIT/CC", "Monto", "Fecha de Registro"];
     const rows = records.map(r => [
       new Date(r.date).toLocaleDateString('es-ES'),
       r.type,
-      `"${r.description.replace(/"/g, '""')}"`, // Escapar comillas dobles
+      `"${r.description.replace(/"/g, '""')}"`,
+      r.donorDocument || "",
       r.amount.toString(),
       new Date(r.createdAt).toLocaleDateString('es-ES')
     ]);
     
     const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
     
-    // Añadir BOM para que Excel reconozca UTF-8
     const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -214,8 +228,20 @@ export default function AdminTesoreria() {
                 className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
               />
             </div>
+            {type === 'INGRESO' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">NIT o Cédula del Donante (Opcional)</label>
+                <input 
+                  type="text" 
+                  value={donorDocument} 
+                  onChange={e => setDonorDocument(e.target.value)} 
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono"
+                  placeholder="Ej. 900123456" 
+                />
+              </div>
+            )}
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Fecha (Opcional)</label>
+              <label className="block text-sm font-medium text-gray-400 mb-1">Fecha</label>
               <input 
                 type="date" 
                 value={date}
@@ -252,21 +278,22 @@ export default function AdminTesoreria() {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-gray-800/50 text-gray-400 text-sm">
-              <tr>
+              <tr className="border-b border-gray-800">
                 <th className="px-6 py-3 font-medium">Fecha</th>
                 <th className="px-6 py-3 font-medium">Tipo</th>
                 <th className="px-6 py-3 font-medium">Concepto</th>
+                <th className="px-6 py-3 font-medium">NIT/CC</th>
                 <th className="px-6 py-3 font-medium text-right">Monto</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">Cargando registros...</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">Cargando registros...</td>
                 </tr>
               ) : records.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No hay movimientos registrados.</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">No hay movimientos registrados.</td>
                 </tr>
               ) : (
                 records.map((record) => (
@@ -285,6 +312,7 @@ export default function AdminTesoreria() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-300">{record.description}</td>
+                    <td className="px-6 py-4 text-sm font-mono text-gray-500">{record.donorDocument || "-"}</td>
                     <td className={`px-6 py-4 text-sm font-semibold text-right ${
                       record.type === "INGRESO" ? "text-green-400" : "text-red-400"
                     }`}>
