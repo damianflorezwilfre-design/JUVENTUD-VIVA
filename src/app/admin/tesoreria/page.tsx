@@ -276,7 +276,7 @@ export default function AdminTesoreria() {
           </h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left min-w-[800px]">
             <thead className="bg-gray-800/50 text-gray-400 text-sm">
               <tr className="border-b border-gray-800">
                 <th className="px-6 py-3 font-medium">Fecha</th>

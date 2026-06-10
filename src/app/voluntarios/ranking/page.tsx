@@ -46,41 +46,43 @@ export default async function RankingPage() {
             return (
               <div 
                 key={vol.id} 
-                className={`relative flex items-center p-6 rounded-2xl border ${isTop3 ? 'bg-gray-800/80 border-gray-700 shadow-xl transform hover:scale-[1.01] transition-transform' : 'bg-gray-900 border-gray-800'} overflow-hidden`}
+                className={`relative flex flex-col sm:flex-row items-center p-6 rounded-2xl border ${isTop3 ? 'bg-gray-800/80 border-gray-700 shadow-xl transform hover:scale-[1.01] transition-transform' : 'bg-gray-900 border-gray-800'} overflow-hidden`}
               >
                 {isTop3 && (
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-jv-turquoise to-jv-purple"></div>
+                  <div className="absolute top-0 left-0 w-full sm:w-1 h-1 sm:h-full bg-gradient-to-r sm:bg-gradient-to-b from-jv-turquoise to-jv-purple"></div>
                 )}
                 
-                <div className="w-12 text-2xl font-black text-gray-500 text-center mr-4">
-                  #{index + 1}
+                <div className="flex w-full sm:w-auto items-center justify-between sm:justify-start mb-4 sm:mb-0">
+                  <div className="w-12 text-2xl font-black text-gray-500 text-center sm:mr-4">
+                    #{index + 1}
+                  </div>
+
+                  <div className="relative sm:mr-6">
+                    {vol.imageUrl ? (
+                      <img src={vol.imageUrl} alt={vol.name} className="w-16 h-16 rounded-full object-cover border-2 border-gray-700" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center font-bold text-xl text-gray-500">
+                        {vol.name.charAt(0)}
+                      </div>
+                    )}
+                    {isTop3 && (
+                      <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br ${rank.color} flex items-center justify-center shadow-lg border-2 border-gray-900`}>
+                        <span className="text-xs font-bold text-white">{index + 1}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="relative mr-6">
-                  {vol.imageUrl ? (
-                    <img src={vol.imageUrl} alt={vol.name} className="w-16 h-16 rounded-full object-cover border-2 border-gray-700" />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gray-800 border-2 border-gray-700 flex items-center justify-center font-bold text-xl text-gray-500">
-                      {vol.name.charAt(0)}
-                    </div>
-                  )}
-                  {isTop3 && (
-                    <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-gradient-to-br ${rank.color} flex items-center justify-center shadow-lg border-2 border-gray-900`}>
-                      <span className="text-xs font-bold text-white">{index + 1}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-grow">
+                <div className="flex-grow text-center sm:text-left mb-4 sm:mb-0 w-full">
                   <h3 className={`font-bold ${isTop3 ? 'text-xl text-white' : 'text-lg text-gray-200'}`}>
                     {vol.name}
                   </h3>
-                  <p className="text-sm text-gray-400 truncate max-w-xs md:max-w-md">
+                  <p className="text-sm text-gray-400 truncate max-w-[250px] mx-auto sm:mx-0 sm:max-w-md">
                     {vol.skills || "Voluntario Activo"}
                   </p>
                 </div>
 
-                <div className="flex flex-col items-end justify-center ml-4">
+                <div className="flex flex-col items-center sm:items-end justify-center sm:ml-4">
                   <div className={`px-3 py-1 rounded-full bg-gradient-to-r ${rank.color} mb-2 shadow-lg flex items-center`}>
                     <span className="text-xs font-bold text-white">{rank.name}</span>
                   </div>

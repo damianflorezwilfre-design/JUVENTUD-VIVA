@@ -86,7 +86,7 @@ export default function AdminSolicitudes() {
 
       <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-gray-800/50 border-b border-gray-800">
                 <th className="p-4 text-sm font-semibold text-gray-300">Editor</th>

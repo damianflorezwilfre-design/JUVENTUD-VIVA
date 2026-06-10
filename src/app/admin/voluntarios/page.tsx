@@ -172,8 +172,8 @@ export default function AdminVoluntarios() {
             <p className="text-gray-500 mb-6">Aún no hay personas registradas para voluntariado.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto bg-gray-900 border border-gray-800 rounded-2xl">
+            <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="border-b border-gray-800 bg-gray-800/50">
                   <th className="p-4 text-sm font-semibold text-gray-300">Nombre / Contacto</th>
