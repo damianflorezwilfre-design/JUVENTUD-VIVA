@@ -510,7 +510,7 @@ export default function AdminConfiguracion() {
             </div>
             
             <div className="space-y-4">
-              <p className="text-sm text-gray-400 mb-2">Para recibir notificaciones automáticas a tu WhatsApp, guarda el número <strong>+34 623 78 64 49</strong> y envíale el mensaje: <code>I allow callmebot to send me messages</code> para obtener tu API Key.</p>
+              <p className="text-sm text-gray-400 mb-2">Para recibir notificaciones automáticas a tu WhatsApp, guarda el número <strong>+34 644 03 87 31</strong> y envíale el mensaje: <code>I allow callmebot to send me messages</code> para obtener tu API Key.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">CallMeBot API Key</label>
                 <input type="text" value={whatsappApiKey} onChange={(e) => setWhatsappApiKey(e.target.value)} placeholder="Ej. 123456" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
