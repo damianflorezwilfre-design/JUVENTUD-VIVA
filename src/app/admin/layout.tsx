@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange, Wallet, Heart, MapPin, MessageSquare, Briefcase } from "lucide-react";
+import { LayoutDashboard, FileText, Image as ImageIcon, Users, LogOut, Settings, Newspaper, CalendarRange, Wallet, Heart, MapPin, MessageSquare, Briefcase, Box } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminLayout({
@@ -56,6 +56,7 @@ export default function AdminLayout({
     { name: "Rendición de Cuentas", icon: <FileText size={20} />, path: "/admin/rendicion", id: "rendicion" },
     { name: "Voluntarios", icon: <Users size={20} />, path: "/admin/voluntarios", id: "voluntarios" },
     { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
+    { name: "Inventario", icon: <Box size={20} />, path: "/admin/inventario", id: "inventario" },
     { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos", id: "documentos" },
     { name: "Noticias", icon: <Newspaper size={20} />, path: "/admin/noticias", id: "noticias" },
     { name: "Padrinazgos", icon: <Heart size={20} />, path: "/admin/padrinazgos", id: "padrinazgos" },
