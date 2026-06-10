@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { Users, Trash2, Trash, Check, CheckCircle2, Circle, Clock, Briefcase, Phone, Mail, Download } from "lucide-react";
+import { Users, Trash2, Trash, Check, CheckCircle2, Circle, Clock, Briefcase, Phone, Mail, Download, Trophy } from "lucide-react";
 import * as XLSX from "xlsx";
 
 type Volunteer = {
@@ -187,8 +187,8 @@ export default function AdminVoluntarios() {
                       </button>
                     </td>
                     <td className="p-4 text-right">
-                      <button onClick={() => openPointsModal(vol)} className="p-2 text-jv-purple hover:bg-jv-purple/20 rounded-lg transition-colors mr-2" title="Asignar Puntos">
-                        <Check size={18} />
+                      <button onClick={() => openPointsModal(vol)} className="px-3 py-2 text-sm font-bold text-jv-purple hover:bg-jv-purple/20 bg-jv-purple/10 border border-jv-purple/30 rounded-xl transition-colors mr-2 inline-flex items-center gap-2" title="Asignar Puntos">
+                        <Trophy size={16} /> Rango / Puntos
                       </button>
                       <button onClick={() => handleDelete(vol.id)} className="p-2 text-red-500 hover:bg-red-500/20 rounded-lg transition-colors">
                         <Trash size={18} />

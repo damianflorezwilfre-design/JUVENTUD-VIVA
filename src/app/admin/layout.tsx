@@ -46,6 +46,7 @@ export default function AdminLayout({
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/admin/dashboard", id: "dashboard" },
     { name: "Mensajes", icon: <FileText size={20} />, path: "/admin/mensajes", id: "mensajes", badge: notifications.unreadMessages },
     { name: "Solicitudes", icon: <FileText size={20} />, path: "/admin/solicitudes", id: "solicitudes", badge: notifications.pendingRequests },
+    { name: "Rendición de Cuentas", icon: <FileText size={20} />, path: "/admin/rendicion", id: "rendicion" },
     { name: "Voluntarios", icon: <Users size={20} />, path: "/admin/voluntarios", id: "voluntarios" },
     { name: "Tesorería", icon: <Wallet size={20} />, path: "/admin/tesoreria", id: "tesoreria" },
     { name: "Documentos", icon: <FileText size={20} />, path: "/admin/documentos", id: "documentos" },
