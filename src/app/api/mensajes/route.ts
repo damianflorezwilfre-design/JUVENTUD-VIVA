@@ -49,6 +49,10 @@ export async function POST(request: Request) {
        <p>Puedes revisarlo en el <a href="https://juventud-viva.vercel.app/admin/mensajes">panel de administrador</a>.</p>`
     );
 
+    // Notify via WhatsApp
+    const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+    await sendWhatsAppNotification(`📬 *Nuevo Mensaje de Contacto*\n\n*De:* ${name}\n*Mensaje:* ${message}`);
+
     return NextResponse.json(nuevoMensaje, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al enviar mensaje' }, { status: 500 });

@@ -38,6 +38,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
       );
 
+      // Notify via WhatsApp
+      const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+      await sendWhatsAppNotification(`⚠️ *Nueva Solicitud de Edición*\n\nUn administrador secundario ha solicitado permiso para editar o borrar un registro.\n\nEntra al sistema para revisar los detalles exactos\n\nRevisa el panel de administrador para aprobar o rechazar.`);
+
+
       return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
     }
 
@@ -84,6 +89,11 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
         "Un editor ha solicitado un cambio. Revisa el portal de administrador.",
         "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
       );
+
+      // Notify via WhatsApp
+      const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+      await sendWhatsAppNotification(`⚠️ *Nueva Solicitud de Edición*\n\nUn administrador secundario ha solicitado permiso para editar o borrar un registro.\n\nEntra al sistema para revisar los detalles exactos\n\nRevisa el panel de administrador para aprobar o rechazar.`);
+
 
       return NextResponse.json({ success: true, message: 'Solicitud de eliminación enviada', isRequest: true });
     }

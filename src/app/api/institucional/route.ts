@@ -42,7 +42,7 @@ export async function PUT(request: Request) {
       feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
       donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
       transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-      calcKitCost, calcMealCost 
+      calcKitCost, calcMealCost, whatsappApiKey, whatsappGroupPhone
     } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
@@ -57,7 +57,9 @@ export async function PUT(request: Request) {
             feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
             donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
             transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-            calcKitCost, calcMealCost
+            calcKitCost: calcKitCost ? parseFloat(calcKitCost) : null,
+            calcMealCost: calcMealCost ? parseFloat(calcMealCost) : null,
+            whatsappApiKey, whatsappGroupPhone
           })
         }
       });
@@ -70,6 +72,11 @@ export async function PUT(request: Request) {
         "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
       );
 
+      // Notify via WhatsApp
+      const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+      await sendWhatsAppNotification(`⚠️ *Nueva Solicitud de Edición*\n\nUn administrador secundario ha solicitado permiso para editar o borrar un registro.\n\nEntra al sistema para revisar los detalles exactos\n\nRevisa el panel de administrador para aprobar o rechazar.`);
+
+
       return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
     }
 
@@ -81,7 +88,8 @@ export async function PUT(request: Request) {
         donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
         calcKitCost: calcKitCost ? parseFloat(calcKitCost) : 50000, 
-        calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000
+        calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,
+        whatsappApiKey, whatsappGroupPhone
       },
       create: {
         id: "singleton",
@@ -90,7 +98,8 @@ export async function PUT(request: Request) {
         donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
         calcKitCost: calcKitCost ? parseFloat(calcKitCost) : 50000, 
-        calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000
+        calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,
+        whatsappApiKey, whatsappGroupPhone
       }
     });
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendWhatsAppNotification } from '@/lib/whatsapp';
 
 export async function POST(request: Request) {
   try {
@@ -20,6 +21,9 @@ export async function POST(request: Request) {
     await prisma.newsletterSubscriber.create({
       data: { email }
     });
+
+    // Notify via WhatsApp
+    await sendWhatsAppNotification(`🔔 *Nueva Suscripción al Newsletter*\nEl correo ${email} se ha suscrito para recibir noticias de Juventud Viva.`);
 
     return NextResponse.json({ message: 'Suscripción exitosa' }, { status: 201 });
   } catch (error) {

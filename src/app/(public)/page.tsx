@@ -62,6 +62,8 @@ export default async function Home() {
       transparency3Desc: null,
       calcKitCost: 50000,
       calcMealCost: 15000,
+      whatsappApiKey: "",
+      whatsappGroupPhone: "",
       updatedAt: new Date()
     };
   }

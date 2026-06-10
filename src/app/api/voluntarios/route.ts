@@ -37,6 +37,10 @@ export async function POST(request: Request) {
       data: { name, email, phone, skills, availability }
     });
 
+    // Notify via WhatsApp
+    const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+    await sendWhatsAppNotification(`🙌 *Nuevo Voluntario Registrado*\n\n*Nombre:* ${name}\n*Habilidades:* ${skills || 'No especificadas'}\n*Teléfono:* ${phone}`);
+
     return NextResponse.json(nuevoVoluntario, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al registrar voluntario' }, { status: 500 });

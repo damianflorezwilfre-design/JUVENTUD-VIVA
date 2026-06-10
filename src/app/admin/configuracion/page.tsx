@@ -52,6 +52,10 @@ export default function AdminConfiguracion() {
   const [calcKitCost, setCalcKitCost] = useState("");
   const [calcMealCost, setCalcMealCost] = useState("");
 
+  // WhatsApp Group Notifications
+  const [whatsappApiKey, setWhatsappApiKey] = useState("");
+  const [whatsappGroupPhone, setWhatsappGroupPhone] = useState("");
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -101,6 +105,8 @@ export default function AdminConfiguracion() {
           setTransparency3Desc(data.transparency3Desc || "Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes.");
           setCalcKitCost(data.calcKitCost?.toString() || "50000");
           setCalcMealCost(data.calcMealCost?.toString() || "15000");
+          setWhatsappApiKey(data.whatsappApiKey || "");
+          setWhatsappGroupPhone(data.whatsappGroupPhone || "");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -124,7 +130,7 @@ export default function AdminConfiguracion() {
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-          calcKitCost, calcMealCost
+          calcKitCost, calcMealCost, whatsappApiKey, whatsappGroupPhone
         })
       });
 
@@ -480,6 +486,26 @@ export default function AdminConfiguracion() {
               <div className="hidden">
                 <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Link Externo de Donación (Opcional)</label>
                 <input type="url" value={donationLink} onChange={(e) => setDonationLink(e.target.value)} placeholder="https://mercadopago.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Notificaciones WhatsApp */}
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+            <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
+              <Phone className="text-jv-purple mr-3" size={24} />
+              <h3 className="text-xl font-semibold text-white">Notificaciones de WhatsApp</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-sm text-gray-400 mb-2">Para recibir notificaciones automáticas en un grupo usando CallMeBot, agrega al número +34 699 15 84 90 a tu grupo y envía el mensaje <code>@CallMeBot apikey</code> para obtener la API Key.</p>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">CallMeBot API Key</label>
+                <input type="text" value={whatsappApiKey} onChange={(e) => setWhatsappApiKey(e.target.value)} placeholder="Ej. 123456" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Identificador del Grupo (Número CallMeBot)</label>
+                <input type="text" value={whatsappGroupPhone} onChange={(e) => setWhatsappGroupPhone(e.target.value)} placeholder="Ej. +34123456789-1612345678" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
           </div>
