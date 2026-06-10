@@ -14,6 +14,7 @@ export default function Navbar() {
     { href: "/nosotros", label: "Sobre Nosotros" },
     { href: "/programas", label: "Programas" },
     { href: "/voluntariado", label: "Voluntariado" },
+    { href: "/voluntarios/ranking", label: "Salón de la Fama" },
     { href: "/apadrina", label: "Padrinazgo" },
     { href: "/oportunidades", label: "Oportunidades" },
     { href: "/muro", label: "Muro" },
