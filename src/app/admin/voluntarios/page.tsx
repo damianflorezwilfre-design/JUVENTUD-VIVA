@@ -23,6 +23,9 @@ export default function AdminVoluntarios() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [points, setPoints] = useState<number>(0);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newVolunteer, setNewVolunteer] = useState({ name: "", email: "", phone: "", skills: "", availability: "" });
+  const [isAdding, setIsAdding] = useState(false);
 
   const handleStatusChange = async (id: string, currentStatus: boolean, newPoints?: number, newImageUrl?: string) => {
     try {
@@ -38,6 +41,29 @@ export default function AdminVoluntarios() {
       if (res.ok) fetchVolunteers();
     } catch (e) {
       alert("Error al actualizar");
+    }
+  };
+
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAdding(true);
+    try {
+      const res = await fetch("/api/voluntarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newVolunteer)
+      });
+      if (res.ok) {
+        setShowAddModal(false);
+        setNewVolunteer({ name: "", email: "", phone: "", skills: "", availability: "" });
+        fetchVolunteers();
+      } else {
+        alert("Error al añadir voluntario.");
+      }
+    } catch (error) {
+      alert("Error de conexión.");
+    } finally {
+      setIsAdding(false);
     }
   };
 
@@ -125,10 +151,15 @@ export default function AdminVoluntarios() {
           <h2 className="text-2xl font-bold text-white mb-1">Voluntarios Registrados</h2>
           <p className="text-gray-400">Gestiona las personas que desean ser parte de la fundación.</p>
         </div>
-        <button onClick={handleExport} className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl transition-colors font-semibold flex items-center space-x-2">
-          <Download size={20} />
-          <span>Exportar a Excel</span>
-        </button>
+        <div className="flex space-x-2">
+          <button onClick={() => setShowAddModal(true)} className="bg-jv-turquoise hover:bg-jv-purple text-white px-4 py-2 rounded-xl transition-colors font-semibold flex items-center space-x-2">
+            <span>+ Añadir Voluntario</span>
+          </button>
+          <button onClick={handleExport} className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl transition-colors font-semibold flex items-center space-x-2">
+            <Download size={20} />
+            <span>Exportar a Excel</span>
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -237,6 +268,47 @@ export default function AdminVoluntarios() {
                 Guardar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Añadir Voluntario Manual */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-sm">
+            <h3 className="text-xl font-bold text-white mb-4">Añadir Voluntario Manual</h3>
+            
+            <form onSubmit={handleAdd} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
+                <input required type="text" value={newVolunteer.name} onChange={e => setNewVolunteer({...newVolunteer, name: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Correo Electrónico</label>
+                <input required type="email" value={newVolunteer.email} onChange={e => setNewVolunteer({...newVolunteer, email: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Teléfono</label>
+                <input required type="text" value={newVolunteer.phone} onChange={e => setNewVolunteer({...newVolunteer, phone: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Habilidades</label>
+                <input type="text" value={newVolunteer.skills} onChange={e => setNewVolunteer({...newVolunteer, skills: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Disponibilidad</label>
+                <input type="text" value={newVolunteer.availability} onChange={e => setNewVolunteer({...newVolunteer, availability: e.target.value})} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" />
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors">
+                  Cancelar
+                </button>
+                <button type="submit" disabled={isAdding} className="px-4 py-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-lg transition-colors font-semibold disabled:opacity-50">
+                  {isAdding ? "Guardando..." : "Guardar"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

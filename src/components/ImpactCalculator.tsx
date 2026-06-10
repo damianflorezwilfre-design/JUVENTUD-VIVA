@@ -1,14 +1,16 @@
 "use client"
 
 import { useState } from "react";
-import { Calculator, Book, Coffee, Target } from "lucide-react";
+import { Calculator, Book, Coffee, Target, ShoppingBag, Dumbbell } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function ImpactCalculator({ calcKitCost, calcMealCost }: { calcKitCost: number, calcMealCost: number }) {
+export default function ImpactCalculator({ calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost }: { calcKitCost: number, calcMealCost: number, calcMarketCost: number, calcSuppliesCost: number }) {
   const [amount, setAmount] = useState<number>(100000);
 
   const kits = Math.floor(amount / calcKitCost);
   const meals = Math.floor(amount / calcMealCost);
+  const markets = Math.floor(amount / calcMarketCost);
+  const supplies = Math.floor(amount / calcSuppliesCost);
 
   return (
     <div className="bg-gray-900 border border-jv-purple/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
@@ -79,6 +81,36 @@ export default function ImpactCalculator({ calcKitCost, calcMealCost }: { calcKi
           <div>
             <p className="text-3xl font-black text-white leading-none">{meals}</p>
             <p className="text-sm font-medium text-jv-turquoise mt-1">Desayunos Nutritivos</p>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          key={`markets-${markets}`}
+          className="bg-gradient-to-br from-green-500/20 to-transparent border border-green-500/30 p-6 rounded-2xl flex items-center"
+        >
+          <div className="p-4 bg-green-500/20 rounded-xl mr-4">
+            <ShoppingBag className="text-green-500" size={32} />
+          </div>
+          <div>
+            <p className="text-3xl font-black text-white leading-none">{markets}</p>
+            <p className="text-sm font-medium text-green-500 mt-1">Mercados Familiares</p>
+          </div>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          key={`supplies-${supplies}`}
+          className="bg-gradient-to-br from-orange-500/20 to-transparent border border-orange-500/30 p-6 rounded-2xl flex items-center"
+        >
+          <div className="p-4 bg-orange-500/20 rounded-xl mr-4">
+            <Dumbbell className="text-orange-500" size={32} />
+          </div>
+          <div>
+            <p className="text-3xl font-black text-white leading-none">{supplies}</p>
+            <p className="text-sm font-medium text-orange-500 mt-1">Implementos (Educ/Deport)</p>
           </div>
         </motion.div>
       </div>

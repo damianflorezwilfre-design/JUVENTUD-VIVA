@@ -59,9 +59,11 @@ export default async function Home() {
       transparency2Title: null,
       transparency2Desc: null,
       transparency3Title: null,
-      transparency3Desc: null,
+      transparency3Desc: "",
       calcKitCost: 50000,
       calcMealCost: 15000,
+      calcMarketCost: 100000,
+      calcSuppliesCost: 30000,
       whatsappApiKey: "",
       whatsappGroupPhone: "",
       updatedAt: new Date()

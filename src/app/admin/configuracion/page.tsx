@@ -51,6 +51,8 @@ export default function AdminConfiguracion() {
   // Impact Calculator
   const [calcKitCost, setCalcKitCost] = useState("");
   const [calcMealCost, setCalcMealCost] = useState("");
+  const [calcMarketCost, setCalcMarketCost] = useState("");
+  const [calcSuppliesCost, setCalcSuppliesCost] = useState("");
 
   // WhatsApp Group Notifications
   const [whatsappApiKey, setWhatsappApiKey] = useState("");
@@ -105,6 +107,8 @@ export default function AdminConfiguracion() {
           setTransparency3Desc(data.transparency3Desc || "Nuestra red de aliados confía ciegamente en nosotros gracias a los reportes constantes de impacto que entregamos mes a mes.");
           setCalcKitCost(data.calcKitCost?.toString() || "50000");
           setCalcMealCost(data.calcMealCost?.toString() || "15000");
+          setCalcMarketCost(data.calcMarketCost?.toString() || "100000");
+          setCalcSuppliesCost(data.calcSuppliesCost?.toString() || "30000");
           setWhatsappApiKey(data.whatsappApiKey || "");
           setWhatsappGroupPhone(data.whatsappGroupPhone || "");
         }
@@ -130,7 +134,7 @@ export default function AdminConfiguracion() {
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-          calcKitCost, calcMealCost, whatsappApiKey, whatsappGroupPhone
+          calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone
         })
       });
 
@@ -395,14 +399,22 @@ export default function AdminConfiguracion() {
             {fetching ? (
               <p className="text-gray-500">Cargando datos...</p>
             ) : (
-              <form className="space-y-4">
+              <form className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Costo de 1 Kit Escolar ($ COP)</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">1 Kit Escolar ($ COP)</label>
                   <input type="number" value={calcKitCost} onChange={(e) => setCalcKitCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Costo de 1 Desayuno ($ COP)</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">1 Desayuno ($ COP)</label>
                   <input type="number" value={calcMealCost} onChange={(e) => setCalcMealCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">1 Mercado Familiar ($ COP)</label>
+                  <input type="number" value={calcMarketCost} onChange={(e) => setCalcMarketCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Implementos Educ/Deport ($ COP)</label>
+                  <input type="number" value={calcSuppliesCost} onChange={(e) => setCalcSuppliesCost(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white font-mono focus:border-jv-purple focus:outline-none" />
                 </div>
               </form>
             )}

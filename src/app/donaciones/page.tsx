@@ -46,6 +46,8 @@ export default async function DonacionesPage() {
             <ImpactCalculator 
               calcKitCost={institution?.calcKitCost || 50000} 
               calcMealCost={institution?.calcMealCost || 15000} 
+              calcMarketCost={institution?.calcMarketCost || 100000} 
+              calcSuppliesCost={institution?.calcSuppliesCost || 30000} 
             />
           </div>
 

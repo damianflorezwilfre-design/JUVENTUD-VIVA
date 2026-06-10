@@ -107,6 +107,8 @@ model Institution {
   transparency3Desc  String?
   calcKitCost        Float?   @default(50000)
   calcMealCost       Float?   @default(15000)
+  calcMarketCost     Float?   @default(100000)
+  calcSuppliesCost   Float?   @default(30000)
   whatsappApiKey     String?
   whatsappGroupPhone String?
   updatedAt     DateTime @updatedAt
