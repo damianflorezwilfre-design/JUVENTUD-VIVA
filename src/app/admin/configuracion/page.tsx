@@ -498,14 +498,14 @@ export default function AdminConfiguracion() {
             </div>
             
             <div className="space-y-4">
-              <p className="text-sm text-gray-400 mb-2">Para recibir notificaciones automáticas en un grupo usando CallMeBot, agrega al número +34 699 15 84 90 a tu grupo y envía el mensaje <code>@CallMeBot apikey</code> para obtener la API Key.</p>
+              <p className="text-sm text-gray-400 mb-2">Para recibir notificaciones automáticas a tu WhatsApp, guarda el número <strong>+34 623 78 64 49</strong> y envíale el mensaje: <code>I allow callmebot to send me messages</code> para obtener tu API Key.</p>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">CallMeBot API Key</label>
                 <input type="text" value={whatsappApiKey} onChange={(e) => setWhatsappApiKey(e.target.value)} placeholder="Ej. 123456" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Identificador del Grupo (Número CallMeBot)</label>
-                <input type="text" value={whatsappGroupPhone} onChange={(e) => setWhatsappGroupPhone(e.target.value)} placeholder="Ej. +34123456789-1612345678" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                <label className="block text-sm font-medium text-gray-400 mb-1">Tu Número de Teléfono (con código de país)</label>
+                <input type="text" value={whatsappGroupPhone} onChange={(e) => setWhatsappGroupPhone(e.target.value)} placeholder="Ej. +573245083402" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
           </div>
