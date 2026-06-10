@@ -11,12 +11,12 @@ export default function Navbar() {
 
   const links = [
     { href: "/", label: "Inicio" },
-    { href: "/nosotros", label: "Sobre Nosotros" },
+    { href: "/nosotros", label: "Nosotros" },
     { href: "/programas", label: "Programas" },
     { href: "/eventos", label: "Eventos" },
-    { href: "/voluntariado", label: "Voluntariado" },
-    { href: "/voluntarios/ranking", label: "Salón de la Fama" },
-    { href: "/apadrina", label: "Padrinazgo" },
+    { href: "/voluntariado", label: "Voluntarios" },
+    { href: "/voluntarios/ranking", label: "Ranking" },
+    { href: "/apadrina", label: "Apadrina" },
     { href: "/oportunidades", label: "Oportunidades" },
     { href: "/muro", label: "Muro" },
     { href: "/mapa", label: "Impacto" },
@@ -24,43 +24,46 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed w-full z-50 bg-jv-dark/90 backdrop-blur-md border-b border-jv-purple/20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-20 items-center">
-            <div className="flex-shrink-0 flex items-center">
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] lg:w-max max-w-7xl z-50 bg-jv-dark/80 backdrop-blur-xl border border-jv-purple/30 rounded-full shadow-[0_8px_32px_rgba(155,28,201,0.2)] transition-all duration-300">
+        <div className="px-4 lg:px-6">
+          <div className="flex justify-between h-16 items-center">
+            <div className="flex-shrink-0 flex items-center mr-6">
               <Link href="/">
                 <Image
                   src="/logo/juventud-viva.png"
                   alt="JUVENTUD VIVA"
-                  width={70}
-                  height={70}
-                  className="object-contain"
+                  width={50}
+                  height={50}
+                  className="object-contain hover:scale-105 transition-transform drop-shadow-[0_0_10px_rgba(155,28,201,0.5)]"
                 />
               </Link>
             </div>
             
-            <div className="hidden lg:flex space-x-6 items-center">
+            <div className="hidden lg:flex space-x-5 items-center">
               {links.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-jv-white hover:text-jv-turquoise transition-colors duration-300 font-medium text-sm"
+                  className="relative text-gray-300 hover:text-white transition-all duration-300 font-medium text-[13px] whitespace-nowrap group"
                 >
                   {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-jv-turquoise transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_rgba(79,221,230,0.8)]"></span>
                 </Link>
               ))}
-              <Link
-                href="/donaciones"
-                className="px-4 py-2 rounded-full bg-jv-turquoise text-jv-dark hover:bg-white transition-all duration-300 shadow-[0_0_15px_rgba(79,221,230,0.5)] font-bold text-sm"
-              >
-                DONAR
-              </Link>
-              <Link
-                href="/admin/login"
-                className="px-4 py-2 rounded-full bg-jv-purple hover:bg-jv-turquoise text-white transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.5)] font-semibold text-sm"
-              >
-                Portal Admin
-              </Link>
+              <div className="flex items-center space-x-3 pl-4 border-l border-gray-700">
+                <Link
+                  href="/donaciones"
+                  className="px-5 py-1.5 rounded-full bg-gradient-to-r from-jv-turquoise to-blue-400 text-jv-dark hover:from-white hover:to-white hover:text-jv-dark transition-all duration-300 shadow-[0_0_15px_rgba(79,221,230,0.4)] hover:shadow-[0_0_20px_rgba(79,221,230,0.8)] font-bold text-[13px] whitespace-nowrap"
+                >
+                  DONAR
+                </Link>
+                <Link
+                  href="/admin/login"
+                  className="px-5 py-1.5 rounded-full bg-gray-800 border border-jv-purple/50 text-white hover:bg-jv-purple hover:border-jv-purple transition-all duration-300 shadow-[0_0_10px_rgba(155,28,201,0.2)] hover:shadow-[0_0_20px_rgba(155,28,201,0.6)] font-semibold text-[13px] whitespace-nowrap"
+                >
+                  Admin
+                </Link>
+              </div>
             </div>
 
             <div className="lg:hidden flex items-center">
