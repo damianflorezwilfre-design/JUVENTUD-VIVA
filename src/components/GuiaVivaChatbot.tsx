@@ -57,6 +57,8 @@ export default function GuiaVivaChatbot() {
       setIsTyping(false);
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), sender: "bot", text: faq.answer }]);
     }, 1000);
+  };
+
   const handleSendMessage = async (text: string) => {
     // Add user message
     const userMsgId = Date.now().toString();
@@ -214,7 +216,6 @@ export default function GuiaVivaChatbot() {
                   </button>
                 </form>
               </div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
