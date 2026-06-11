@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Download, FileText, CheckCircle, GraduationCap, Image as ImageIcon } from "lucide-react";
-import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun } from "docx";
+import { Document, Packer, Paragraph, TextRun, AlignmentType, ImageRun, Table, TableRow, TableCell, WidthType, BorderStyle } from "docx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
 
@@ -15,7 +15,9 @@ export default function AdminCertificados() {
   const [activity, setActivity] = useState("");
   const [date, setDate] = useState("");
   const [leader, setLeader] = useState("Damian Florez");
+  const [leader2, setLeader2] = useState("Nombre del Tesorero");
   const [signature, setSignature] = useState<string | null>(null);
+  const [signature2, setSignature2] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +27,17 @@ export default function AdminCertificados() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSignature(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSignature2Upload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSignature2(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -165,23 +178,41 @@ export default function AdminCertificados() {
               }),
               new Paragraph({
                 spacing: { before: 800, after: 100 },
-                children: [
-                  new TextRun({ text: "_______________________________", size: 24 })
-                ]
+                children: [] // Placeholder
               }),
-              new Paragraph({
-                children: [
-                  new TextRun({ text: leader, bold: true, size: 24 }),
-                ]
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({ text: "Director / Representante Legal", size: 24 }),
-                ]
-              }),
-              new Paragraph({
-                children: [
-                  new TextRun({ text: "Organización Juventud ViVa", size: 24 }),
+              new Table({
+                width: { size: 100, type: WidthType.PERCENTAGE },
+                borders: {
+                  top: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  bottom: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  left: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  right: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  insideHorizontal: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                  insideVertical: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+                },
+                rows: [
+                  new TableRow({
+                    children: [
+                      new TableCell({
+                        width: { size: 50, type: WidthType.PERCENTAGE },
+                        children: [
+                          new Paragraph({ children: [new TextRun({ text: "_______________________________", size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: leader, bold: true, size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: "Director / Representante Legal", size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: "Organización Juventud ViVa", size: 24 })] })
+                        ]
+                      }),
+                      new TableCell({
+                        width: { size: 50, type: WidthType.PERCENTAGE },
+                        children: [
+                          new Paragraph({ children: [new TextRun({ text: "_______________________________", size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: leader2, bold: true, size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: "Tesorero/a", size: 24 })] }),
+                          new Paragraph({ children: [new TextRun({ text: "Organización Juventud ViVa", size: 24 })] })
+                        ]
+                      })
+                    ]
+                  })
                 ]
               })
             ],
@@ -279,9 +310,18 @@ export default function AdminCertificados() {
       doc.text("Director / Representante Legal", 30, currentY + 12);
       doc.text("Organización Juventud ViVa", 30, currentY + 18);
 
+      doc.text("_______________________________", 110, currentY);
+      doc.setFont("helvetica", "bold");
+      doc.text(leader2, 110, currentY + 6);
+      doc.setFont("helvetica", "normal");
+      doc.text("Tesorero/a", 110, currentY + 12);
+      doc.text("Organización Juventud ViVa", 110, currentY + 18);
+
       if (signature) {
-        // Adjust Y based on signature size
         doc.addImage(signature, "PNG", 35, currentY - 20, 45, 15);
+      }
+      if (signature2) {
+        doc.addImage(signature2, "PNG", 115, currentY - 20, 45, 15);
       }
 
       doc.save(`Certificado_${certificateType}_${name.replace(/\s+/g, '_')}.pdf`);
@@ -400,7 +440,7 @@ export default function AdminCertificados() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre del Líder (Firma)</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre del Director (Firma)</label>
                 <input 
                   type="text" 
                   required
@@ -410,7 +450,7 @@ export default function AdminCertificados() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Firma Digital (Opcional)</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Firma Digital Director (Opcional)</label>
                 <div className="relative">
                   <input 
                     type="file" 
@@ -420,6 +460,34 @@ export default function AdminCertificados() {
                   />
                   <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white flex items-center justify-between">
                     <span className="truncate text-sm text-gray-400">{signature ? "Firma cargada" : "Subir imagen..."}</span>
+                    <ImageIcon size={18} className="text-gray-400" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre del Tesorero (Firma)</label>
+                <input 
+                  type="text" 
+                  required
+                  value={leader2}
+                  onChange={(e) => setLeader2(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Firma Digital Tesorero (Opcional)</label>
+                <div className="relative">
+                  <input 
+                    type="file" 
+                    accept="image/png, image/jpeg"
+                    onChange={handleSignature2Upload}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                  />
+                  <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white flex items-center justify-between">
+                    <span className="truncate text-sm text-gray-400">{signature2 ? "Firma cargada" : "Subir imagen..."}</span>
                     <ImageIcon size={18} className="text-gray-400" />
                   </div>
                 </div>

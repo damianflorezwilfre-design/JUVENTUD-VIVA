@@ -167,10 +167,15 @@ export default function CertificadosClient() {
                 Estos recursos han sido destinados exclusivamente al desarrollo de nuestros programas sociales en La Guajira, contribuyendo a la nutrición, educación y empoderamiento de nuestras comunidades.
               </div>
 
-              <div className="flex justify-between w-full max-w-2xl mt-auto pt-8 border-t-2 border-gray-200">
+              <div className="flex justify-between w-full max-w-4xl mt-auto pt-8 border-t-2 border-gray-200 px-4">
                 <div className="text-center">
-                  <div className="w-48 h-px bg-gray-400 mb-2 mx-auto"></div>
+                  <div className="w-40 h-px bg-gray-400 mb-2 mx-auto"></div>
                   <p className="font-bold text-gray-800">Representante Legal</p>
+                  <p className="text-sm text-gray-500">Fundación Juventud ViVa</p>
+                </div>
+                <div className="text-center">
+                  <div className="w-40 h-px bg-gray-400 mb-2 mx-auto"></div>
+                  <p className="font-bold text-gray-800">Tesorero/a</p>
                   <p className="text-sm text-gray-500">Fundación Juventud ViVa</p>
                 </div>
                 <div className="text-center">
