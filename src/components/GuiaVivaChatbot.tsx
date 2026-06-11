@@ -57,6 +57,36 @@ export default function GuiaVivaChatbot() {
       setIsTyping(false);
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), sender: "bot", text: faq.answer }]);
     }, 1000);
+  const handleSendMessage = async (text: string) => {
+    // Add user message
+    const userMsgId = Date.now().toString();
+    setMessages(prev => [...prev, { id: userMsgId, sender: "user", text }]);
+    
+    setIsTyping(true);
+    
+    try {
+      const res = await fetch("/api/chatbot/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      
+      const data = await res.json();
+      
+      setIsTyping(false);
+      setMessages(prev => [...prev, { 
+        id: (Date.now() + 1).toString(), 
+        sender: "bot", 
+        text: data.response || "No pude procesar la respuesta." 
+      }]);
+    } catch (e) {
+      setIsTyping(false);
+      setMessages(prev => [...prev, { 
+        id: (Date.now() + 1).toString(), 
+        sender: "bot", 
+        text: "Error de conexión. Intenta de nuevo más tarde." 
+      }]);
+    }
   };
 
   return (
@@ -137,23 +167,52 @@ export default function GuiaVivaChatbot() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Opciones (Botones predeterminados) */}
-            <div className="p-4 bg-gray-800/50 border-t border-gray-700/50">
-              <p className="text-xs text-gray-400 mb-2 font-medium">Preguntas frecuentes:</p>
-              <div className="flex flex-wrap gap-2">
-                {faqs.map((faq) => (
-                  <button
-                    key={faq.id}
-                    onClick={() => handleFaqClick(faq)}
+              {/* Opciones (Botones predeterminados) */}
+              <div className="p-4 bg-gray-800/50 border-t border-gray-700/50 flex-shrink-0">
+                <p className="text-xs text-gray-400 mb-2 font-medium">Opciones rápidas:</p>
+                <div className="flex flex-wrap gap-2 overflow-x-auto pb-2 scrollbar-none">
+                  {faqs.map((faq) => (
+                    <button
+                      key={faq.id}
+                      onClick={() => handleFaqClick(faq)}
+                      disabled={isTyping}
+                      className="whitespace-nowrap text-left text-xs bg-gray-800 hover:bg-jv-purple/20 border border-gray-600 hover:border-jv-purple/50 text-gray-300 rounded-xl px-3 py-2 transition-all flex items-center group disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {faq.question}
+                    </button>
+                  ))}
+                  {faqs.length === 0 && (
+                    <span className="text-xs text-gray-500">Cargando opciones...</span>
+                  )}
+                </div>
+                
+                {/* Text Input */}
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const input = e.currentTarget.elements.namedItem('message') as HTMLInputElement;
+                    if (input.value.trim()) {
+                      handleSendMessage(input.value.trim());
+                      input.value = '';
+                    }
+                  }}
+                  className="mt-3 relative"
+                >
+                  <input 
+                    name="message"
+                    type="text" 
+                    placeholder="Escribe tu mensaje..." 
                     disabled={isTyping}
-                    className="text-left text-xs bg-gray-800 hover:bg-jv-purple/20 border border-gray-600 hover:border-jv-purple/50 text-gray-300 rounded-xl px-3 py-2 transition-all flex items-center group disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gray-900 border border-gray-700 rounded-full pl-4 pr-12 py-3 text-sm text-white focus:outline-none focus:border-jv-turquoise transition-colors disabled:opacity-50"
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={isTyping}
+                    className="absolute right-1 top-1 bottom-1 w-10 bg-jv-purple hover:bg-jv-turquoise rounded-full flex items-center justify-center text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {faq.question}
+                    <ChevronRight size={20} />
                   </button>
-                ))}
-                {faqs.length === 0 && (
-                  <span className="text-xs text-gray-500">Cargando opciones...</span>
-                )}
+                </form>
               </div>
             </div>
           </motion.div>
