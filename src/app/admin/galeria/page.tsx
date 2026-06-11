@@ -330,7 +330,7 @@ export default function AdminGaleria() {
                     value={videoUrls} 
                     onChange={e => setVideoUrls(e.target.value)} 
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                    placeholder="https://youtube.com/watch?v=123&#10;https://youtube.com/watch?v=456"
+                    placeholder="https://youtube.com/watch?v=123&#10;https://www.tiktok.com/@usuario/video/123456789"
                   />
                 </div>
               )}
