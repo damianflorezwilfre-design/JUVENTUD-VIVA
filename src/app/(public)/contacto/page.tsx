@@ -44,16 +44,6 @@ export default function Contacto() {
 
       if (res.ok) {
         setStatus("success");
-        
-        // Redirigir a WhatsApp
-        let cleanPhone = phone.split('\n')[0].replace(/\D/g, '');
-        if (cleanPhone.length === 10) cleanPhone = "57" + cleanPhone; // Default to Colombia
-        
-        const waMessage = `Hola, mi nombre es ${formName}.\nCorreo: ${formEmail}\n${formPhone ? `Mi teléfono: ${formPhone}\n` : ''}\n${formMessage}`;
-        const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMessage)}`;
-        
-        window.open(waUrl, "_blank");
-
         setFormName("");
         setFormPhone("");
         setFormEmail("");
