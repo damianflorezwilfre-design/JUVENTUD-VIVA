@@ -84,19 +84,27 @@ export default function Galeria() {
             >
               <div className="aspect-[4/3] bg-gray-800 relative overflow-hidden">
                 {album.coverUrl ? (
-                  <img src={album.coverUrl} alt={album.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <img src={album.coverUrl} alt={album.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-600">
                     <Folder size={64} />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl font-bold text-white mb-1 flex items-center">
-                    <Folder size={20} className="mr-2 text-jv-turquoise" />
-                    {album.name}
-                  </h3>
-                  <p className="text-gray-300 text-sm">{album.files.length} archivo{album.files.length !== 1 ? 's' : ''}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="flex items-start mb-2">
+                    <div className="bg-jv-purple/80 backdrop-blur-md p-1.5 rounded-lg mr-3 shadow-lg flex-shrink-0 mt-0.5">
+                      <Folder size={18} className="text-white" />
+                    </div>
+                    <h3 className="text-base md:text-lg font-bold text-white leading-snug drop-shadow-lg line-clamp-3">
+                      {album.name}
+                    </h3>
+                  </div>
+                  <div className="pl-11">
+                    <span className="inline-block bg-black/50 backdrop-blur-sm border border-gray-600/50 text-gray-300 text-xs px-2.5 py-1 rounded-full font-medium">
+                      {album.files.length} archivo{album.files.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
                 </div>
               </div>
             </motion.div>
