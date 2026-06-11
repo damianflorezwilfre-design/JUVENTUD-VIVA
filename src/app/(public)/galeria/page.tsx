@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Folder, Image as ImageIcon, Video, ArrowLeft, ExternalLink } from "lucide-react";
+import { Folder, Image as ImageIcon, Video, ArrowLeft, ExternalLink, X, Download } from "lucide-react";
 
 type GalleryItem = {
   id: string;
@@ -18,6 +18,7 @@ export default function Galeria() {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<GalleryItem | null>(null);
 
   useEffect(() => {
     fetch("/api/galeria")
@@ -123,7 +124,10 @@ export default function Galeria() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: idx * 0.05 }}
-                className="bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group relative shadow-lg"
+                className={`bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group relative shadow-lg ${item.type === 'image' ? 'cursor-pointer' : ''}`}
+                onClick={() => {
+                  if (item.type === 'image') setLightboxImage(item);
+                }}
               >
                 <div className="aspect-square bg-gray-800 relative">
                   {item.type === 'image' ? (
@@ -138,13 +142,64 @@ export default function Galeria() {
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
                     {item.title && <h3 className="text-white font-medium mb-3 line-clamp-2">{item.title}</h3>}
-                    <a href={item.url} target="_blank" rel="noreferrer" className="p-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors shadow-lg">
-                      <ExternalLink size={20} />
-                    </a>
+                    
+                    {item.type === 'video' ? (
+                      <a href={item.url} target="_blank" rel="noreferrer" className="p-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors shadow-lg" onClick={(e) => e.stopPropagation()}>
+                        <ExternalLink size={20} />
+                      </a>
+                    ) : (
+                      <div className="p-3 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors shadow-lg">
+                        <ImageIcon size={20} />
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox para Imágenes */}
+      {lightboxImage && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-4 backdrop-blur-sm"
+          onClick={() => setLightboxImage(null)}
+        >
+          <button 
+            onClick={() => setLightboxImage(null)} 
+            className="absolute top-6 right-6 text-white hover:text-jv-turquoise transition-colors p-2 bg-gray-900/50 rounded-full"
+          >
+            <X size={32} />
+          </button>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative max-w-5xl max-h-[80vh] w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={lightboxImage.url} 
+              alt={lightboxImage.title || "Imagen ampliada"} 
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl" 
+            />
+          </motion.div>
+          
+          <div 
+            className="mt-6 flex flex-col items-center space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {lightboxImage.title && <h3 className="text-white text-xl font-medium">{lightboxImage.title}</h3>}
+            
+            <a 
+              href={lightboxImage.url} 
+              download={lightboxImage.title ? `${lightboxImage.title}.jpg` : "imagen-juventud-viva.jpg"}
+              className="flex items-center bg-jv-purple hover:bg-jv-turquoise px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.4)] hover:scale-105"
+            >
+              <Download size={20} className="mr-2" />
+              Descargar Imagen
+            </a>
           </div>
         </div>
       )}
