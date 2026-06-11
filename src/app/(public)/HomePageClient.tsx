@@ -13,6 +13,10 @@ import RoadmapSection from "@/components/RoadmapSection";
 import ImpactCounters from "@/components/ImpactCounters";
 import TestimonialSection from "@/components/TestimonialSection";
 import MagicParticles from "@/components/MagicParticles";
+import InteractiveGlobe from "@/components/InteractiveGlobe";
+import ParallaxOrbs from "@/components/ParallaxOrbs";
+import MagneticButton from "@/components/MagneticButton";
+import ScrambleText from "@/components/ScrambleText";
 
 export default function HomePageClient({ institution }: { institution: any }) {
   useEffect(() => {
@@ -73,6 +77,7 @@ export default function HomePageClient({ institution }: { institution: any }) {
       <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24 overflow-hidden perspective-[1000px]">
         {/* Background Image / Overlay */}
         <div className="absolute inset-0 bg-jv-dark z-0">
+          <InteractiveGlobe />
           <MagicParticles />
           {institution?.publicBackground ? (
             <Image 
@@ -127,38 +132,45 @@ export default function HomePageClient({ institution }: { institution: any }) {
             
             <motion.h1
               style={{ transform: "translateZ(100px)" }}
-              className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-white tracking-tight leading-tight"
-              dangerouslySetInnerHTML={{ __html: heroTitleHtml }}
-            />
+              className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-jv-turquoise"
+            >
+              <ScrambleText text={institution?.heroTitle || "Empoderando a la Nueva Generación"} />
+            </motion.h1>
             
             <motion.p
               style={{ transform: "translateZ(60px)" }}
               className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto font-medium"
             >
-              {institution?.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.'}
+              <ScrambleText text={institution?.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.'} />
             </motion.p>
             
             <motion.div
               style={{ transform: "translateZ(70px)" }}
               className="flex flex-col sm:flex-row gap-6 justify-center"
             >
-              <Link
-                href="/nosotros"
-                className="px-8 py-4 rounded-xl bg-gradient-to-r from-jv-purple to-jv-turquoise hover:from-jv-turquoise hover:to-jv-purple text-white transition-all duration-500 font-bold text-lg flex items-center justify-center group shadow-[0_0_30px_rgba(155,28,201,0.5)] hover:shadow-[0_0_40px_rgba(79,221,230,0.8)] border border-white/20"
-              >
-                Nuestra Historia
-                <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
-              </Link>
-              <Link
-                href="#contacto"
-                className="px-8 py-4 rounded-xl bg-black/30 backdrop-blur-md border border-white/20 hover:bg-white/10 text-white transition-all duration-300 font-bold text-lg flex items-center justify-center"
-              >
-                Contacto
-              </Link>
+              <MagneticButton>
+                <Link
+                  href="/nosotros"
+                  className="px-8 py-4 rounded-xl bg-gradient-to-r from-jv-purple to-jv-turquoise hover:from-jv-turquoise hover:to-jv-purple text-white transition-all duration-500 font-bold text-lg flex items-center justify-center group shadow-[0_0_30px_rgba(155,28,201,0.5)] hover:shadow-[0_0_40px_rgba(79,221,230,0.8)] border border-white/20"
+                >
+                  Nuestra Historia
+                  <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+                </Link>
+              </MagneticButton>
+              <MagneticButton>
+                <Link
+                  href="#contacto"
+                  className="px-8 py-4 rounded-xl bg-black/30 backdrop-blur-md border border-white/20 hover:bg-white/10 text-white transition-all duration-300 font-bold text-lg flex items-center justify-center"
+                >
+                  Contacto
+                </Link>
+              </MagneticButton>
             </motion.div>
           </motion.div>
         </motion.div>
       </section>
+
+      <ParallaxOrbs />
 
       {/* Impact Counters */}
       <ImpactCounters institution={institution} />
