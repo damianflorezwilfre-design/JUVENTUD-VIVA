@@ -16,7 +16,6 @@ import MagicParticles from "@/components/MagicParticles";
 import InteractiveGlobe from "@/components/InteractiveGlobe";
 import ParallaxOrbs from "@/components/ParallaxOrbs";
 import MagneticButton from "@/components/MagneticButton";
-import ScrambleText from "@/components/ScrambleText";
 
 export default function HomePageClient({ institution }: { institution: any }) {
   useEffect(() => {
@@ -134,14 +133,14 @@ export default function HomePageClient({ institution }: { institution: any }) {
               style={{ transform: "translateZ(100px)" }}
               className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-jv-turquoise"
             >
-              <ScrambleText text={institution?.heroTitle || "Empoderando a la Nueva Generación"} />
+              {institution?.heroTitle || "Empoderando a la Nueva Generación"}
             </motion.h1>
             
             <motion.p
               style={{ transform: "translateZ(60px)" }}
               className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto font-medium"
             >
-              <ScrambleText text={institution?.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.'} />
+              {institution?.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.'}
             </motion.p>
             
             <motion.div

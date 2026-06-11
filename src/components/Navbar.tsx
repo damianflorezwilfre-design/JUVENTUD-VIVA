@@ -66,7 +66,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="hidden md:flex lg:hidden items-center">
+            <div className="lg:hidden flex items-center">
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-jv-white hover:text-jv-turquoise focus:outline-none"
