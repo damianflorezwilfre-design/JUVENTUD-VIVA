@@ -14,6 +14,7 @@ export default function Navbar() {
     { href: "/nosotros", label: "Nosotros" },
     { href: "/programas", label: "Programas" },
     { href: "/eventos", label: "Eventos" },
+    { href: "/galeria", label: "Galería" },
     { href: "/voluntariado", label: "Voluntarios" },
     { href: "/voluntarios/ranking", label: "Ranking" },
     { href: "/apadrina", label: "Apadrina" },
