@@ -69,10 +69,12 @@ export default function AdminLayout({
     { name: "Oportunidades", icon: <Briefcase size={20} />, path: "/admin/oportunidades", id: "oportunidades" },
     { name: "Alianzas", icon: <Users size={20} />, path: "/admin/alianzas", id: "alianzas" },
     { name: "Equipo", icon: <Users size={20} />, path: "/admin/equipo", id: "equipo" },
+    { name: "Historia", icon: <CalendarRange size={20} />, path: "/admin/historia", id: "historia" },
     { name: "Hoja de Ruta", icon: <LayoutDashboard size={20} />, path: "/admin/hoja-de-ruta", id: "hoja-de-ruta" },
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
     { name: "Organigrama", icon: <Users size={20} />, path: "/admin/organigrama", id: "organigrama" },
     { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
+    { name: "Chatbot AI", icon: <MessageSquare size={20} />, path: "/admin/chatbot", id: "chatbot" },
   ];
 
   const allowedModules = session?.modules ? session.modules.split(',') : [];
