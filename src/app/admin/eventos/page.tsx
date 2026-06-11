@@ -40,14 +40,30 @@ export default function AdminEventos() {
       setEditingId(event.id);
       setTitle(event.title);
       setDescription(event.description);
-      setDate(new Date(event.date).toISOString().slice(0, 16));
+      
+      const localDate = new Date(event.date);
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      const hours = String(localDate.getHours()).padStart(2, '0');
+      const minutes = String(localDate.getMinutes()).padStart(2, '0');
+      setDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+      
       setLocation(event.location || "");
       setImageUrl(event.imageUrl || "");
     } else {
       setEditingId(null);
       setTitle("");
       setDescription("");
-      setDate(new Date().toISOString().slice(0, 16));
+      
+      const localDate = new Date();
+      const year = localDate.getFullYear();
+      const month = String(localDate.getMonth() + 1).padStart(2, '0');
+      const day = String(localDate.getDate()).padStart(2, '0');
+      const hours = String(localDate.getHours()).padStart(2, '0');
+      const minutes = String(localDate.getMinutes()).padStart(2, '0');
+      setDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+      
       setLocation("");
       setImageUrl("");
     }
@@ -73,7 +89,10 @@ export default function AdminEventos() {
     e.preventDefault();
     setSaving(true);
     
-    const payload = { title, description, date, location, imageUrl };
+    // Convert the local datetime string back to a proper ISO string taking timezone into account
+    const isoDate = new Date(date).toISOString();
+    
+    const payload = { title, description, date: isoDate, location, imageUrl };
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/eventos/${editingId}` : "/api/eventos";
 
