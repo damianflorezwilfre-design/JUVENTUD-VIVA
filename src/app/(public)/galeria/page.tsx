@@ -119,11 +119,8 @@ export default function Galeria() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {selectedItems.map((item, idx) => (
-              <motion.div 
+              <div 
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.05 }}
                 className={`bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group relative shadow-lg ${item.type === 'image' ? 'cursor-pointer' : ''}`}
                 onClick={() => {
                   if (item.type === 'image') setLightboxImage(item);
@@ -131,7 +128,7 @@ export default function Galeria() {
               >
                 <div className="aspect-square bg-gray-800 relative">
                   {item.type === 'image' ? (
-                    <img src={item.url} alt={item.title || "Imagen"} className="w-full h-full object-cover" />
+                    <img src={item.url} alt={item.title || "Imagen"} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
                       <Video size={48} className="mb-2 opacity-50" />
@@ -154,7 +151,7 @@ export default function Galeria() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -163,12 +160,12 @@ export default function Galeria() {
       {/* Lightbox para Imágenes */}
       {lightboxImage && (
         <div 
-          className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/95 z-[100] flex flex-col items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setLightboxImage(null)}
         >
           <button 
             onClick={() => setLightboxImage(null)} 
-            className="absolute top-6 right-6 text-white hover:text-jv-turquoise transition-colors p-2 bg-gray-900/50 rounded-full"
+            className="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-jv-turquoise transition-colors p-3 bg-gray-900/80 rounded-full z-[110] shadow-xl"
           >
             <X size={32} />
           </button>
@@ -176,7 +173,7 @@ export default function Galeria() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative max-w-5xl max-h-[80vh] w-full h-full flex items-center justify-center"
+            className="relative max-w-5xl max-h-[70vh] w-full h-full flex items-center justify-center mt-8"
             onClick={(e) => e.stopPropagation()}
           >
             <img 
@@ -187,15 +184,15 @@ export default function Galeria() {
           </motion.div>
           
           <div 
-            className="mt-6 flex flex-col items-center space-y-4"
+            className="mt-6 flex flex-col items-center space-y-4 z-[110]"
             onClick={(e) => e.stopPropagation()}
           >
-            {lightboxImage.title && <h3 className="text-white text-xl font-medium">{lightboxImage.title}</h3>}
+            {lightboxImage.title && <h3 className="text-white text-xl font-medium text-center">{lightboxImage.title}</h3>}
             
             <a 
               href={lightboxImage.url} 
               download={lightboxImage.title ? `${lightboxImage.title}.jpg` : "imagen-juventud-viva.jpg"}
-              className="flex items-center bg-jv-purple hover:bg-jv-turquoise px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.4)] hover:scale-105"
+              className="flex items-center bg-jv-purple hover:bg-jv-turquoise px-6 py-3 rounded-xl text-white font-medium transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.4)] hover:scale-105 active:scale-95"
             >
               <Download size={20} className="mr-2" />
               Descargar Imagen
