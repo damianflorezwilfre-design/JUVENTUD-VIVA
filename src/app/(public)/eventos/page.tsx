@@ -131,7 +131,7 @@ export default function Eventos() {
                             )}
                             <div className="relative z-10 flex flex-col">
                               <span className="font-bold text-jv-turquoise leading-none mb-0.5">
-                                {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })}
                               </span>
                               <span className="truncate font-medium">{evento.title}</span>
                             </div>
@@ -192,7 +192,7 @@ export default function Eventos() {
                   <div className="bg-jv-purple/20 p-2 rounded-lg mr-3">
                     <Clock size={20} className="text-jv-purple" /> 
                   </div>
-                  <span className="font-medium text-lg">{new Date(selectedEvento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="font-medium text-lg">{new Date(selectedEvento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
                 </div>
                 {selectedEvento.location && (
                   <div className="flex items-center text-gray-300">
