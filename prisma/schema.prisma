@@ -267,6 +267,22 @@ model InventoryItem {
   quantity    Int      @default(0)
   unit        String
   description String?
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+}
+
+model ChatbotFaq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String   @db.Text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model TimelineEvent {
+  id          String   @id @default(cuid())
+  year        String
+  title       String
+  description String   @db.Text
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
 }

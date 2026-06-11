@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import GuiaVivaChatbot from "@/components/GuiaVivaChatbot";
 import { prisma } from "@/lib/prisma";
 
 export default async function PublicLayout({
@@ -28,6 +29,7 @@ export default async function PublicLayout({
       )}
       <CustomCursor />
       <MobileBottomNav />
+      <GuiaVivaChatbot />
       <Navbar />
       <SmoothScroll>
         <main className="flex-grow pt-20">
