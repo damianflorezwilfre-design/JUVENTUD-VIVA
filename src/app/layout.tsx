@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/logo/juventud-viva.png"
+  },
+  verification: {
+    google: "5lgCBpFV4O0YjxU7fy3wGrCr5gm1rXgYkbv-GjioNxQ",
   }
 };
 
