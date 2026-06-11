@@ -9,6 +9,7 @@ type GalleryItem = {
   title: string | null;
   url: string;
   type: string;
+  album: string;
   createdAt: string;
 };
 
@@ -21,6 +22,7 @@ export default function AdminGaleria() {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [type, setType] = useState("image");
+  const [album, setAlbum] = useState("General");
 
   const fetchGaleria = async () => {
     try {
@@ -45,12 +47,13 @@ export default function AdminGaleria() {
     setTitle("");
     setUrl("");
     setType("image");
+    setAlbum("General");
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { title, url, type };
+    const payload = { title, url, type, album };
 
     try {
       const res = await fetch("/api/galeria", {
@@ -146,9 +149,14 @@ export default function AdminGaleria() {
                   </div>
                   
                   {/* Badge */}
-                  <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-300 flex items-center">
-                    {item.type === 'image' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
-                    {item.type === 'image' ? 'Imagen' : 'Video'}
+                  <div className="absolute top-2 right-2 flex flex-col space-y-1 items-end">
+                    <div className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-300 flex items-center">
+                      {item.type === 'image' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
+                      {item.type === 'image' ? 'Imagen' : 'Video'}
+                    </div>
+                    <div className="bg-jv-purple/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white flex items-center shadow-lg">
+                      {item.album}
+                    </div>
                   </div>
                 </div>
                 
@@ -185,6 +193,18 @@ export default function AdminGaleria() {
                   onChange={e => setTitle(e.target.value)} 
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
                   placeholder="Ej. Jóvenes en Acción 2026"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Álbum (Carpeta)</label>
+                <input 
+                  type="text" 
+                  value={album} 
+                  onChange={e => setAlbum(e.target.value)} 
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                  placeholder="Ej. Entrega de kits a los colegios"
+                  required
                 />
               </div>
 

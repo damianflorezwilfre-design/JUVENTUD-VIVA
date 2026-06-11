@@ -68,6 +68,7 @@ model NewsletterSubscriber {
 model Gallery {
   id        String   @id @default(cuid())
   title     String?
+  album     String   @default("General")
   url       String
   type      String   // image, video
   createdAt DateTime @default(now())

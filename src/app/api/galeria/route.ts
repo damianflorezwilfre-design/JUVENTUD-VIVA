@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { title, url, type } = await request.json();
+    const { title, url, type, album } = await request.json();
 
     if (!url || !type) {
       return NextResponse.json({ error: 'La URL y el tipo son requeridos' }, { status: 400 });
@@ -36,6 +36,7 @@ export async function POST(request: Request) {
     const nuevoMedia = await prisma.gallery.create({
       data: {
         title: title || null,
+        album: album || "General",
         url,
         type
       }
