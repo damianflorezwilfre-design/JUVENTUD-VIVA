@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink, Save } from "lucide-react";
+import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink, Save, Folder, ArrowLeft } from "lucide-react";
 
 type GalleryItem = {
   id: string;
