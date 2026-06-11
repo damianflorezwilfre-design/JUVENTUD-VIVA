@@ -39,8 +39,10 @@ export default function MapSelector({ lat, lng, onChange }: { lat: number, lng: 
   return (
     <MapContainer center={[lat, lng]} zoom={8} scrollWheelZoom={true} className="w-full h-full">
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        subdomains={['a', 'b', 'c', 'd']}
+        maxZoom={19}
       />
       <LocationMarker position={position} setPosition={handlePositionChange} />
     </MapContainer>
