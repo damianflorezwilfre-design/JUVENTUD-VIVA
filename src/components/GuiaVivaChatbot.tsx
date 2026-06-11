@@ -96,7 +96,7 @@ export default function GuiaVivaChatbot() {
       {/* Botón flotante */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-20 md:bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-jv-purple to-jv-turquoise rounded-full flex items-center justify-center text-white shadow-lg hover:shadow-[0_0_20px_rgba(79,221,230,0.5)] hover:scale-110 transition-all z-50 ${isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
+        className={`fixed bottom-28 md:bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-jv-purple to-jv-turquoise rounded-full flex items-center justify-center text-white shadow-lg hover:shadow-[0_0_20px_rgba(79,221,230,0.5)] hover:scale-110 transition-all z-50 ${isOpen ? 'scale-0 opacity-0 pointer-events-none' : 'scale-100 opacity-100'}`}
         aria-label="Abrir asistente virtual"
       >
         <Bot size={28} />
@@ -110,7 +110,7 @@ export default function GuiaVivaChatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="fixed bottom-20 md:bottom-6 right-4 md:right-6 w-[calc(100vw-32px)] md:w-80 lg:w-96 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[600px] h-[80vh] md:h-[500px]"
+            className="fixed bottom-28 md:bottom-6 right-4 md:right-6 w-[calc(100vw-32px)] md:w-80 lg:w-96 bg-gray-900/95 backdrop-blur-xl border border-gray-700/50 rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col max-h-[500px] h-[75vh] md:h-[500px]"
           >
             {/* Cabecera */}
             <div className="bg-gradient-to-r from-jv-purple to-jv-dark p-4 flex justify-between items-center border-b border-gray-700/50">
