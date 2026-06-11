@@ -12,6 +12,7 @@ import OrganigramaSection from "@/components/OrganigramaSection";
 import RoadmapSection from "@/components/RoadmapSection";
 import ImpactCounters from "@/components/ImpactCounters";
 import TestimonialSection from "@/components/TestimonialSection";
+import MagicParticles from "@/components/MagicParticles";
 
 export default function HomePageClient({ institution }: { institution: any }) {
   useEffect(() => {
@@ -72,6 +73,7 @@ export default function HomePageClient({ institution }: { institution: any }) {
       <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24 overflow-hidden perspective-[1000px]">
         {/* Background Image / Overlay */}
         <div className="absolute inset-0 bg-jv-dark z-0">
+          <MagicParticles />
           {institution?.publicBackground ? (
             <Image 
               src={institution.publicBackground} 

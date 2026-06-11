@@ -1,7 +1,33 @@
 "use client"
 
-import { motion } from "framer-motion";
+import { motion, animate } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useEffect, useState } from "react";
+
+function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
+  const numMatch = value.match(/\d+/);
+  const numericVal = numMatch ? parseInt(numMatch[0], 10) : 0;
+  const prefix = numMatch ? value.substring(0, numMatch.index) : "";
+  const suffix = numMatch ? value.substring((numMatch.index || 0) + numMatch[0].length) : value;
+
+  const [displayValue, setDisplayValue] = useState("0");
+
+  useEffect(() => {
+    if (inView) {
+      const controls = animate(0, numericVal, {
+        duration: 2.5,
+        ease: "easeOut",
+        onUpdate(v) {
+          setDisplayValue(Math.floor(v).toString());
+        }
+      });
+      return () => controls.stop();
+    }
+  }, [inView, numericVal]);
+
+  if (!numMatch) return <>{value}</>;
+  return <>{prefix}{displayValue}{suffix}</>;
+}
 
 export default function ImpactCounters({ institution }: { institution: any }) {
   const { ref, inView } = useInView({
@@ -14,9 +40,6 @@ export default function ImpactCounters({ institution }: { institution: any }) {
     { value: institution?.stat2Value || "20+", label: institution?.stat2Label || "Proyectos Realizados" },
     { value: institution?.stat3Value || "10+", label: institution?.stat3Label || "Comunidades Atendidas" },
   ];
-
-  // If all are completely empty (the default fallback), we can still show them, or hide if we want.
-  // We'll show them to have default content.
 
   return (
     <section ref={ref} className="py-20 bg-gray-900 border-t border-b border-gray-800 relative z-10">
@@ -31,7 +54,7 @@ export default function ImpactCounters({ institution }: { institution: any }) {
               className="text-center"
             >
               <div className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-jv-purple to-jv-turquoise mb-2">
-                {stat.value}
+                <AnimatedNumber value={stat.value} inView={inView} />
               </div>
               <div className="text-lg text-gray-400 font-medium uppercase tracking-wider">
                 {stat.label}

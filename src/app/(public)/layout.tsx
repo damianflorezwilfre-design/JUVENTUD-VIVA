@@ -2,6 +2,8 @@ export const dynamic = "force-dynamic";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SmoothScroll from "@/components/SmoothScroll";
+import CustomCursor from "@/components/CustomCursor";
 import { prisma } from "@/lib/prisma";
 
 export default async function PublicLayout({
@@ -23,10 +25,13 @@ export default async function PublicLayout({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
+      <CustomCursor />
       <Navbar />
-      <main className="flex-grow pt-20">
-        {children}
-      </main>
+      <SmoothScroll>
+        <main className="flex-grow pt-20">
+          {children}
+        </main>
+      </SmoothScroll>
       <Footer />
     </>
   );
