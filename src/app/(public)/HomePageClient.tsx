@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Heart, Users, BookOpen } from "lucide-react";
@@ -36,12 +36,42 @@ export default function HomePageClient({ institution }: { institution: any }) {
     }
   };
 
+  // 3D Tilt Effect Logic
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const heroTitleHtml = (institution?.heroTitle || "Empoderando a la Nueva Generación").replace("Nueva Generación", `<span class="text-transparent bg-clip-text bg-gradient-to-r from-jv-purple to-jv-turquoise">Nueva Generación</span>`);
+
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24">
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24 overflow-hidden perspective-[1000px]">
         {/* Background Image / Overlay */}
-        <div className="absolute inset-0 bg-jv-dark z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-jv-dark z-0">
           {institution?.publicBackground ? (
             <Image 
               src={institution.publicBackground} 
@@ -57,61 +87,75 @@ export default function HomePageClient({ institution }: { institution: any }) {
           <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-jv-turquoise/30 rounded-full blur-[120px]"></div>
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-          <motion.div
+        {/* 3D Interactive Container */}
+        <motion.div 
+          className="relative z-10 w-full max-w-5xl mx-auto px-4 flex justify-center items-center"
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            rotateX,
+            rotateY,
+            transformStyle: "preserve-3d",
+          }}
+        >
+          {/* Holographic Glass Card */}
+          <motion.div 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-8 flex justify-center"
+            className="w-full text-center bg-gray-900/40 backdrop-blur-md border border-white/10 rounded-3xl p-10 md:p-16 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden"
+            style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}
           >
-            <Image
-              src="/logo/juventud-viva.png"
-              alt="JUVENTUD VIVA Logo"
-              width={250}
-              height={250}
-              className="drop-shadow-[0_0_25px_rgba(79,221,230,0.5)]"
+            {/* Inner Glows */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-jv-turquoise to-transparent opacity-50"></div>
+            <div className="absolute -inset-1 bg-gradient-to-r from-jv-purple/20 to-jv-turquoise/20 blur-xl opacity-50 z-[-1]"></div>
+
+            <motion.div
+              style={{ transform: "translateZ(80px)" }}
+              className="mb-8 flex justify-center"
+            >
+              <Image
+                src="/logo/juventud-viva.png"
+                alt="JUVENTUD VIVA Logo"
+                width={200}
+                height={200}
+                className="drop-shadow-[0_0_35px_rgba(79,221,230,0.6)] hover:drop-shadow-[0_0_50px_rgba(155,28,201,0.8)] transition-all duration-500"
+              />
+            </motion.div>
+            
+            <motion.h1
+              style={{ transform: "translateZ(100px)" }}
+              className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 text-white tracking-tight leading-tight"
+              dangerouslySetInnerHTML={{ __html: heroTitleHtml }}
             />
-          </motion.div>
-          
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-6 text-white tracking-tight"
-          >
-            Empoderando a la <span className="text-transparent bg-clip-text bg-gradient-to-r from-jv-purple to-jv-turquoise">Nueva Generación</span>
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto"
-          >
-            "No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.
-          </motion.p>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
-            <Link
-              href="/nosotros"
-              className="px-8 py-4 rounded-full bg-jv-purple hover:bg-jv-turquoise text-white transition-all duration-300 font-semibold text-lg flex items-center justify-center group shadow-[0_0_20px_rgba(155,28,201,0.4)] hover:shadow-[0_0_20px_rgba(79,221,230,0.6)]"
+            
+            <motion.p
+              style={{ transform: "translateZ(60px)" }}
+              className="text-lg md:text-xl text-gray-300 mb-10 max-w-3xl mx-auto font-medium"
             >
-              Nuestra Historia
-              <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/contacto"
-              className="px-8 py-4 rounded-full bg-transparent border-2 border-jv-turquoise text-jv-turquoise hover:bg-jv-turquoise/10 transition-all duration-300 font-semibold text-lg flex items-center justify-center"
+              {institution?.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.'}
+            </motion.p>
+            
+            <motion.div
+              style={{ transform: "translateZ(70px)" }}
+              className="flex flex-col sm:flex-row gap-6 justify-center"
             >
-              Contacto
-            </Link>
+              <Link
+                href="/nosotros"
+                className="px-8 py-4 rounded-xl bg-gradient-to-r from-jv-purple to-jv-turquoise hover:from-jv-turquoise hover:to-jv-purple text-white transition-all duration-500 font-bold text-lg flex items-center justify-center group shadow-[0_0_30px_rgba(155,28,201,0.5)] hover:shadow-[0_0_40px_rgba(79,221,230,0.8)] border border-white/20"
+              >
+                Nuestra Historia
+                <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+              </Link>
+              <Link
+                href="#contacto"
+                className="px-8 py-4 rounded-xl bg-black/30 backdrop-blur-md border border-white/20 hover:bg-white/10 text-white transition-all duration-300 font-bold text-lg flex items-center justify-center"
+              >
+                Contacto
+              </Link>
+            </motion.div>
           </motion.div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Impact Counters */}

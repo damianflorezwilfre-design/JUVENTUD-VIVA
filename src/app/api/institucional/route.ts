@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
     }
 
     const { 
-      aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
+      heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
       feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
       donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
       transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
@@ -53,7 +53,7 @@ export async function PUT(request: Request) {
           modelName: 'Institution',
           recordId: 'singleton',
           proposedData: JSON.stringify({ 
-            aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
+            heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, 
             feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
             donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
             transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
@@ -85,7 +85,7 @@ export async function PUT(request: Request) {
     const updated = await prisma.institution.upsert({
       where: { id: "singleton" },
       update: {
-        aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+        heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
         feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
         donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
@@ -97,7 +97,7 @@ export async function PUT(request: Request) {
       },
       create: {
         id: "singleton",
-        aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+        heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
         feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
         donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,

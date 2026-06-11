@@ -75,6 +75,8 @@ model Gallery {
 
 model Institution {
   id        String   @id @default("singleton")
+  heroTitle     String?
+  heroSubtitle  String?
   aboutUs       String?
   mission       String?
   vision        String?

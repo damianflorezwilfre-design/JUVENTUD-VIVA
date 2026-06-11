@@ -30,6 +30,8 @@ export default async function Home() {
   if (!institution) {
     institution = {
       id: "singleton",
+      heroTitle: null,
+      heroSubtitle: null,
       aboutUs: "",
       mission: "",
       vision: "",

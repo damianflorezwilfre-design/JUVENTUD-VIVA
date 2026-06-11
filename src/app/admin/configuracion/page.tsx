@@ -9,6 +9,8 @@ export default function AdminConfiguracion() {
   const [fetching, setFetching] = useState(true);
 
   // Institution State
+  const [heroTitle, setHeroTitle] = useState("");
+  const [heroSubtitle, setHeroSubtitle] = useState("");
   const [aboutUs, setAboutUs] = useState("");
   const [mission, setMission] = useState("");
   const [vision, setVision] = useState("");
@@ -75,6 +77,8 @@ export default function AdminConfiguracion() {
         const res = await fetch("/api/institucional");
         if (res.ok) {
           const data = await res.json();
+          setHeroTitle(data.heroTitle || "Empoderando a la Nueva Generación");
+          setHeroSubtitle(data.heroSubtitle || '"No construimos para una elección, construimos para una generación." — Juventud ViVa, Villanueva - La Guajira.');
           setAboutUs(data.aboutUs || "");
           setMission(data.mission || "");
           setVision(data.vision || "");
@@ -130,7 +134,7 @@ export default function AdminConfiguracion() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+          heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
@@ -183,6 +187,20 @@ export default function AdminConfiguracion() {
               <p className="text-gray-500">Cargando datos...</p>
             ) : (
               <form className="space-y-4">
+                <div className="p-4 bg-gray-800/50 rounded-xl border border-gray-700 mb-6">
+                  <h4 className="text-jv-turquoise font-semibold mb-3">Textos de la Portada Principal (3D)</h4>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Título Principal (Hero)</label>
+                      <input type="text" value={heroTitle} onChange={(e) => setHeroTitle(e.target.value)} placeholder="Ej. Empoderando a la Nueva Generación" className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Frase Inspiracional (Subtítulo)</label>
+                      <textarea rows={2} value={heroSubtitle} onChange={(e) => setHeroSubtitle(e.target.value)} placeholder="Ej. No construimos para una elección..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-400 mb-1">Quiénes Somos</label>
                   <textarea rows={4} value={aboutUs} onChange={(e) => setAboutUs(e.target.value)} placeholder="Escribe la descripción de la fundación..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
