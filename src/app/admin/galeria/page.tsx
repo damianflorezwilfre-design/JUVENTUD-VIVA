@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink } from "lucide-react";
+import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink, Save } from "lucide-react";
 
 type GalleryItem = {
   id: string;
@@ -19,10 +19,15 @@ export default function AdminGaleria() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form State
+  const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
   const [type, setType] = useState("image");
   const [album, setAlbum] = useState("General");
+  
+  // New States for files and urls
+  const [coverPhoto, setCoverPhoto] = useState<{name: string, data: string} | null>(null);
+  const [additionalPhotos, setAdditionalPhotos] = useState<{name: string, data: string}[]>([]);
+  const [videoUrls, setVideoUrls] = useState("");
 
   const fetchGaleria = async () => {
     try {
@@ -45,21 +50,72 @@ export default function AdminGaleria() {
 
   const openModal = () => {
     setTitle("");
-    setUrl("");
     setType("image");
     setAlbum("General");
+    setCoverPhoto(null);
+    setAdditionalPhotos([]);
+    setVideoUrls("");
     setIsModalOpen(true);
+  };
+
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => { setCoverPhoto({ name: file.name, data: reader.result as string }); };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAdditionalUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    const newPhotos: {name: string, data: string}[] = [];
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newPhotos.push({ name: file.name, data: reader.result as string });
+        if (newPhotos.length === files.length) {
+          setAdditionalPhotos(prev => [...prev, ...newPhotos]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const payload = { title, url, type, album };
+    setSaving(true);
+    
+    const payloadItems: any[] = [];
+    
+    if (type === "image") {
+      // Agregamos primero las adicionales, y de último la portada,
+      // para que la portada sea la más reciente y aparezca primero en la web pública.
+      additionalPhotos.forEach(p => {
+        payloadItems.push({ title: title || p.name, url: p.data, type: "image", album });
+      });
+      if (coverPhoto) {
+        payloadItems.push({ title: title || "Portada", url: coverPhoto.data, type: "image", album });
+      }
+    } else {
+      const urls = videoUrls.split('\n').map(u => u.trim()).filter(u => u);
+      urls.forEach(u => {
+        payloadItems.push({ title, url: u, type: "video", album });
+      });
+    }
+
+    if (payloadItems.length === 0) {
+      alert("Por favor agrega al menos una foto o enlace de video.");
+      setSaving(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/galeria", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ items: payloadItems })
       });
 
       if (res.ok) {
@@ -70,6 +126,9 @@ export default function AdminGaleria() {
       }
     } catch (e) {
       console.error(e);
+      alert("Error de conexión");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -134,15 +193,17 @@ export default function AdminGaleria() {
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
                       <Video size={40} className="mb-2 opacity-50" />
-                      <span className="text-xs">Video (Vista previa no disponible)</span>
+                      <span className="text-xs">Video</span>
                     </div>
                   )}
                   
                   {/* Overlay on hover */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
-                    <a href={item.url} target="_blank" rel="noreferrer" className="p-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors">
-                      <ExternalLink size={18} />
-                    </a>
+                    {item.type === 'video' && (
+                      <a href={item.url} target="_blank" rel="noreferrer" className="p-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors">
+                        <ExternalLink size={18} />
+                      </a>
+                    )}
                     <button onClick={() => handleDelete(item.id)} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
                       <Trash2 size={18} />
                     </button>
@@ -175,18 +236,18 @@ export default function AdminGaleria() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md overflow-hidden"
+            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl"
           >
             <div className="p-6 border-b border-gray-800 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-white">Añadir Multimedia</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
+              <h3 className="text-xl font-bold text-white">Añadir Multimedia (Bloque)</h3>
+              <button onClick={() => !saving && setIsModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X size={24} />
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Título / Descripción (Opcional)</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Título General (Opcional)</label>
                 <input 
                   type="text" 
                   value={title} 
@@ -209,7 +270,7 @@ export default function AdminGaleria() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Tipo</label>
+                <label className="block text-sm font-medium text-gray-400 mb-2">¿Qué deseas subir?</label>
                 <div className="flex space-x-4">
                   <label className="flex items-center space-x-2 text-gray-300 cursor-pointer">
                     <input 
@@ -220,7 +281,7 @@ export default function AdminGaleria() {
                       onChange={() => setType("image")}
                       className="text-jv-purple focus:ring-jv-purple"
                     />
-                    <span>Imagen</span>
+                    <span>Fotos</span>
                   </label>
                   <label className="flex items-center space-x-2 text-gray-300 cursor-pointer">
                     <input 
@@ -231,34 +292,61 @@ export default function AdminGaleria() {
                       onChange={() => setType("video")}
                       className="text-jv-purple focus:ring-jv-purple"
                     />
-                    <span>Video</span>
+                    <span>Videos (Enlaces)</span>
                   </label>
                 </div>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Enlace (URL) de la {type === 'image' ? 'Imagen' : 'Video'}</label>
-                <input 
-                  required
-                  type="url" 
-                  value={url} 
-                  onChange={e => setUrl(e.target.value)} 
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                  placeholder={type === 'image' ? "https://imgur.com/..." : "https://youtube.com/watch?v=..."}
-                />
-                <p className="text-xs text-gray-500 mt-1">Pega el enlace directo a la imagen o video (ej. YouTube).</p>
-              </div>
+              {type === 'image' ? (
+                <div className="space-y-4 pt-2">
+                  <div className="bg-gray-800/50 p-4 rounded-xl border border-jv-purple/30">
+                    <label className="block text-sm font-medium text-white mb-2">1. Foto de Portada</label>
+                    <div className="relative">
+                      <input type="file" accept="image/*" onChange={handleCoverUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                      <div className="w-full bg-gray-800 border border-jv-purple/50 rounded-lg px-4 py-3 text-jv-purple flex items-center justify-between">
+                        <span className="truncate text-sm font-medium">{coverPhoto ? "Portada seleccionada ✓" : "Seleccionar Portada..."}</span>
+                        <ImageIcon size={18} />
+                      </div>
+                    </div>
+                  </div>
 
-              {type === 'image' && url && (
-                <div className="mt-4 border border-gray-700 rounded-lg overflow-hidden bg-gray-800 p-1">
-                  <p className="text-xs text-gray-500 mb-1 px-1">Vista previa:</p>
-                  <img src={url} alt="Vista previa" className="w-full h-32 object-cover rounded" onError={(e) => (e.currentTarget.src = "")} />
+                  <div className="bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+                    <label className="block text-sm font-medium text-white mb-2">2. Fotos Adicionales ({additionalPhotos.length} seleccionadas)</label>
+                    <div className="relative">
+                      <input type="file" multiple accept="image/*" onChange={handleAdditionalUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                      <div className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-400 flex items-center justify-between hover:border-gray-500 transition-colors">
+                        <span className="truncate text-sm font-medium">Seleccionar Varias Fotos...</span>
+                        <PlusCircle size={18} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="pt-2">
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Enlaces de Videos</label>
+                  <p className="text-xs text-gray-500 mb-2">Pega un enlace por cada línea (YouTube, Instagram, TikTok, etc.)</p>
+                  <textarea 
+                    rows={4}
+                    value={videoUrls} 
+                    onChange={e => setVideoUrls(e.target.value)} 
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
+                    placeholder="https://youtube.com/watch?v=123&#10;https://youtube.com/watch?v=456"
+                  />
                 </div>
               )}
 
-              <div className="pt-4 flex justify-end space-x-3">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">Cancelar</button>
-                <button type="submit" className="px-4 py-2 rounded-lg bg-jv-purple hover:bg-jv-turquoise text-white font-semibold transition-colors">Añadir a Galería</button>
+              <div className="pt-6 flex justify-end space-x-3">
+                <button type="button" disabled={saving} onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors">Cancelar</button>
+                <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg bg-jv-purple hover:bg-jv-turquoise text-white font-semibold transition-colors flex items-center">
+                  {saving ? (
+                    <>Cargando...</>
+                  ) : (
+                    <>
+                      <Save size={18} className="mr-2" />
+                      Subir al Álbum
+                    </>
+                  )}
+                </button>
               </div>
             </form>
           </motion.div>

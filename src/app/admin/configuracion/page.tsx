@@ -20,6 +20,7 @@ export default function AdminConfiguracion() {
   const [facebook, setFacebook] = useState("");
   const [instagram, setInstagram] = useState("");
   const [twitter, setTwitter] = useState("");
+  const [tiktok, setTiktok] = useState("");
 
   // Features State
   const [feature1Title, setFeature1Title] = useState("");
@@ -88,6 +89,7 @@ export default function AdminConfiguracion() {
           setFacebook(data.facebook || "");
           setInstagram(data.instagram || "");
           setTwitter(data.twitter || "");
+          setTiktok(data.tiktok || "");
           setFeature1Title(data.feature1Title || "Liderazgo Comunitario");
           setFeature1Desc(data.feature1Desc || "Formamos jóvenes capaces de liderar iniciativas de impacto social.");
           setFeature2Title(data.feature2Title || "Educación Continua");
@@ -134,7 +136,7 @@ export default function AdminConfiguracion() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter,
+          heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok,
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
@@ -459,6 +461,10 @@ export default function AdminConfiguracion() {
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> Twitter / X</label>
                 <input type="url" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="https://twitter.com/..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center"><LinkIcon size={16} className="mr-2"/> TikTok</label>
+                <input type="url" value={tiktok} onChange={(e) => setTiktok(e.target.value)} placeholder="https://tiktok.com/@..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" />
               </div>
             </div>
           </div>

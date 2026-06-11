@@ -87,6 +87,7 @@ model Institution {
   facebook      String?
   instagram     String?
   twitter       String?
+  tiktok        String?
   feature1Title String?
   feature1Desc  String?
   feature2Title String?

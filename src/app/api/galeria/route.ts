@@ -27,7 +27,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { title, url, type, album } = await request.json();
+    const body = await request.json();
+
+    if (body.items && Array.isArray(body.items)) {
+      const result = await prisma.gallery.createMany({
+        data: body.items.map((item: any) => ({
+          title: item.title || null,
+          album: item.album || "General",
+          url: item.url,
+          type: item.type
+        }))
+      });
+      return NextResponse.json({ success: true, count: result.count }, { status: 201 });
+    }
+
+    const { title, url, type, album } = body;
 
     if (!url || !type) {
       return NextResponse.json({ error: 'La URL y el tipo son requeridos' }, { status: 400 });
@@ -44,6 +58,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(nuevoMedia, { status: 201 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Error al añadir a galería' }, { status: 500 });
   }
 }
