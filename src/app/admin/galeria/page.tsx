@@ -48,16 +48,37 @@ export default function AdminGaleria() {
     fetchGaleria();
   }, []);
 
+  const [selectedAlbum, setSelectedAlbum] = useState<string | null>(null);
+
+  // Agrupar items por album
+  const albumsMap = new Map<string, GalleryItem[]>();
+  items.forEach(item => {
+    const albumName = item.album || "General";
+    if (!albumsMap.has(albumName)) {
+      albumsMap.set(albumName, []);
+    }
+    albumsMap.get(albumName)!.push(item);
+  });
+
+  const albums = Array.from(albumsMap.entries()).map(([name, files]) => ({
+    name,
+    files,
+    coverUrl: files.find(f => f.type === 'image')?.url || null
+  }));
+
+  const selectedItems = selectedAlbum ? albumsMap.get(selectedAlbum) || [] : [];
+
   const openModal = () => {
     setTitle("");
     setType("image");
-    setAlbum("General");
+    setAlbum(selectedAlbum || "General");
     setCoverPhoto(null);
     setAdditionalPhotos([]);
     setVideoUrls("");
     setIsModalOpen(true);
   };
 
+  // ... (keep compressImage, handleCoverUpload, handleAdditionalUpload, handleSubmit)
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -133,8 +154,6 @@ export default function AdminGaleria() {
     const payloadItems: any[] = [];
     
     if (type === "image") {
-      // Agregamos primero las adicionales, y de último la portada,
-      // para que la portada sea la más reciente y aparezca primero en la web pública.
       additionalPhotos.forEach(p => {
         payloadItems.push({ title: title || p.name, url: p.data, type: "image", album });
       });
@@ -221,55 +240,100 @@ export default function AdminGaleria() {
             <ImageIcon size={48} className="mx-auto mb-4 opacity-20" />
             <p>La galería está vacía. Añade tu primera imagen o video.</p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {items.map((item) => (
-              <motion.div 
-                key={item.id}
+        ) : !selectedAlbum ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {albums.map((al) => (
+              <motion.div
+                key={al.name}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group relative"
+                onClick={() => setSelectedAlbum(al.name)}
+                className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden cursor-pointer group hover:border-jv-purple transition-all duration-300 shadow-xl"
               >
-                <div className="aspect-video bg-gray-900 relative">
-                  {item.type === 'image' ? (
-                    <img src={item.url} alt={item.title || "Imagen"} className="w-full h-full object-cover" />
+                <div className="aspect-[4/3] bg-gray-900 relative overflow-hidden">
+                  {al.coverUrl ? (
+                    <img src={al.coverUrl} alt={al.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-                      <Video size={40} className="mb-2 opacity-50" />
-                      <span className="text-xs">Video</span>
+                    <div className="w-full h-full flex items-center justify-center text-gray-600">
+                      <Folder size={64} />
                     </div>
                   )}
-                  
-                  {/* Overlay on hover */}
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
-                    {item.type === 'video' && (
-                      <a href={item.url} target="_blank" rel="noreferrer" className="p-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors">
-                        <ExternalLink size={18} />
-                      </a>
-                    )}
-                    <button onClick={() => handleDelete(item.id)} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
-                      <Trash2 size={18} />
-                    </button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-lg font-bold text-white mb-1 flex items-center">
+                      <Folder size={18} className="mr-2 text-jv-turquoise" />
+                      {al.name}
+                    </h3>
+                    <p className="text-gray-300 text-xs">{al.files.length} archivo{al.files.length !== 1 ? 's' : ''}</p>
                   </div>
-                  
-                  {/* Badge */}
-                  <div className="absolute top-2 right-2 flex flex-col space-y-1 items-end">
-                    <div className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-300 flex items-center">
-                      {item.type === 'image' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
-                      {item.type === 'image' ? 'Imagen' : 'Video'}
-                    </div>
-                    <div className="bg-jv-purple/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white flex items-center shadow-lg">
-                      {item.album}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-4">
-                  <h3 className="text-white font-medium truncate">{item.title || "Sin título"}</h3>
-                  <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
                 </div>
               </motion.div>
             ))}
+          </div>
+        ) : (
+          <div>
+            <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
+              <div className="flex items-center">
+                <button 
+                  onClick={() => setSelectedAlbum(null)}
+                  className="mr-4 text-gray-400 hover:text-jv-turquoise transition-colors font-medium bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700 hover:border-jv-turquoise flex items-center"
+                >
+                  <ArrowLeft size={18} className="mr-2" />
+                  Volver
+                </button>
+                <h2 className="text-2xl font-bold text-white flex items-center">
+                  <Folder size={24} className="mr-3 text-jv-purple" />
+                  {selectedAlbum}
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {selectedItems.map((item) => (
+                <motion.div 
+                  key={item.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group relative"
+                >
+                  <div className="aspect-square bg-gray-900 relative">
+                    {item.type === 'image' ? (
+                      <img src={item.url} alt={item.title || "Imagen"} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+                        <Video size={40} className="mb-2 opacity-50" />
+                        <span className="text-xs">Video</span>
+                      </div>
+                    )}
+                    
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
+                      {item.type === 'video' && (
+                        <a href={item.url} target="_blank" rel="noreferrer" className="p-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors">
+                          <ExternalLink size={18} />
+                        </a>
+                      )}
+                      <button onClick={() => handleDelete(item.id)} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                    
+                    {/* Badge */}
+                    <div className="absolute top-2 right-2 flex flex-col space-y-1 items-end">
+                      <div className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-300 flex items-center">
+                        {item.type === 'image' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
+                        {item.type === 'image' ? 'Imagen' : 'Video'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="p-4">
+                    <h3 className="text-white font-medium truncate">{item.title || "Sin título"}</h3>
+                    <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         )}
       </div>
