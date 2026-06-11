@@ -10,6 +10,7 @@ export default function Eventos() {
   const [eventos, setEventos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedEvento, setSelectedEvento] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/eventos")
@@ -81,107 +82,140 @@ export default function Eventos() {
           </div>
 
           {/* Grid Calendar */}
-          <div className="p-4 md:p-6">
-            <div className="grid grid-cols-7 gap-2 md:gap-4 mb-2">
-              {dayNames.map(day => (
-                <div key={day} className="text-center text-gray-500 font-bold uppercase text-xs md:text-sm py-2">
-                  {day}
-                </div>
-              ))}
-            </div>
-            
-            <div className="grid grid-cols-7 gap-2 md:gap-4">
-              {Array.from({ length: firstDay }).map((_, i) => (
-                <div key={`empty-${i}`} className="min-h-[80px] md:min-h-[120px] rounded-xl bg-gray-800/30 border border-gray-800/50"></div>
-              ))}
-              
-              {Array.from({ length: daysInMonth }).map((_, i) => {
-                const day = i + 1;
-                const dayEvents = getEventsForDay(day);
-                const isToday = new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year;
-
-                return (
-                  <div 
-                    key={day} 
-                    className={`min-h-[80px] md:min-h-[120px] rounded-xl border p-2 flex flex-col transition-all
-                      ${isToday ? 'bg-jv-purple/10 border-jv-purple/50' : 'bg-gray-800/50 border-gray-800 hover:border-jv-turquoise/30'}
-                    `}
-                  >
-                    <div className="flex justify-between items-start mb-1 md:mb-2">
-                      <span className={`text-sm md:text-lg font-bold ${isToday ? 'text-jv-turquoise' : 'text-gray-400'}`}>
-                        {day}
-                      </span>
-                      {dayEvents.length > 0 && (
-                        <span className="w-2 h-2 rounded-full bg-jv-purple md:hidden"></span>
-                      )}
-                    </div>
-                    
-                    <div className="hidden md:flex flex-col gap-1 overflow-y-auto max-h-[80px]">
-                      {dayEvents.map(evento => (
-                        <div key={evento.id} className="text-xs bg-gray-900 border border-gray-700 rounded-md p-1.5 text-white truncate hover:bg-jv-purple/20 hover:border-jv-purple/50 cursor-pointer" title={evento.title}>
-                          <span className="font-bold text-jv-turquoise mr-1">{new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
-                          {evento.title}
-                        </div>
-                      ))}
-                    </div>
+          <div className="p-4 md:p-6 overflow-x-auto scrollbar-hide">
+            <div className="min-w-[600px] md:min-w-0">
+              <div className="grid grid-cols-7 gap-2 md:gap-4 mb-2">
+                {dayNames.map(day => (
+                  <div key={day} className="text-center text-gray-500 font-bold uppercase text-xs md:text-sm py-2">
+                    {day}
                   </div>
-                );
-              })}
+                ))}
+              </div>
+              
+              <div className="grid grid-cols-7 gap-2 md:gap-4">
+                {Array.from({ length: firstDay }).map((_, i) => (
+                  <div key={`empty-${i}`} className="min-h-[80px] md:min-h-[120px] rounded-xl bg-gray-800/30 border border-gray-800/50"></div>
+                ))}
+                
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const day = i + 1;
+                  const dayEvents = getEventsForDay(day);
+                  const isToday = new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year;
+
+                  return (
+                    <div 
+                      key={day} 
+                      className={`min-h-[100px] md:min-h-[120px] rounded-xl border p-2 flex flex-col transition-all
+                        ${isToday ? 'bg-jv-purple/10 border-jv-purple/50' : 'bg-gray-800/50 border-gray-800 hover:border-jv-turquoise/30'}
+                      `}
+                    >
+                      <div className="flex justify-between items-start mb-1 md:mb-2">
+                        <span className={`text-sm md:text-lg font-bold ${isToday ? 'text-jv-turquoise' : 'text-gray-400'}`}>
+                          {day}
+                        </span>
+                      </div>
+                      
+                      <div className="flex flex-col gap-1 overflow-y-auto flex-1 scrollbar-hide">
+                        {dayEvents.map(evento => (
+                          <div 
+                            key={evento.id} 
+                            onClick={() => setSelectedEvento(evento)}
+                            className="relative overflow-hidden text-[10px] md:text-xs bg-gray-900 border border-gray-700 rounded-md p-1.5 text-white cursor-pointer group shadow-sm hover:border-jv-purple/50 flex flex-col justify-end min-h-[36px] md:min-h-[44px]" 
+                            title={evento.title}
+                          >
+                            {evento.imageUrl && (
+                              <>
+                                <img src={evento.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity duration-300" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                              </>
+                            )}
+                            <div className="relative z-10 flex flex-col">
+                              <span className="font-bold text-jv-turquoise leading-none mb-0.5">
+                                {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                              <span className="truncate font-medium">{evento.title}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Lista detallada de eventos del mes actual */}
-      {!loading && eventos.filter(e => new Date(e.date).getMonth() === month && new Date(e.date).getFullYear() === year).length > 0 && (
-        <div className="mt-16">
-          <h3 className="text-2xl font-bold text-white mb-8 border-b border-gray-800 pb-4">Detalle de Actividades - {monthNames[month]}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {eventos
-              .filter(e => new Date(e.date).getMonth() === month && new Date(e.date).getFullYear() === year)
-              .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-              .map((evento, idx) => (
-              <motion.div
-                key={evento.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-jv-purple/50 transition-colors group flex flex-col h-full"
-              >
-                <div className="h-48 overflow-hidden relative bg-gray-800">
-                  {evento.imageUrl ? (
-                    <Image src={evento.imageUrl} alt={evento.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className="w-full h-full flex justify-center items-center">
-                      <CalendarIcon size={48} className="text-gray-700" />
-                    </div>
-                  )}
-                  <div className="absolute top-4 right-4 bg-jv-dark/80 backdrop-blur-md border border-jv-purple/30 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                    {new Date(evento.date).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })}
-                  </div>
+      {/* Modal para Detalles del Evento */}
+      {selectedEvento && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-[100] flex flex-col items-center justify-center p-4 md:p-8 backdrop-blur-md"
+          onClick={() => setSelectedEvento(null)}
+        >
+          <button 
+            onClick={() => setSelectedEvento(null)} 
+            className="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-jv-turquoise transition-colors p-3 bg-gray-900/80 rounded-full z-[110] shadow-xl"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="relative w-full max-w-3xl max-h-[85vh] bg-gray-900 border border-gray-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Banner/Imagen */}
+            <div className="h-48 md:h-72 w-full bg-gray-800 relative flex-shrink-0">
+              {selectedEvento.imageUrl ? (
+                <Image src={selectedEvento.imageUrl} alt={selectedEvento.title} fill className="object-cover" />
+              ) : (
+                <div className="w-full h-full flex justify-center items-center">
+                  <CalendarIcon size={64} className="text-gray-700" />
                 </div>
-                <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-jv-turquoise transition-colors">{evento.title}</h3>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-400">
-                      <Clock size={16} className="mr-2 text-jv-purple" /> 
-                      {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
-                    </div>
-                    {evento.location && (
-                      <div className="flex items-start text-sm text-gray-400">
-                        <MapPin size={16} className="mr-2 text-jv-turquoise mt-0.5 shrink-0" /> 
-                        <span>{evento.location}</span>
-                      </div>
-                    )}
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+              
+              {/* Fecha Flotante */}
+              <div className="absolute top-4 left-4 bg-jv-purple/90 backdrop-blur-md border border-jv-purple/50 text-white font-bold px-4 py-2 rounded-xl shadow-lg text-center leading-tight">
+                <span className="block text-2xl">{new Date(selectedEvento.date).getDate()}</span>
+                <span className="block text-xs uppercase">{monthNames[new Date(selectedEvento.date).getMonth()]}</span>
+              </div>
+            </div>
+            
+            {/* Contenido */}
+            <div className="p-6 md:p-8 overflow-y-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">{selectedEvento.title}</h2>
+              
+              <div className="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-6 mb-8 bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+                <div className="flex items-center text-gray-300">
+                  <div className="bg-jv-purple/20 p-2 rounded-lg mr-3">
+                    <Clock size={20} className="text-jv-purple" /> 
                   </div>
+                  <span className="font-medium text-lg">{new Date(selectedEvento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+                {selectedEvento.location && (
+                  <div className="flex items-center text-gray-300">
+                    <div className="bg-jv-turquoise/20 p-2 rounded-lg mr-3">
+                      <MapPin size={20} className="text-jv-turquoise" /> 
+                    </div>
+                    <span className="font-medium">{selectedEvento.location}</span>
+                  </div>
+                )}
+              </div>
 
-                  <p className="text-gray-400 text-sm mb-6 flex-1 whitespace-pre-wrap">{evento.description}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              <div className="prose prose-invert max-w-none">
+                <h3 className="text-lg font-bold text-jv-turquoise mb-2 flex items-center">
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  Detalles de la Actividad
+                </h3>
+                <p className="text-gray-300 whitespace-pre-wrap leading-relaxed text-base md:text-lg">
+                  {selectedEvento.description}
+                </p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>
