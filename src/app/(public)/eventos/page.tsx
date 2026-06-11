@@ -167,15 +167,14 @@ export default function Eventos() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Banner/Imagen */}
-            <div className="h-48 md:h-72 w-full bg-gray-800 relative flex-shrink-0">
+            <div className="w-full bg-gray-800 relative flex-shrink-0">
               {selectedEvento.imageUrl ? (
-                <Image src={selectedEvento.imageUrl} alt={selectedEvento.title} fill className="object-cover" />
+                <img src={selectedEvento.imageUrl} alt={selectedEvento.title} className="w-full h-auto max-h-[50vh] object-contain bg-black/50" />
               ) : (
-                <div className="w-full h-full flex justify-center items-center">
+                <div className="w-full h-48 md:h-72 flex justify-center items-center">
                   <CalendarIcon size={64} className="text-gray-700" />
                 </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
               
               {/* Fecha Flotante */}
               <div className="absolute top-4 left-4 bg-jv-purple/90 backdrop-blur-md border border-jv-purple/50 text-white font-bold px-4 py-2 rounded-xl shadow-lg text-center leading-tight">
