@@ -28,7 +28,6 @@ export default async function PublicLayout({
         />
       )}
       <CustomCursor />
-      <MobileBottomNav />
       <GuiaVivaChatbot />
       <Navbar />
       <SmoothScroll>
