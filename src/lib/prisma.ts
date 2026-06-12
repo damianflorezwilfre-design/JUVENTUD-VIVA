@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client';
 const connectionString = `${process.env.DATABASE_URL}`;
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: any | undefined;
 };
 
 function createPrismaClient() {
