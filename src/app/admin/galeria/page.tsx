@@ -419,29 +419,26 @@ export default function AdminGaleria() {
                     
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
                       <div className="flex space-x-1">
-                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la izquierda">
+                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la izquierda">
                           <ChevronLeft size={18}/>
                         </button>
-                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la derecha">
+                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la derecha">
                           <ChevronRight size={18}/>
                         </button>
                       </div>
                       
                       <div className="flex space-x-2">
-                        <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex items-center px-3 py-1.5 bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
-                          <Edit2 size={14} className="mr-1.5" />
-                          <span>Editar</span>
+                        <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="w-10 h-10 flex items-center justify-center bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors" title="Editar multimedia">
+                          <Edit2 size={16} />
                         </button>
 
-                        <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex items-center px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
-                          <Trash2 size={14} className="mr-1.5" />
-                          <span>Eliminar</span>
+                        <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="w-10 h-10 flex items-center justify-center bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-colors" title="Eliminar multimedia">
+                          <Trash2 size={16} />
                         </button>
                         
                         {item.type === 'video' && (
-                          <a href={item.url} target="_blank" rel="noreferrer" className="flex items-center px-3 py-1.5 bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
-                            <ExternalLink size={14} className="mr-1.5" />
-                            <span>Ver</span>
+                          <a href={item.url} target="_blank" rel="noreferrer" className="w-10 h-10 flex items-center justify-center bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors" title="Ver video">
+                            <ExternalLink size={16} />
                           </a>
                         )}
                       </div>
