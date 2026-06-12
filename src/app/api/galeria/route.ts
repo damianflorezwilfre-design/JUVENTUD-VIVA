@@ -13,7 +13,10 @@ async function isAuthenticated() {
 export async function GET() {
   try {
     const media = await prisma.gallery.findMany({
-      orderBy: { createdAt: 'desc' }
+      orderBy: [
+        { order: 'asc' },
+        { createdAt: 'desc' }
+      ]
     });
     return NextResponse.json(media);
   } catch (error) {

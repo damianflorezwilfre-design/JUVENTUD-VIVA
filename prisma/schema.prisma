@@ -71,6 +71,7 @@ model Gallery {
   album     String   @default("General")
   url       String
   type      String   // image, video
+  order     Int      @default(0)
   createdAt DateTime @default(now())
 }
 

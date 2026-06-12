@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink, Save, Folder, ArrowLeft } from "lucide-react";
+import { PlusCircle, Trash2, X, Search, Image as ImageIcon, Video, ExternalLink, Save, Folder, ArrowLeft, Edit2, ChevronLeft, ChevronRight } from "lucide-react";
 
 type GalleryItem = {
   id: string;
@@ -205,6 +205,82 @@ export default function AdminGaleria() {
     }
   };
 
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editAlbum, setEditAlbum] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+
+  const openEditModal = (item: GalleryItem) => {
+    setEditingItem(item);
+    setEditTitle(item.title || "");
+    setEditAlbum(item.album || "General");
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingItem(null);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingItem) return;
+    setSavingEdit(true);
+    try {
+      const res = await fetch(`/api/galeria/${editingItem.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: editTitle, album: editAlbum })
+      });
+      if (res.ok) {
+        closeEditModal();
+        fetchGaleria();
+      } else {
+        alert("Error al guardar la edición.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error de conexión");
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  const moveItem = async (index: number, direction: number) => {
+    if (!selectedAlbum) return;
+    const albumItems = albumsMap.get(selectedAlbum) || [];
+    if (index + direction < 0 || index + direction >= albumItems.length) return;
+
+    // Locally swap
+    const newItems = [...albumItems];
+    const temp = newItems[index];
+    newItems[index] = newItems[index + direction];
+    newItems[index + direction] = temp;
+
+    // Update state optimistically
+    const updatedAllItems = items.map(item => {
+      if (item.id === newItems[index].id) return { ...item, order: index };
+      if (item.id === newItems[index + direction].id) return { ...item, order: index + direction };
+      return item;
+    });
+    setItems(updatedAllItems);
+
+    // Send bulk update to backend
+    const payload = newItems.map((item, idx) => ({ id: item.id, order: idx }));
+    try {
+      await fetch("/api/galeria/reorder", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items: payload })
+      });
+    } catch (e) {
+      console.error(e);
+      // Revert on error
+      fetchGaleria();
+    }
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
@@ -331,17 +407,27 @@ export default function AdminGaleria() {
                       <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
                     </div>
                     
-                    <div className="flex items-center space-x-2 mt-4 pt-4 border-t border-gray-700">
+                    <div className="flex items-center space-x-1 sm:space-x-2 mt-4 pt-4 border-t border-gray-700">
+                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="p-2 bg-gray-800 hover:bg-jv-purple text-gray-300 rounded-lg disabled:opacity-30 disabled:hover:bg-gray-800"><ChevronLeft size={16}/></button>
+                      
+                      <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-jv-purple text-gray-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
+                        <Edit2 size={16} className="lg:mr-2" />
+                        <span className="hidden lg:inline">Editar</span>
+                      </button>
+
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors text-sm font-medium">
+                        <Trash2 size={16} className="lg:mr-2" />
+                        <span className="hidden lg:inline">Eliminar</span>
+                      </button>
+                      
                       {item.type === 'video' && (
                         <a href={item.url} target="_blank" rel="noreferrer" className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-jv-purple text-gray-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
-                          <ExternalLink size={16} className="mr-2" />
-                          Ver
+                          <ExternalLink size={16} className="lg:mr-2" />
+                          <span className="hidden lg:inline">Ver</span>
                         </a>
                       )}
-                      <button onClick={() => handleDelete(item.id)} className={`${item.type === 'video' ? 'flex-1' : 'w-full'} flex justify-center items-center py-2 bg-gray-800 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-transparent hover:border-red-500/30 rounded-lg transition-colors text-sm font-medium`}>
-                        <Trash2 size={16} className="mr-2" />
-                        Eliminar
-                      </button>
+                      
+                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="p-2 bg-gray-800 hover:bg-jv-purple text-gray-300 rounded-lg disabled:opacity-30 disabled:hover:bg-gray-800"><ChevronRight size={16}/></button>
                     </div>
                   </div>
                 </motion.div>
@@ -466,6 +552,52 @@ export default function AdminGaleria() {
                       Subir al Álbum
                     </>
                   )}
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-sm overflow-hidden shadow-2xl"
+          >
+            <div className="p-6 border-b border-gray-800 flex justify-between items-center">
+              <h3 className="text-xl font-bold text-white">Editar Multimedia</h3>
+              <button onClick={() => !savingEdit && closeEditModal()} className="text-gray-400 hover:text-white transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Título</label>
+                <input 
+                  type="text" 
+                  value={editTitle} 
+                  onChange={(e) => setEditTitle(e.target.value)} 
+                  placeholder="Ej. Congreso 2026" 
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Álbum</label>
+                <input 
+                  type="text" 
+                  value={editAlbum} 
+                  onChange={(e) => setEditAlbum(e.target.value)} 
+                  placeholder="Ej. Eventos 2026" 
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                />
+              </div>
+
+              <div className="pt-4 flex space-x-3">
+                <button type="button" onClick={closeEditModal} className="flex-1 px-4 py-2 bg-gray-800 text-white rounded-xl hover:bg-gray-700 transition-colors font-medium">Cancelar</button>
+                <button type="submit" disabled={savingEdit} className="flex-1 px-4 py-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-xl transition-colors font-medium flex justify-center items-center">
+                  {savingEdit ? "Guardando..." : "Guardar Cambios"}
                 </button>
               </div>
             </form>

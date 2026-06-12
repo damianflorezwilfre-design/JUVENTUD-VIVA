@@ -1,74 +1,15 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyToken, getSession } from '@/lib/auth';
-import { cookies } from 'next/headers';
+import { getSession } from '@/lib/auth';
 
-async function isAuthenticated() {
-  const session = (await cookies()).get('session')?.value;
-  if (!session) return false;
-  return await verifyToken(session) !== null;
-}
-
-export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: Request, context: any) {
+  const { id } = await context.params;
   try {
     const session: any = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
-
-    const { title, url, type } = await request.json();
-    const { id } = await params;
-
-    if (session.role !== 'SUPER_ADMIN') {
-      await prisma.editRequest.create({
-        data: {
-          userId: session.id,
-          action: 'EDIT',
-          modelName: 'Gallery',
-          recordId: id,
-          proposedData: JSON.stringify({ title, url, type })
-        }
-      });
-
-      // Send email notification
-      const { sendEmailNotification } = await import('@/lib/email');
-      await sendEmailNotification(
-        "Nueva Solicitud de Edición - Juventud ViVa",
-        "Un editor ha solicitado un cambio. Revisa el portal de administrador.",
-        "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
-      );
-
-      // Notify via WhatsApp
-      const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
-      await sendWhatsAppNotification(`⚠️ *Nueva Solicitud de Edición*\n\nUn administrador secundario ha solicitado permiso para editar o borrar un registro.\n\nEntra al sistema para revisar los detalles exactos\n\nRevisa el panel de administrador para aprobar o rechazar.`);
-
-
-      return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
-    }
-
-    const mediaActualizado = await prisma.gallery.update({
-      where: { id },
-      data: {
-        title: title || null,
-        url,
-        type
-      }
-    });
-
-    return NextResponse.json(mediaActualizado);
-  } catch (error) {
-    return NextResponse.json({ error: 'Error al actualizar galería' }, { status: 500 });
-  }
-}
-
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const session: any = await getSession();
-    if (!session) {
-      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-    }
-    
-    const { id } = await params;
 
     if (session.role !== 'SUPER_ADMIN') {
       await prisma.editRequest.create({
@@ -77,23 +18,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
           action: 'DELETE',
           modelName: 'Gallery',
           recordId: id,
-          proposedData: null
         }
       });
-
-      // Send email notification
-      const { sendEmailNotification } = await import('@/lib/email');
-      await sendEmailNotification(
-        "Nueva Solicitud de Edición - Juventud ViVa",
-        "Un editor ha solicitado un cambio. Revisa el portal de administrador.",
-        "<p>Un editor ha solicitado un cambio que requiere tu aprobación.</p><p>Puedes revisarlo en el <a href='https://juventud-viva.vercel.app/admin/solicitudes'>panel de administrador (Solicitudes)</a>.</p>"
-      );
-
-      // Notify via WhatsApp
-      const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
-      await sendWhatsAppNotification(`⚠️ *Nueva Solicitud de Edición*\n\nUn administrador secundario ha solicitado permiso para editar o borrar un registro.\n\nEntra al sistema para revisar los detalles exactos\n\nRevisa el panel de administrador para aprobar o rechazar.`);
-
-
       return NextResponse.json({ success: true, message: 'Solicitud de eliminación enviada', isRequest: true });
     }
 
@@ -104,5 +30,39 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Error al eliminar multimedia' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: Request, context: any) {
+  const { id } = await context.params;
+  try {
+    const session: any = await getSession();
+    if (!session) {
+      return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+    }
+
+    const { title, album } = await request.json();
+
+    if (session.role !== 'SUPER_ADMIN') {
+      await prisma.editRequest.create({
+        data: {
+          userId: session.id,
+          action: 'EDIT',
+          modelName: 'Gallery',
+          recordId: id,
+          proposedData: JSON.stringify({ title, album })
+        }
+      });
+      return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
+    }
+
+    const updatedMedia = await prisma.gallery.update({
+      where: { id },
+      data: { title, album }
+    });
+
+    return NextResponse.json(updatedMedia);
+  } catch (error) {
+    return NextResponse.json({ error: 'Error al editar multimedia' }, { status: 500 });
   }
 }
