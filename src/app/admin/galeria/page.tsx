@@ -10,6 +10,7 @@ type GalleryItem = {
   url: string;
   type: string;
   album: string;
+  order: number;
   createdAt: string;
 };
 
