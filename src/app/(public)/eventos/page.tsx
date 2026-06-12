@@ -43,7 +43,13 @@ export default function Eventos() {
   const getEventsForDay = (day: number) => {
     return eventos.filter(evento => {
       const eDate = new Date(evento.date);
-      return eDate.getDate() === day && eDate.getMonth() === month && eDate.getFullYear() === year;
+      const formatter = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Bogota', year: 'numeric', month: 'numeric', day: 'numeric' });
+      const parts = formatter.formatToParts(eDate);
+      const eYear = parseInt(parts.find(p => p.type === 'year')!.value);
+      const eMonth = parseInt(parts.find(p => p.type === 'month')!.value) - 1; // JS months are 0-indexed
+      const eDay = parseInt(parts.find(p => p.type === 'day')!.value);
+      
+      return eDay === day && eMonth === month && eYear === year;
     });
   };
 
@@ -131,7 +137,7 @@ export default function Eventos() {
                             )}
                             <div className="relative z-10 flex flex-col">
                               <span className="font-bold text-jv-turquoise leading-none mb-0.5">
-                                {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                {new Date(evento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Bogota' })}
                               </span>
                               <span className="truncate font-medium">{evento.title}</span>
                             </div>
@@ -178,8 +184,8 @@ export default function Eventos() {
               
               {/* Fecha Flotante */}
               <div className="absolute top-4 left-4 bg-jv-purple/90 backdrop-blur-md border border-jv-purple/50 text-white font-bold px-4 py-2 rounded-xl shadow-lg text-center leading-tight">
-                <span className="block text-2xl">{new Date(selectedEvento.date).getDate()}</span>
-                <span className="block text-xs uppercase">{monthNames[new Date(selectedEvento.date).getMonth()]}</span>
+                <span className="block text-2xl">{new Intl.DateTimeFormat('en-US', { timeZone: 'America/Bogota', day: 'numeric' }).format(new Date(selectedEvento.date))}</span>
+                <span className="block text-xs uppercase">{monthNames[parseInt(new Intl.DateTimeFormat('en-US', { timeZone: 'America/Bogota', month: 'numeric' }).format(new Date(selectedEvento.date))) - 1]}</span>
               </div>
             </div>
             
@@ -192,7 +198,7 @@ export default function Eventos() {
                   <div className="bg-jv-purple/20 p-2 rounded-lg mr-3">
                     <Clock size={20} className="text-jv-purple" /> 
                   </div>
-                  <span className="font-medium text-lg">{new Date(selectedEvento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                  <span className="font-medium text-lg">{new Date(selectedEvento.date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Bogota' })}</span>
                 </div>
                 {selectedEvento.location && (
                   <div className="flex items-center text-gray-300">

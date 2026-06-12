@@ -41,13 +41,8 @@ export default function AdminEventos() {
       setTitle(event.title);
       setDescription(event.description);
       
-      const localDate = new Date(event.date);
-      const year = localDate.getFullYear();
-      const month = String(localDate.getMonth() + 1).padStart(2, '0');
-      const day = String(localDate.getDate()).padStart(2, '0');
-      const hours = String(localDate.getHours()).padStart(2, '0');
-      const minutes = String(localDate.getMinutes()).padStart(2, '0');
-      setDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+      const dateStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(event.date)).replace(' ', 'T');
+      setDate(dateStr);
       
       setLocation(event.location || "");
       setImageUrl(event.imageUrl || "");
@@ -56,13 +51,8 @@ export default function AdminEventos() {
       setTitle("");
       setDescription("");
       
-      const localDate = new Date();
-      const year = localDate.getFullYear();
-      const month = String(localDate.getMonth() + 1).padStart(2, '0');
-      const day = String(localDate.getDate()).padStart(2, '0');
-      const hours = String(localDate.getHours()).padStart(2, '0');
-      const minutes = String(localDate.getMinutes()).padStart(2, '0');
-      setDate(`${year}-${month}-${day}T${hours}:${minutes}`);
+      const dateStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date()).replace(' ', 'T');
+      setDate(dateStr);
       
       setLocation("");
       setImageUrl("");
@@ -90,7 +80,7 @@ export default function AdminEventos() {
     setSaving(true);
     
     // Convert the local datetime string back to a proper ISO string taking timezone into account
-    const isoDate = new Date(date).toISOString();
+    const isoDate = new Date(date + "-05:00").toISOString();
     
     const payload = { title, description, date: isoDate, location, imageUrl };
     const method = editingId ? "PUT" : "POST";
@@ -182,7 +172,7 @@ export default function AdminEventos() {
                       <p className="text-xs text-gray-500 max-w-[200px] truncate">{event.description}</p>
                     </td>
                     <td className="p-4 text-gray-400">
-                      {new Date(event.date).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short' })}
+                      {new Date(event.date).toLocaleString('es-ES', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/Bogota' })}
                     </td>
                     <td className="p-4 text-gray-400">{event.location || "-"}</td>
                     <td className="p-4">
