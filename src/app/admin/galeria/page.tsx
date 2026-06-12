@@ -63,7 +63,7 @@ export default function AdminGaleria() {
   const albums = Array.from(albumsMap.entries()).map(([name, files]) => ({
     name,
     files,
-    coverUrl: files.find(f => f.type === 'image')?.url || null
+    coverUrl: files.find(f => f.type === 'cover')?.url || files.find(f => f.type === 'image')?.url || null
   }));
 
   const selectedItems = selectedAlbum ? albumsMap.get(selectedAlbum) || [] : [];
@@ -158,7 +158,7 @@ export default function AdminGaleria() {
         payloadItems.push({ title: title || p.name, url: p.data, type: "image", album });
       });
       if (coverPhoto) {
-        payloadItems.push({ title: title || "Portada", url: coverPhoto.data, type: "image", album });
+        payloadItems.push({ title: title || "Portada", url: coverPhoto.data, type: "cover", album });
       }
     } else {
       const urls = videoUrls.split('\n').map(u => u.trim()).filter(u => u);
@@ -305,7 +305,7 @@ export default function AdminGaleria() {
                   className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 group relative"
                 >
                   <div className="aspect-square bg-gray-900 relative">
-                    {item.type === 'image' ? (
+                    {item.type === 'image' || item.type === 'cover' ? (
                       <img src={item.url} alt={item.title || "Imagen"} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
@@ -329,8 +329,8 @@ export default function AdminGaleria() {
                     {/* Badge */}
                     <div className="absolute top-2 right-2 flex flex-col space-y-1 items-end">
                       <div className="bg-black/70 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-gray-300 flex items-center">
-                        {item.type === 'image' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
-                        {item.type === 'image' ? 'Imagen' : 'Video'}
+                        {item.type === 'image' || item.type === 'cover' ? <ImageIcon size={12} className="mr-1" /> : <Video size={12} className="mr-1" />}
+                        {item.type === 'cover' ? 'Portada' : item.type === 'image' ? 'Imagen' : 'Video'}
                       </div>
                     </div>
                   </div>

@@ -46,7 +46,7 @@ export default function Galeria() {
   const albums = Array.from(albumsMap.entries()).map(([name, files]) => ({
     name,
     files,
-    coverUrl: files.find(f => f.type === 'image')?.url || null
+    coverUrl: files.find(f => f.type === 'cover')?.url || files.find(f => f.type === 'image')?.url || null
   }));
 
   const selectedItems = selectedAlbum ? albumsMap.get(selectedAlbum) || [] : [];
@@ -129,13 +129,13 @@ export default function Galeria() {
             {selectedItems.map((item, idx) => (
               <div 
                 key={item.id}
-                className={`bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group relative shadow-lg ${item.type === 'image' ? 'cursor-pointer' : ''}`}
+                className={`bg-gray-900 rounded-xl overflow-hidden border border-gray-800 group relative shadow-lg ${item.type === 'image' || item.type === 'cover' ? 'cursor-pointer' : ''}`}
                 onClick={() => {
-                  if (item.type === 'image') setLightboxImage(item);
+                  if (item.type === 'image' || item.type === 'cover') setLightboxImage(item);
                 }}
               >
                 <div className="aspect-square bg-gray-800 relative">
-                  {item.type === 'image' ? (
+                  {item.type === 'image' || item.type === 'cover' ? (
                     <img src={item.url} alt={item.title || "Imagen"} loading="lazy" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
