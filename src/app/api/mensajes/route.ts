@@ -37,6 +37,10 @@ export async function POST(request: Request) {
       }
     });
 
+    // Notify via WhatsApp
+    const { sendWhatsAppNotification } = await import('@/lib/whatsapp');
+    await sendWhatsAppNotification(`📩 *Nuevo Mensaje de Contacto*\n\n*Nombre:* ${name}\n*Correo:* ${email}\n*Mensaje:* ${message}`);
+
     // Send email notification
     const { sendEmailNotification } = await import('@/lib/email');
     await sendEmailNotification(

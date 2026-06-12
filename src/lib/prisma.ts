@@ -11,7 +11,24 @@ const globalForPrisma = globalThis as unknown as {
 function createPrismaClient() {
   const pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool);
-  return new PrismaClient({ adapter });
+  const client = new PrismaClient({ adapter });
+  
+  return client.$extends({
+    query: {
+      editRequest: {
+        async create({ args, query }) {
+          const result = await query(args);
+          
+          // Send WhatsApp notification in the background
+          import('./whatsapp').then(({ sendWhatsAppNotification }) => {
+            sendWhatsAppNotification(`🔔 *Nueva Solicitud (EditRequest)*\n\nMódulo: ${result.modelName}\nAcción: ${result.action}\n\nRevisa el panel para aprobar o rechazar.`);
+          }).catch(console.error);
+          
+          return result;
+        }
+      }
+    }
+  });
 }
 
 export const prisma =
