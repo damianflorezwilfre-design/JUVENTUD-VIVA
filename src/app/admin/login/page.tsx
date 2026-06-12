@@ -4,11 +4,12 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, User } from "lucide-react";
+import { Lock, User, Eye, EyeOff } from "lucide-react";
 
 export default function LoginAdmin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -91,20 +92,27 @@ export default function LoginAdmin() {
                 <Lock size={18} className="text-gray-500" />
               </div>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors"
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-12 py-3 text-white focus:outline-none focus:border-jv-purple transition-colors"
                 placeholder="••••••••"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-jv-purple hover:bg-jv-turquoise disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-[0_0_15px_rgba(155,28,201,0.3)] hover:shadow-[0_0_15px_rgba(79,221,230,0.5)]"
+            className="w-full bg-gradient-to-r from-jv-purple to-jv-turquoise text-white font-bold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {loading ? "Verificando..." : "Iniciar Sesión"}
           </button>
