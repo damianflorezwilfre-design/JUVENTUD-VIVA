@@ -211,12 +211,14 @@ export default function AdminGaleria() {
   const [editingItem, setEditingItem] = useState<GalleryItem | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editAlbum, setEditAlbum] = useState("");
+  const [editType, setEditType] = useState("");
   const [savingEdit, setSavingEdit] = useState(false);
 
   const openEditModal = (item: GalleryItem) => {
     setEditingItem(item);
     setEditTitle(item.title || "");
     setEditAlbum(item.album || "General");
+    setEditType(item.type || "image");
     setIsEditModalOpen(true);
   };
 
@@ -233,7 +235,7 @@ export default function AdminGaleria() {
       const res = await fetch(`/api/galeria/${editingItem.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: editTitle, album: editAlbum })
+        body: JSON.stringify({ title: editTitle, album: editAlbum, type: editType })
       });
       if (res.ok) {
         closeEditModal();
@@ -594,6 +596,21 @@ export default function AdminGaleria() {
                   placeholder="Ej. Eventos 2026" 
                   className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Tipo de Archivo</label>
+                <select
+                  value={editType}
+                  onChange={(e) => setEditType(e.target.value)}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none"
+                >
+                  <option value="image">Imagen normal</option>
+                  <option value="cover">Foto de Portada</option>
+                  <option value="video">Video</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-1">
+                  Cambia el tipo a "Foto de Portada" para que esta imagen represente al álbum entero.
+                </p>
               </div>
 
               <div className="pt-4 flex space-x-3">

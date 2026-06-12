@@ -44,7 +44,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { title, album } = await request.json();
+    const { title, album, type } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
       await prisma.editRequest.create({
@@ -53,7 +53,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
           action: 'EDIT',
           modelName: 'Gallery',
           recordId: id,
-          proposedData: JSON.stringify({ title, album })
+          proposedData: JSON.stringify({ title, album, type })
         }
       });
       return NextResponse.json({ success: true, message: 'Solicitud de edición enviada', isRequest: true });
@@ -61,7 +61,7 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
 
     const updatedMedia = await prisma.gallery.update({
       where: { id },
-      data: { title, album }
+      data: { title, album, type }
     });
 
     return NextResponse.json(updatedMedia);
