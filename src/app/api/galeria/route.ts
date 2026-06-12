@@ -20,6 +20,7 @@ export async function GET() {
     });
     return NextResponse.json(media);
   } catch (error) {
+    console.error("Gallery GET error:", error);
     return NextResponse.json({ error: 'Error al obtener galería' }, { status: 500 });
   }
 }
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
 
     if (body.items && Array.isArray(body.items)) {
       const result = await prisma.gallery.createMany({
-        data: body.items.map((item: any) => ({
+        data: body.items.map((item: { title?: string, album?: string, url: string, type: string }) => ({
           title: item.title || null,
           album: item.album || "General",
           url: item.url,
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(nuevoMedia, { status: 201 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Error al añadir a galería' }, { status: 500 });
+    console.error("Gallery POST error:", error);
+    return NextResponse.json({ error: 'Error al subir multimedia' }, { status: 500 });
   }
 }

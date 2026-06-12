@@ -3,9 +3,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 
-export async function DELETE(request: Request, context: any) {
+export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session: any = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -29,13 +30,15 @@ export async function DELETE(request: Request, context: any) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Error al eliminar multimedia' }, { status: 500 });
   }
 }
 
-export async function PUT(request: Request, context: any) {
+export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const session: any = await getSession();
     if (!session) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -63,6 +66,7 @@ export async function PUT(request: Request, context: any) {
 
     return NextResponse.json(updatedMedia);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error: 'Error al editar multimedia' }, { status: 500 });
   }
 }

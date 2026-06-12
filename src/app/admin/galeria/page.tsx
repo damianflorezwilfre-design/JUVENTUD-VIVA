@@ -46,6 +46,7 @@ export default function AdminGaleria() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line
     fetchGaleria();
   }, []);
 
@@ -405,7 +406,7 @@ export default function AdminGaleria() {
                   <div className="p-4 flex flex-col justify-between">
                     <div>
                       <h3 className="text-white font-medium truncate">{item.title || "Sin título"}</h3>
-                      <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
+                      <p suppressHydrationWarning className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
                     </div>
                     
                     <div className="flex items-center space-x-1 sm:space-x-2 mt-4 pt-4 border-t border-gray-700">
