@@ -377,7 +377,7 @@ export default function AdminGaleria() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {selectedItems.map((item) => (
+              {selectedItems.map((item, idx) => (
                 <motion.div 
                   key={item.id}
                   initial={{ opacity: 0, scale: 0.95 }}
