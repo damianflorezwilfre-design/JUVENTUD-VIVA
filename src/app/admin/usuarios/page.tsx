@@ -286,9 +286,9 @@ export default function AdminUsuarios() {
                     type="text" 
                     value={username} 
                     onChange={e => setUsername(e.target.value)} 
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none disabled:opacity-50" 
                     placeholder="ej. carlos_lopez"
-                    disabled={username === 'admin'}
+                    disabled={editingId !== null && username === 'admin'}
                   />
                 </div>
                 
