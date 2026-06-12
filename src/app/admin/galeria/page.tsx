@@ -263,11 +263,16 @@ export default function AdminGaleria() {
     newItems[index + direction] = temp;
 
     // Update state optimistically
-    const updatedAllItems = items.map(item => {
-      if (item.id === newItems[index].id) return { ...item, order: index };
-      if (item.id === newItems[index + direction].id) return { ...item, order: index + direction };
-      return item;
-    });
+    const updatedAllItems = [...items];
+    const indexA = updatedAllItems.findIndex(i => i.id === newItems[index].id);
+    const indexB = updatedAllItems.findIndex(i => i.id === newItems[index + direction].id);
+    
+    if (indexA !== -1 && indexB !== -1) {
+      const tempGlobal = updatedAllItems[indexA];
+      updatedAllItems[indexA] = { ...updatedAllItems[indexB], order: index };
+      updatedAllItems[indexB] = { ...tempGlobal, order: index + direction };
+    }
+    
     setItems(updatedAllItems);
 
     // Send bulk update to backend
@@ -278,6 +283,7 @@ export default function AdminGaleria() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items: payload })
       });
+      fetchGaleria();
     } catch (e) {
       console.error(e);
       // Revert on error
@@ -412,26 +418,26 @@ export default function AdminGaleria() {
                     </div>
                     
                     <div className="flex items-center space-x-1 sm:space-x-2 mt-4 pt-4 border-t border-gray-700">
-                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="p-2 bg-gray-800 hover:bg-jv-purple text-gray-300 rounded-lg disabled:opacity-30 disabled:hover:bg-gray-800"><ChevronLeft size={16}/></button>
+                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="w-9 h-9 sm:w-10 sm:h-10 flex flex-shrink-0 items-center justify-center bg-gray-700 hover:bg-jv-purple text-white rounded-lg disabled:opacity-30 disabled:hover:bg-gray-700 transition-colors"><ChevronLeft size={18}/></button>
                       
-                      <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-jv-purple text-gray-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
-                        <Edit2 size={16} className="lg:mr-2" />
-                        <span className="hidden lg:inline">Editar</span>
+                      <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-gray-700 hover:bg-jv-purple text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
+                        <Edit2 size={16} className="mr-1 sm:mr-2" />
+                        <span>Editar</span>
                       </button>
 
-                      <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-red-500/20 text-red-400 hover:text-red-300 rounded-lg transition-colors text-sm font-medium">
-                        <Trash2 size={16} className="lg:mr-2" />
-                        <span className="hidden lg:inline">Eliminar</span>
+                      <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-lg transition-colors text-xs sm:text-sm font-medium border border-red-500/30">
+                        <Trash2 size={16} className="mr-1 sm:mr-2" />
+                        <span>Eliminar</span>
                       </button>
                       
                       {item.type === 'video' && (
-                        <a href={item.url} target="_blank" rel="noreferrer" className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-jv-purple text-gray-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
-                          <ExternalLink size={16} className="lg:mr-2" />
-                          <span className="hidden lg:inline">Ver</span>
+                        <a href={item.url} target="_blank" rel="noreferrer" className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-gray-700 hover:bg-jv-purple text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
+                          <ExternalLink size={16} className="mr-1 sm:mr-2" />
+                          <span>Ver</span>
                         </a>
                       )}
                       
-                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="p-2 bg-gray-800 hover:bg-jv-purple text-gray-300 rounded-lg disabled:opacity-30 disabled:hover:bg-gray-800"><ChevronRight size={16}/></button>
+                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="w-9 h-9 sm:w-10 sm:h-10 flex flex-shrink-0 items-center justify-center bg-gray-700 hover:bg-jv-purple text-white rounded-lg disabled:opacity-30 disabled:hover:bg-gray-700 transition-colors"><ChevronRight size={18}/></button>
                     </div>
                   </div>
                 </motion.div>
