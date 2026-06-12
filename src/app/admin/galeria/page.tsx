@@ -417,27 +417,34 @@ export default function AdminGaleria() {
                       <p suppressHydrationWarning className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
                     </div>
                     
-                    <div className="flex items-center space-x-1 sm:space-x-2 mt-4 pt-4 border-t border-gray-700">
-                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="w-9 h-9 sm:w-10 sm:h-10 flex flex-shrink-0 items-center justify-center bg-gray-700 hover:bg-jv-purple text-white rounded-lg disabled:opacity-30 disabled:hover:bg-gray-700 transition-colors"><ChevronLeft size={18}/></button>
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700">
+                      <div className="flex space-x-1">
+                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, -1); }} disabled={idx === 0} className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la izquierda">
+                          <ChevronLeft size={18}/>
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg disabled:opacity-30 disabled:hover:bg-transparent transition-colors" title="Mover a la derecha">
+                          <ChevronRight size={18}/>
+                        </button>
+                      </div>
                       
-                      <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-gray-700 hover:bg-jv-purple text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
-                        <Edit2 size={16} className="mr-1 sm:mr-2" />
-                        <span>Editar</span>
-                      </button>
+                      <div className="flex space-x-2">
+                        <button onClick={(e) => { e.stopPropagation(); openEditModal(item); }} className="flex items-center px-3 py-1.5 bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
+                          <Edit2 size={14} className="mr-1.5" />
+                          <span>Editar</span>
+                        </button>
 
-                      <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-lg transition-colors text-xs sm:text-sm font-medium border border-red-500/30">
-                        <Trash2 size={16} className="mr-1 sm:mr-2" />
-                        <span>Eliminar</span>
-                      </button>
-                      
-                      {item.type === 'video' && (
-                        <a href={item.url} target="_blank" rel="noreferrer" className="flex-1 flex justify-center items-center h-9 sm:h-10 bg-gray-700 hover:bg-jv-purple text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
-                          <ExternalLink size={16} className="mr-1 sm:mr-2" />
-                          <span>Ver</span>
-                        </a>
-                      )}
-                      
-                      <button onClick={(e) => { e.stopPropagation(); moveItem(idx, 1); }} disabled={idx === selectedItems.length - 1} className="w-9 h-9 sm:w-10 sm:h-10 flex flex-shrink-0 items-center justify-center bg-gray-700 hover:bg-jv-purple text-white rounded-lg disabled:opacity-30 disabled:hover:bg-gray-700 transition-colors"><ChevronRight size={18}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }} className="flex items-center px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
+                          <Trash2 size={14} className="mr-1.5" />
+                          <span>Eliminar</span>
+                        </button>
+                        
+                        {item.type === 'video' && (
+                          <a href={item.url} target="_blank" rel="noreferrer" className="flex items-center px-3 py-1.5 bg-gray-700/50 hover:bg-jv-purple text-gray-200 hover:text-white rounded-lg transition-colors text-xs sm:text-sm font-medium">
+                            <ExternalLink size={14} className="mr-1.5" />
+                            <span>Ver</span>
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </motion.div>
