@@ -314,17 +314,7 @@ export default function AdminGaleria() {
                       </div>
                     )}
                     
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
-                      {item.type === 'video' && (
-                        <a href={item.url} target="_blank" rel="noreferrer" className="p-2 bg-jv-purple hover:bg-jv-turquoise text-white rounded-full transition-colors">
-                          <ExternalLink size={18} />
-                        </a>
-                      )}
-                      <button onClick={() => handleDelete(item.id)} className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                    {/* Mobile-friendly buttons are now at the bottom of the card */}
                     
                     {/* Badge */}
                     <div className="absolute top-2 right-2 flex flex-col space-y-1 items-end">
@@ -335,9 +325,24 @@ export default function AdminGaleria() {
                     </div>
                   </div>
                   
-                  <div className="p-4">
-                    <h3 className="text-white font-medium truncate">{item.title || "Sin título"}</h3>
-                    <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
+                  <div className="p-4 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-white font-medium truncate">{item.title || "Sin título"}</h3>
+                      <p className="text-gray-500 text-xs mt-1">{new Date(item.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2 mt-4 pt-4 border-t border-gray-700">
+                      {item.type === 'video' && (
+                        <a href={item.url} target="_blank" rel="noreferrer" className="flex-1 flex justify-center items-center py-2 bg-gray-800 hover:bg-jv-purple text-gray-300 hover:text-white rounded-lg transition-colors text-sm font-medium">
+                          <ExternalLink size={16} className="mr-2" />
+                          Ver
+                        </a>
+                      )}
+                      <button onClick={() => handleDelete(item.id)} className={`${item.type === 'video' ? 'flex-1' : 'w-full'} flex justify-center items-center py-2 bg-gray-800 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-transparent hover:border-red-500/30 rounded-lg transition-colors text-sm font-medium`}>
+                        <Trash2 size={16} className="mr-2" />
+                        Eliminar
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
               ))}
