@@ -13,15 +13,29 @@ type User = {
 };
 
 const AVAILABLE_MODULES = [
+  { id: "mensajes", name: "Mensajes" },
+  { id: "solicitudes", name: "Solicitudes" },
+  { id: "rendicion", name: "Rendición de Cuentas" },
+  { id: "voluntarios", name: "Voluntarios" },
+  { id: "tesoreria", name: "Tesorería" },
+  { id: "inventario", name: "Inventario" },
   { id: "documentos", name: "Documentos" },
   { id: "noticias", name: "Noticias" },
+  { id: "padrinazgos", name: "Padrinazgos" },
+  { id: "mapa", name: "Mapa de Impacto" },
+  { id: "eventos", name: "Eventos" },
   { id: "programas", name: "Programas" },
   { id: "galeria", name: "Galería" },
+  { id: "testimonios", name: "Salón de Fama / Testimonios" },
+  { id: "muro", name: "Muro Público" },
+  { id: "oportunidades", name: "Oportunidades" },
   { id: "alianzas", name: "Alianzas" },
+  { id: "equipo", name: "Equipo" },
+  { id: "historia", name: "Historia" },
   { id: "hoja-de-ruta", name: "Hoja de Ruta" },
-  { id: "mensajes", name: "Mensajes" },
   { id: "certificados", name: "Certificados" },
-  { id: "tesoreria", name: "Tesorería" },
+  { id: "organigrama", name: "Organigrama" },
+  { id: "chatbot", name: "Chatbot AI" },
 ];
 
 export default function AdminUsuarios() {
