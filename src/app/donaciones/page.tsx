@@ -91,7 +91,26 @@ export default async function DonacionesPage() {
                 </div>
               )}
 
-              {!institution?.donationLink && !institution?.bankInfo && (
+              {institution?.donationQrUrl && (
+                <div className="bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                  <div className="flex items-center mb-4">
+                    <Building2 className="text-jv-turquoise mr-3" size={24} />
+                    <h4 className="text-lg font-bold text-white">Código QR</h4>
+                  </div>
+                  <p className="text-gray-400 mb-4 text-sm">
+                    Escanea este código con la aplicación de tu banco o billetera virtual (ej. Nequi, Daviplata, Bancolombia) para realizar tu aporte rápidamente.
+                  </p>
+                  <div className="flex justify-center bg-gray-900 p-4 rounded-xl border border-gray-700/50">
+                    <img 
+                      src={institution.donationQrUrl} 
+                      alt="Código QR de Donación" 
+                      className="max-w-full h-auto max-h-64 object-contain rounded-lg"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {!institution?.donationLink && !institution?.bankInfo && !institution?.donationQrUrl && (
                 <div className="text-gray-500 text-center py-8">
                   Pronto habilitaremos nuestros canales de donación. ¡Gracias por tu interés!
                 </div>

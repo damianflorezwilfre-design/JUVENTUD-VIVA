@@ -33,6 +33,7 @@ export default function AdminConfiguracion() {
 
   // Donations
   const [donationLink, setDonationLink] = useState("");
+  const [donationQrUrl, setDonationQrUrl] = useState("");
   const [bankInfo, setBankInfo] = useState("");
 
   // Impact Counters
@@ -72,6 +73,17 @@ export default function AdminConfiguracion() {
     }
   };
 
+  const handleQrUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDonationQrUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   useEffect(() => {
     const fetchInstitution = async () => {
       try {
@@ -98,6 +110,7 @@ export default function AdminConfiguracion() {
           setFeature3Desc(data.feature3Desc || "Participamos activamente en la mejora de nuestras comunidades.");
           setPublicBackground(data.publicBackground || "");
           setDonationLink(data.donationLink || "");
+          setDonationQrUrl(data.donationQrUrl || "");
           setBankInfo(data.bankInfo || "");
           setStat1Value(data.stat1Value || "");
           setStat1Label(data.stat1Label || "");
@@ -138,7 +151,7 @@ export default function AdminConfiguracion() {
         body: JSON.stringify({ 
           heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok,
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-          donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+          donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
           calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone
         })
@@ -517,6 +530,31 @@ export default function AdminConfiguracion() {
                 <label className="block text-sm font-medium text-gray-400 mb-1">Cuentas Bancarias / Info (Modal)</label>
                 <textarea rows={3} value={bankInfo} onChange={(e) => setBankInfo(e.target.value)} placeholder="Ej. Nequi: 300123...&#10;Bancolombia: Ahorros 123..." className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" />
                 <p className="text-xs text-gray-500 mt-1">Este texto aparecerá en la pequeña ventana cuando el usuario haga clic en Donar.</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1 flex items-center">
+                  <ImageIcon size={16} className="mr-2"/> Código QR para Donaciones (Opcional)
+                </label>
+                <div className="relative h-48 bg-gray-800 border-2 border-dashed border-gray-700 rounded-xl overflow-hidden group hover:border-jv-purple transition-colors">
+                  <input type="file" accept="image/*" onChange={handleQrUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                  {donationQrUrl ? (
+                    <Image src={donationQrUrl} alt="QR Donaciones" fill className="object-contain p-2" />
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 group-hover:text-jv-purple transition-colors">
+                      <ImageIcon size={32} className="mb-2" />
+                      <span className="text-sm">Click o arrastra el QR aquí</span>
+                    </div>
+                  )}
+                </div>
+                {donationQrUrl && (
+                  <button 
+                    onClick={(e) => { e.preventDefault(); setDonationQrUrl(""); }}
+                    className="w-full mt-2 text-sm text-red-400 hover:text-red-300 bg-red-400/10 hover:bg-red-400/20 py-2 rounded-lg transition-colors"
+                  >
+                    Quitar Código QR
+                  </button>
+                )}
               </div>
               
               <div className="hidden">

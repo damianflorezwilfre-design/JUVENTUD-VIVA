@@ -40,7 +40,7 @@ export async function PUT(request: Request) {
     const { 
       heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok, 
       feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-      donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+      donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
       transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
       calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone
     } = await request.json();
@@ -55,7 +55,7 @@ export async function PUT(request: Request) {
           proposedData: JSON.stringify({ 
             heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok, 
             feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-            donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+            donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
             transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
             calcKitCost: calcKitCost ? parseFloat(calcKitCost) : null,
             calcMealCost: calcMealCost ? parseFloat(calcMealCost) : null,
@@ -87,7 +87,7 @@ export async function PUT(request: Request) {
       update: {
         heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok,
         feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-        donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+        donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
         calcKitCost: calcKitCost ? parseFloat(calcKitCost) : 50000, 
         calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,
@@ -99,7 +99,7 @@ export async function PUT(request: Request) {
         id: "singleton",
         heroTitle, heroSubtitle, aboutUs, mission, vision, address, phone, email, facebook, instagram, twitter, tiktok,
         feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
-        donationLink, bankInfo, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
+        donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
         transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
         calcKitCost: calcKitCost ? parseFloat(calcKitCost) : 50000, 
         calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,

@@ -97,6 +97,7 @@ model Institution {
   feature3Desc  String?
   publicBackground String? 
   donationLink  String? // Modals info or direct link
+  donationQrUrl String? // QR Code for donations
   bankInfo      String? // e.g. "Bancolombia: 1234567"
   stat1Value    String? // e.g. "500+"
   stat1Label    String? // e.g. "Jóvenes Impactados"
