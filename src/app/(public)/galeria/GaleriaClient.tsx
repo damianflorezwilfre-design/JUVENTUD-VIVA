@@ -10,7 +10,7 @@ type GalleryItem = {
   url: string;
   type: string;
   album: string;
-  createdAt: Date;
+  createdAt: string;
 };
 
 export default function GaleriaClient({ initialItems }: { initialItems: GalleryItem[] }) {

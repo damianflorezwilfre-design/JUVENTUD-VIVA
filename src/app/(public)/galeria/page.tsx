@@ -11,5 +11,10 @@ export default async function GaleriaPage() {
     ]
   });
 
-  return <GaleriaClient initialItems={items} />;
+  const plainItems = items.map(item => ({
+    ...item,
+    createdAt: item.createdAt.toISOString()
+  }));
+
+  return <GaleriaClient initialItems={plainItems} />;
 }
