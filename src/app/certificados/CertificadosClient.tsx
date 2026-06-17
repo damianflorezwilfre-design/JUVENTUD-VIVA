@@ -140,12 +140,13 @@ export default function CertificadosClient() {
             <div 
               ref={certificateRef}
               className="bg-white text-gray-900 w-[297mm] h-[210mm] p-16 relative flex flex-col items-center justify-center mx-auto shadow-2xl border border-gray-200"
-              style={{ backgroundImage: "radial-gradient(#f3f4f6 1px, transparent 1px)", backgroundSize: "20px 20px" }}
+              style={{ 
+                backgroundImage: "url('/certificado_fondo.jpg')", 
+                backgroundSize: "cover",
+                backgroundPosition: "center"
+              }}
             >
-              <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-jv-turquoise to-jv-purple"></div>
-              <div className="absolute bottom-0 left-0 w-full h-4 bg-gradient-to-r from-jv-purple to-jv-turquoise"></div>
-              
-              <div className="text-center mb-8">
+              <div className="text-center mb-8 mt-12">
                 <h1 className="text-4xl font-black text-gray-900 mb-2 tracking-tight">FUNDACIÓN JUVENTUD VIVA</h1>
                 <p className="text-gray-500">NIT: 901.456.789-0</p>
               </div>
@@ -167,7 +168,7 @@ export default function CertificadosClient() {
                 Estos recursos han sido destinados exclusivamente al desarrollo de nuestros programas sociales en La Guajira, contribuyendo a la nutrición, educación y empoderamiento de nuestras comunidades.
               </div>
 
-              <div className="flex justify-between w-full max-w-4xl mt-auto pt-8 border-t-2 border-gray-200 px-4">
+              <div className="flex justify-between w-full max-w-4xl mt-auto pt-8 border-t-2 border-gray-200 px-4 mb-8">
                 <div className="text-center">
                   <div className="w-40 h-px bg-gray-400 mb-2 mx-auto"></div>
                   <p className="font-bold text-gray-800">Representante Legal</p>

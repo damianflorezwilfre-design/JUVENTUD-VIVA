@@ -68,9 +68,9 @@ export default function AdminCertificados() {
     setLoading(true);
 
     try {
-      // Fetch logo
-      const logoRes = await fetch("/logo/juventud-viva.png");
-      const logoBuffer = await logoRes.arrayBuffer();
+      // Fetch background
+      const bgRes = await fetch("/certificado_fondo.jpg");
+      const bgBuffer = await bgRes.arrayBuffer();
 
       const doc = new Document({
         sections: [
@@ -78,17 +78,9 @@ export default function AdminCertificados() {
             properties: {},
             children: [
               new Paragraph({
-                alignment: AlignmentType.CENTER,
                 spacing: { after: 200 },
                 children: [
-                  new ImageRun({
-                    data: logoBuffer,
-                    type: "png",
-                    transformation: {
-                      width: 150,
-                      height: 150,
-                    },
-                  }),
+                  // Logo removed, keeping spacing
                 ]
               }),
               new Paragraph({
@@ -240,18 +232,18 @@ export default function AdminCertificados() {
         format: "a4"
       });
 
-      const logoImg = new window.Image();
-      logoImg.src = "/logo/juventud-viva.png";
+      const bgImg = new window.Image();
+      bgImg.src = "/certificado_fondo.jpg";
       await new Promise((resolve) => {
-        logoImg.onload = resolve;
-        logoImg.onerror = resolve;
+        bgImg.onload = resolve;
+        bgImg.onerror = resolve;
       });
 
-      // Header Logo
+      // Fondo
       try {
-        doc.addImage(logoImg, "PNG", 85, 10, 40, 40);
+        doc.addImage(bgImg, "JPG", 0, 0, 210, 297);
       } catch (e) {
-        console.error("Error adding logo", e);
+        console.error("Error adding background", e);
       }
 
       doc.setFont("helvetica", "normal");
