@@ -45,9 +45,9 @@ export default function AdminCertificados() {
 
   const getIntroText = () => {
     if (certificateType === "Estudiantil") {
-      return "Por medio del presente documento, la Organización Juventud ViVa, con sede en Villanueva, Colombia, certifica que el/la joven:";
+      return "Por medio del presente documento, la Organización Juventud ViVa certifica que el/la joven:";
     }
-    return "Por medio del presente documento, la Organización Juventud ViVa, con sede en Villanueva, Colombia, certifica que la persona natural:";
+    return "Por medio del presente documento, la Organización Juventud ViVa certifica que la persona natural:";
   };
 
   const getBodyText = () => {
@@ -84,7 +84,7 @@ export default function AdminCertificados() {
                 ]
               }),
               new Paragraph({
-                text: "ORGANIZACIÓN\nJuventud ViVa\nVillanueva, Colombia  ·  Reforma: Juventud ViVa",
+                text: "ORGANIZACIÓN\nJuventud ViVa\nVillanueva, La Guajira, Colombia",
                 alignment: AlignmentType.CENTER,
                 spacing: { after: 400 },
               }),
@@ -248,7 +248,7 @@ export default function AdminCertificados() {
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
-      doc.text("ORGANIZACIÓN\nJuventud ViVa\nVillanueva, Colombia  ·  Reforma: Juventud ViVa", 105, 55, { align: "center" });
+      doc.text("ORGANIZACIÓN\nJuventud ViVa\nVillanueva, La Guajira, Colombia", 105, 55, { align: "center" });
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
