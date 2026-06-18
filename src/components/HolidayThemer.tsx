@@ -1,27 +1,17 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import Particles from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
-  const [init, setInit] = useState(false);
   const [theme, setTheme] = useState<ThemeName>('default');
 
   useEffect(() => {
-    loadSlim(tsParticles).then(() => {
-      setInit(true);
-    });
-    
-    // Check theme on mount
+    // Check theme on mount and when override changes
     setTheme(getCurrentTheme(themeOverride).id);
   }, [themeOverride]);
-
-  if (!init || theme === 'default') {
-    return null;
-  }
 
   const getParticlesConfig = (themeName: ThemeName): any => {
     switch (themeName) {
@@ -136,12 +126,37 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
     }
   };
 
-  const config = getParticlesConfig(theme);
-  if (!config) return null;
+  useEffect(() => {
+    if (theme === 'default') return;
+
+    const config = getParticlesConfig(theme);
+    if (!config) return;
+
+    let container: any;
+    
+    // Initialize tsParticles with the slim preset
+    loadSlim(tsParticles).then(() => {
+      // Load the specific options for the theme
+      tsParticles.load({ id: "tsparticles-holiday", options: config }).then((c) => {
+        container = c;
+      });
+    });
+
+    return () => {
+      if (container) {
+        container.destroy();
+      }
+    };
+  }, [theme]);
+
+  if (theme === 'default') {
+    return null;
+  }
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50">
-      <Particles id="tsparticles-holiday" options={config} />
-    </div>
+    <div 
+      id="tsparticles-holiday" 
+      className="pointer-events-none fixed inset-0 z-50"
+    />
   );
 }
