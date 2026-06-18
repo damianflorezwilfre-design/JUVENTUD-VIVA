@@ -6,10 +6,12 @@ import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
+import { usePathname } from 'next/navigation';
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
   const [theme, setTheme] = useState<ThemeName>('default');
   const { width, height } = useWindowSize();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check theme on mount and when override changes
@@ -111,7 +113,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
   }, [theme, isConfettiTheme]);
 
   useEffect(() => {
-    if (theme === 'default' || !config || isConfettiTheme) return;
+    if (theme === 'default' || !config || isConfettiTheme || pathname !== '/') return;
 
     let container: any;
     
@@ -128,9 +130,9 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
         container.destroy();
       }
     };
-  }, [theme, config, isConfettiTheme]);
+  }, [theme, config, isConfettiTheme, pathname]);
 
-  if (theme === 'default') {
+  if (theme === 'default' || pathname !== '/') {
     return null;
   }
 
