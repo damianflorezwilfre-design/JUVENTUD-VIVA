@@ -60,10 +60,18 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
           particles: {
             number: { value: 60 },
             color: { value: ["#fde047", "#3b82f6", "#ef4444"] }, // Yellow, Blue, Red
-            shape: { type: ["circle", "square"] },
-            opacity: { value: 0.7 },
-            size: { value: 4 },
-            move: { enable: true, speed: 3, direction: "bottom", outModes: "out" }
+            shape: { type: ["square", "circle", "polygon"] },
+            opacity: { value: 1 },
+            size: { value: { min: 8, max: 16 } },
+            rotate: {
+              value: { min: 0, max: 360 },
+              direction: "random",
+              animation: {
+                enable: true,
+                speed: 30
+              }
+            },
+            move: { enable: true, speed: { min: 3, max: 7 }, direction: "bottom", outModes: "out" }
           }
         };
 
@@ -75,10 +83,18 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
           particles: {
             number: { value: 70 },
             color: { value: ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"] }, // Rainbow
-            shape: { type: ["circle", "square"] },
-            opacity: { value: 0.8 },
-            size: { value: { min: 3, max: 7 } },
-            move: { enable: true, speed: 4, direction: "bottom", random: true, outModes: "out" }
+            shape: { type: ["square", "circle", "polygon"] },
+            opacity: { value: 1 },
+            size: { value: { min: 8, max: 16 } },
+            rotate: {
+              value: { min: 0, max: 360 },
+              direction: "random",
+              animation: {
+                enable: true,
+                speed: 30
+              }
+            },
+            move: { enable: true, speed: { min: 4, max: 8 }, direction: "bottom", random: true, outModes: "out" }
           }
         };
 
