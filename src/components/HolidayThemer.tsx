@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import Particles, { initParticlesEngine } from "@tsparticles/react";
+import Particles from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
+import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
@@ -10,9 +11,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
   const [theme, setTheme] = useState<ThemeName>('default');
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
+    loadSlim(tsParticles).then(() => {
       setInit(true);
     });
     
