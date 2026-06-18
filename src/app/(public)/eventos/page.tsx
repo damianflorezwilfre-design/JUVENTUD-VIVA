@@ -1,5 +1,4 @@
 "use client"
-export const revalidate = 60;
 
 import { motion } from "framer-motion";
 import { Calendar as CalendarIcon, MapPin, Clock, ChevronLeft, ChevronRight } from "lucide-react";

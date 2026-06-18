@@ -1,5 +1,4 @@
 "use client"
-export const revalidate = 60;
 
 import { motion } from "framer-motion";
 import { Target, Lightbulb, Shield, HeartHandshake } from "lucide-react";
