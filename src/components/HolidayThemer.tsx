@@ -4,16 +4,28 @@ import { useEffect, useState, useMemo } from "react";
 import { loadSlim } from "@tsparticles/slim";
 import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
+import Confetti from 'react-confetti';
+import { useWindowSize } from 'react-use';
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
   const [theme, setTheme] = useState<ThemeName>('default');
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     // Check theme on mount and when override changes
     setTheme(getCurrentTheme(themeOverride).id);
   }, [themeOverride]);
 
+  const isConfettiTheme = ['colombia', 'cumpleanos', 'aniversario', 'dia-nino'].includes(theme);
+
+  const getConfettiColors = () => {
+    if (theme === 'colombia') return ['#fde047', '#3b82f6', '#ef4444']; // Yellow, Blue, Red
+    return ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899']; // Rainbow
+  };
+
   const config: any = useMemo(() => {
+    if (isConfettiTheme) return null; // We use react-confetti for these
+
     switch (theme) {
       case 'navidad':
         return {
@@ -51,46 +63,6 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             opacity: { value: 0.4 },
             size: { value: 2 },
             move: { enable: true, speed: 0.8, direction: "none", random: true, outModes: "out" }
-          }
-        };
-
-      case 'colombia':
-        return {
-          fullScreen: { enable: true, zIndex: 9999 },
-          particles: {
-            number: { value: 60 },
-            color: { value: ["#fde047", "#3b82f6", "#ef4444"] }, // Yellow, Blue, Red
-            shape: { type: ["square", "circle", "polygon"] },
-            opacity: { value: 1 },
-            size: { value: 12, random: true },
-            rotate: {
-              value: 0,
-              random: true,
-              direction: "random",
-              animation: { enable: true, speed: 30 }
-            },
-            move: { enable: true, speed: 5, random: true, direction: "bottom", outModes: "out" }
-          }
-        };
-
-      case 'cumpleanos':
-      case 'aniversario':
-      case 'dia-nino':
-        return {
-          fullScreen: { enable: true, zIndex: 9999 },
-          particles: {
-            number: { value: 70 },
-            color: { value: ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"] }, // Rainbow
-            shape: { type: ["square", "circle", "polygon"] },
-            opacity: { value: 1 },
-            size: { value: 12, random: true },
-            rotate: {
-              value: 0,
-              random: true,
-              direction: "random",
-              animation: { enable: true, speed: 30 }
-            },
-            move: { enable: true, speed: 6, random: true, direction: "bottom", outModes: "out" }
           }
         };
 
@@ -136,10 +108,10 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
       default:
         return null;
     }
-  }, [theme]);
+  }, [theme, isConfettiTheme]);
 
   useEffect(() => {
-    if (theme === 'default' || !config) return;
+    if (theme === 'default' || !config || isConfettiTheme) return;
 
     let container: any;
     
@@ -156,16 +128,30 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
         container.destroy();
       }
     };
-  }, [theme, config]);
+  }, [theme, config, isConfettiTheme]);
 
-  if (theme === 'default' || !config) {
+  if (theme === 'default') {
     return null;
+  }
+
+  if (isConfettiTheme) {
+    return (
+      <div className="pointer-events-none fixed inset-0 z-[9999]">
+        <Confetti 
+          width={width} 
+          height={height} 
+          colors={getConfettiColors()} 
+          numberOfPieces={150}
+          gravity={0.15}
+        />
+      </div>
+    );
   }
 
   return (
     <div 
       id={`tsparticles-${theme}`} 
-      className="pointer-events-none fixed inset-0 z-50"
+      className="pointer-events-none fixed inset-0 z-[9999]"
     />
   );
 }
