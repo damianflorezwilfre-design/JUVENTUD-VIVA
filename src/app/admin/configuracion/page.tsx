@@ -519,9 +519,7 @@ export default function AdminConfiguracion() {
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-8 flex justify-end">
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
             <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
               <ImageIcon className="text-jv-purple mr-3" size={24} />
