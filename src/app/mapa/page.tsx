@@ -1,7 +1,9 @@
+import dynamic from 'next/dynamic';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import MapViewer from "@/components/MapViewer";
 import { prisma } from "@/lib/prisma";
+
+const MapViewer = dynamic(() => import("@/components/MapViewer"), { ssr: false });
 
 export const revalidate = 60;
 
