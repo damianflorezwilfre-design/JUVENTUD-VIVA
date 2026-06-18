@@ -5,7 +5,7 @@ import { Heart, Building2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import ImpactCalculator from "@/components/ImpactCalculator";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function DonacionesPage() {
   const institution = await prisma.institution.findUnique({

@@ -1,5 +1,5 @@
 "use client"
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 import { motion } from "framer-motion";
 import { Target, Lightbulb, Shield, HeartHandshake } from "lucide-react";

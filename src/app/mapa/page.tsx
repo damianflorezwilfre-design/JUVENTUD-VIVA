@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import MapViewer from "@/components/MapViewer";
 import { prisma } from "@/lib/prisma";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function MapaPage() {
   const pins = await prisma.mapPin.findMany({

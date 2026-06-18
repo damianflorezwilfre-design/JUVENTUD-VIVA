@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MuroClient from "./MuroClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default function MuroPage() {
   return (

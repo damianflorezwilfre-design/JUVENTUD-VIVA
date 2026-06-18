@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Trophy, Star, Medal, Award } from "lucide-react";
 import Image from "next/image";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function RankingPage() {
   const volunteers = await prisma.volunteer.findMany({
