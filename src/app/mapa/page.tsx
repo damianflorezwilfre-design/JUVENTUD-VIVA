@@ -24,7 +24,7 @@ export default async function MapaPage() {
           </p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-3xl p-4 md:p-8 shadow-2xl h-[600px] w-full">
+        <div className="bg-gray-900 border border-gray-800 rounded-3xl p-2 md:p-4 shadow-2xl h-[800px] w-full">
           <MapViewer pins={pins} />
         </div>
       </main>

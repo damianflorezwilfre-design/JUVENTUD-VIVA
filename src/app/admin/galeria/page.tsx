@@ -81,41 +81,46 @@ export default function AdminGaleria() {
   };
 
   // ... (keep compressImage, handleCoverUpload, handleAdditionalUpload, handleSubmit)
-  const compressImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new window.Image();
-        img.src = event.target?.result as string;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          const MAX_WIDTH = 1200;
-          const MAX_HEIGHT = 1200;
-          let width = img.width;
-          let height = img.height;
+  const compressImage = async (file: File): Promise<string> => {
+    let fileToCompress = file;
+    
+    if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
+      try {
+        const heic2any = (await import('heic2any')).default;
+        const convertedBlob = await heic2any({
+          blob: file,
+          toType: "image/jpeg",
+          quality: 0.8
+        });
+        
+        fileToCompress = new File(
+          [Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob], 
+          file.name.replace(/\.heic$/i, '.jpg'), 
+          { type: 'image/jpeg' }
+        );
+      } catch (error) {
+        console.error("Error converting HEIC file:", error);
+        throw new Error("No se pudo convertir la imagen HEIC.");
+      }
+    }
 
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx?.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", 0.7)); // 70% quality JPEG
-        };
-        img.onerror = (error) => reject(error);
-      };
-      reader.onerror = (error) => reject(error);
-    });
+    const imageCompression = (await import('browser-image-compression')).default;
+    
+    const options = {
+      maxSizeMB: 0.15,
+      maxWidthOrHeight: 800,
+      useWebWorker: true,
+      fileType: 'image/jpeg',
+      initialQuality: 0.7
+    };
+    
+    try {
+      const compressedFile = await imageCompression(fileToCompress, options);
+      return await imageCompression.getDataUrlFromFile(compressedFile);
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      throw new Error("Error al comprimir la imagen.");
+    }
   };
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
