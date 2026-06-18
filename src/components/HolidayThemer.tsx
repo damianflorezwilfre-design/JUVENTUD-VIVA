@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
@@ -13,8 +14,8 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
     setTheme(getCurrentTheme(themeOverride).id);
   }, [themeOverride]);
 
-  const getParticlesConfig = (themeName: ThemeName): any => {
-    switch (themeName) {
+  const config = useMemo(() => {
+    switch (theme) {
       case 'navidad':
         return {
           fullScreen: { enable: true, zIndex: 9999 },
@@ -36,7 +37,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#ec4899", "#f43f5e", "#fb7185"] },
             shape: { type: "circle" },
             opacity: { value: 0.6, random: true },
-            size: { value: { min: 3, max: 6 }, random: true },
+            size: { value: 5, random: true },
             move: { enable: true, speed: 1.5, direction: "top", outModes: "out" }
           }
         };
@@ -62,16 +63,14 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#fde047", "#3b82f6", "#ef4444"] }, // Yellow, Blue, Red
             shape: { type: ["square", "circle", "polygon"] },
             opacity: { value: 1 },
-            size: { value: { min: 8, max: 16 } },
+            size: { value: 12, random: true },
             rotate: {
-              value: { min: 0, max: 360 },
+              value: 0,
+              random: true,
               direction: "random",
-              animation: {
-                enable: true,
-                speed: 30
-              }
+              animation: { enable: true, speed: 30 }
             },
-            move: { enable: true, speed: { min: 3, max: 7 }, direction: "bottom", outModes: "out" }
+            move: { enable: true, speed: 5, random: true, direction: "bottom", outModes: "out" }
           }
         };
 
@@ -85,16 +84,14 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899"] }, // Rainbow
             shape: { type: ["square", "circle", "polygon"] },
             opacity: { value: 1 },
-            size: { value: { min: 8, max: 16 } },
+            size: { value: 12, random: true },
             rotate: {
-              value: { min: 0, max: 360 },
+              value: 0,
+              random: true,
               direction: "random",
-              animation: {
-                enable: true,
-                speed: 30
-              }
+              animation: { enable: true, speed: 30 }
             },
-            move: { enable: true, speed: { min: 4, max: 8 }, direction: "bottom", random: true, outModes: "out" }
+            move: { enable: true, speed: 6, random: true, direction: "bottom", outModes: "out" }
           }
         };
 
@@ -106,7 +103,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#a855f7", "#d946ef", "#c084fc"] }, // Purple/Pink variations
             shape: { type: "circle" },
             opacity: { value: 0.5 },
-            size: { value: { min: 2, max: 5 } },
+            size: { value: 4, random: true },
             move: { enable: true, speed: 1.2, direction: "top", outModes: "out" }
           }
         };
@@ -119,7 +116,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#10b981", "#34d399", "#fbbf24"] }, // Emerald and Amber
             shape: { type: "circle" },
             opacity: { value: 0.6 },
-            size: { value: { min: 2, max: 4 } },
+            size: { value: 3, random: true },
             move: { enable: true, speed: 2, direction: "none", random: true, outModes: "bounce" }
           }
         };
@@ -132,7 +129,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
             color: { value: ["#3b82f6", "#1d4ed8", "#60a5fa", "#ffffff"] }, // Blue variations
             shape: { type: "square" },
             opacity: { value: 0.6 },
-            size: { value: { min: 3, max: 6 } },
+            size: { value: 5, random: true },
             move: { enable: true, speed: 1.5, direction: "bottom", outModes: "out" }
           }
         };
@@ -140,39 +137,17 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
       default:
         return null;
     }
-  };
-
-  useEffect(() => {
-    if (theme === 'default') return;
-
-    const config = getParticlesConfig(theme);
-    if (!config) return;
-
-    let container: any;
-    
-    // Initialize tsParticles with the slim preset
-    loadSlim(tsParticles).then(() => {
-      // Load the specific options for the theme
-      tsParticles.load({ id: "tsparticles-holiday", options: config }).then((c) => {
-        container = c;
-      });
-    });
-
-    return () => {
-      if (container) {
-        container.destroy();
-      }
-    };
   }, [theme]);
 
-  if (theme === 'default') {
+  if (theme === 'default' || !config) {
     return null;
   }
 
   return (
-    <div 
-      id="tsparticles-holiday" 
-      className="pointer-events-none fixed inset-0 z-50"
-    />
+    <ParticlesProvider init={async (engine) => await loadSlim(engine)}>
+      <div className="pointer-events-none fixed inset-0 z-50">
+        <Particles id={`tsparticles-${theme}`} options={config} />
+      </div>
+    </ParticlesProvider>
   );
 }
