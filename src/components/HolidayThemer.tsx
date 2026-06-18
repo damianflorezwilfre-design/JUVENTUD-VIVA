@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react";
 import { useEffect, useState, useMemo } from "react";
 import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
@@ -14,7 +13,7 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
     setTheme(getCurrentTheme(themeOverride).id);
   }, [themeOverride]);
 
-  const config = useMemo(() => {
+  const config: any = useMemo(() => {
     switch (theme) {
       case 'navidad':
         return {
