@@ -1,11 +1,9 @@
-import dynamic from 'next/dynamic';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { prisma } from "@/lib/prisma";
+import MapViewerWrapper from "@/components/MapViewerWrapper";
 
-const MapViewer = dynamic(() => import("@/components/MapViewer"), { ssr: false });
-
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function MapaPage() {
   const pins = await prisma.mapPin.findMany({
@@ -27,7 +25,7 @@ export default async function MapaPage() {
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-3xl p-2 md:p-4 shadow-2xl h-[800px] w-full">
-          <MapViewer pins={pins} />
+          <MapViewerWrapper pins={pins} />
         </div>
       </main>
 

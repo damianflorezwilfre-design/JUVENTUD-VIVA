@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CertificadosClient from "./CertificadosClient";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default function CertificadosPage() {
   return (
