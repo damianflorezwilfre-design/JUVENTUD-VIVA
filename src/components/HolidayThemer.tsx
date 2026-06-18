@@ -1,14 +1,9 @@
 "use client"
 
 import { useEffect, useState, useMemo } from "react";
-import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import type { Engine } from "@tsparticles/engine";
+import { tsParticles } from "@tsparticles/engine";
 import { getCurrentTheme, ThemeName } from "@/lib/themeSelector";
-
-const initParticles = async (engine: Engine) => {
-  await loadSlim(engine);
-};
 
 export default function HolidayThemer({ themeOverride }: { themeOverride?: string | null }) {
   const [theme, setTheme] = useState<ThemeName>('default');
@@ -143,15 +138,34 @@ export default function HolidayThemer({ themeOverride }: { themeOverride?: strin
     }
   }, [theme]);
 
+  useEffect(() => {
+    if (theme === 'default' || !config) return;
+
+    let container: any;
+    
+    // Initialize tsParticles with the slim preset safely
+    loadSlim(tsParticles).then(() => {
+      // Load the specific options for the theme
+      tsParticles.load({ id: `tsparticles-${theme}`, options: config }).then((c) => {
+        container = c;
+      });
+    }).catch(console.error);
+
+    return () => {
+      if (container) {
+        container.destroy();
+      }
+    };
+  }, [theme, config]);
+
   if (theme === 'default' || !config) {
     return null;
   }
 
   return (
-    <ParticlesProvider init={initParticles}>
-      <div className="pointer-events-none fixed inset-0 z-50">
-        <Particles id={`tsparticles-${theme}`} options={config} />
-      </div>
-    </ParticlesProvider>
+    <div 
+      id={`tsparticles-${theme}`} 
+      className="pointer-events-none fixed inset-0 z-50"
+    />
   );
 }
