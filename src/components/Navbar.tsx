@@ -2,12 +2,21 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getCurrentTheme } from "@/lib/themeSelector";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [themeIcon, setThemeIcon] = useState<string | null>(null);
+
+  useEffect(() => {
+    const theme = getCurrentTheme();
+    if (theme.id !== 'default' && theme.icon) {
+      setThemeIcon(theme.icon);
+    }
+  }, []);
 
   const links = [
     { href: "/", label: "Inicio" },
@@ -29,7 +38,7 @@ export default function Navbar() {
         <div className="px-4 lg:px-6">
           <div className="flex justify-between h-16 items-center">
             <div className="flex-shrink-0 flex items-center mr-6">
-              <Link href="/">
+              <Link href="/" className="relative flex items-center justify-center">
                 <Image
                   src="/logo/juventud-viva.png"
                   alt="JUVENTUD VIVA"
@@ -37,6 +46,18 @@ export default function Navbar() {
                   height={50}
                   className="object-contain hover:scale-105 transition-transform drop-shadow-[0_0_10px_rgba(155,28,201,0.5)]"
                 />
+                <AnimatePresence>
+                  {themeIcon && (
+                    <motion.div 
+                      initial={{ scale: 0, rotate: -45, opacity: 0 }}
+                      animate={{ scale: 1, rotate: 15, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.5 }}
+                      className="absolute -top-3 -right-3 text-3xl filter drop-shadow-lg z-10 select-none pointer-events-none"
+                    >
+                      {themeIcon}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Link>
             </div>
             
