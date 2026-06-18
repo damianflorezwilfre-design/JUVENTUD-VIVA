@@ -62,6 +62,9 @@ export default function AdminConfiguracion() {
   const [whatsappApiKey, setWhatsappApiKey] = useState("");
   const [whatsappGroupPhone, setWhatsappGroupPhone] = useState("");
 
+  // Portal Theme Override
+  const [themeOverride, setThemeOverride] = useState("auto");
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -130,6 +133,7 @@ export default function AdminConfiguracion() {
           setCalcSuppliesCost(data.calcSuppliesCost?.toString() || "30000");
           setWhatsappApiKey(data.whatsappApiKey || "");
           setWhatsappGroupPhone(data.whatsappGroupPhone || "");
+          setThemeOverride(data.themeOverride || "auto");
         }
       } catch (e) {
         console.error("Error fetching institution data", e);
@@ -153,7 +157,7 @@ export default function AdminConfiguracion() {
           feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
           donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
           transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-          calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone
+          calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone, themeOverride
         })
       });
 
@@ -482,6 +486,42 @@ export default function AdminConfiguracion() {
             </div>
           </div>
 
+          <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 shadow-xl col-span-1 md:col-span-2">
+            <h2 className="text-xl font-bold text-white mb-4 flex items-center">
+              <span className="bg-jv-turquoise/20 p-2 rounded-lg mr-3">
+                <Settings className="text-jv-turquoise" size={24} />
+              </span>
+              Temática del Portal (Modo Manual)
+            </h2>
+            <p className="text-sm text-gray-400 mb-4">Selecciona si quieres que la página cambie de temática automáticamente según la fecha, o si deseas forzar una temática especial (como un cumpleaños).</p>
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">
+                  Forzar Temática:
+                </label>
+                <select
+                  value={themeOverride}
+                  onChange={(e) => setThemeOverride(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-jv-turquoise"
+                >
+                  <option value="auto">🤖 Automático (según la fecha real)</option>
+                  <option value="cumpleanos">🎂 Cumpleaños (Pastel y Confeti)</option>
+                  <option value="aniversario">🥳 Aniversario de Fundación (Fiesta)</option>
+                  <option value="dia-mujer">👩 Día de la Mujer (Morado y Flores)</option>
+                  <option value="dia-juventud">🛹 Día de la Juventud (Estrellas y Energía)</option>
+                  <option value="dia-nino">🪁 Día del Niño (Juguetes y Colores)</option>
+                  <option value="dia-padre">👔 Día del Padre (Azul y Corbatas)</option>
+                  <option value="navidad">🎅 Forzar Navidad</option>
+                  <option value="halloween">🎃 Forzar Halloween</option>
+                  <option value="amor-amistad">💘 Forzar Amor y Amistad</option>
+                  <option value="colombia">⚽ Forzar Mundial / Independencia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 flex justify-end">
           <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6">
             <div className="flex items-center mb-6 border-b border-gray-800 pb-4">
               <ImageIcon className="text-jv-purple mr-3" size={24} />

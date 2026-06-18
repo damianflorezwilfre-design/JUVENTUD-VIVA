@@ -117,6 +117,7 @@ model Institution {
   calcSuppliesCost   Float?   @default(30000)
   whatsappApiKey     String?
   whatsappGroupPhone String?
+  themeOverride      String?  @default("auto")
   updatedAt     DateTime @updatedAt
 }
 

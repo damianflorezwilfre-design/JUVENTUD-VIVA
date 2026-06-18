@@ -42,7 +42,7 @@ export async function PUT(request: Request) {
       feature1Title, feature1Desc, feature2Title, feature2Desc, feature3Title, feature3Desc, publicBackground,
       donationLink, bankInfo, donationQrUrl, stat1Value, stat1Label, stat2Value, stat2Label, stat3Value, stat3Label,
       transparency1Title, transparency1Desc, transparency2Title, transparency2Desc, transparency3Title, transparency3Desc,
-      calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone
+      calcKitCost, calcMealCost, calcMarketCost, calcSuppliesCost, whatsappApiKey, whatsappGroupPhone, themeOverride
     } = await request.json();
 
     if (session.role !== 'SUPER_ADMIN') {
@@ -61,7 +61,7 @@ export async function PUT(request: Request) {
             calcMealCost: calcMealCost ? parseFloat(calcMealCost) : null,
             calcMarketCost: calcMarketCost ? parseFloat(calcMarketCost) : null,
             calcSuppliesCost: calcSuppliesCost ? parseFloat(calcSuppliesCost) : null,
-            whatsappApiKey, whatsappGroupPhone
+            whatsappApiKey, whatsappGroupPhone, themeOverride
           })
         }
       });
@@ -93,7 +93,7 @@ export async function PUT(request: Request) {
         calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,
         calcMarketCost: calcMarketCost ? parseFloat(calcMarketCost) : 100000,
         calcSuppliesCost: calcSuppliesCost ? parseFloat(calcSuppliesCost) : 30000,
-        whatsappApiKey, whatsappGroupPhone
+        whatsappApiKey, whatsappGroupPhone, themeOverride
       },
       create: {
         id: "singleton",
@@ -105,7 +105,7 @@ export async function PUT(request: Request) {
         calcMealCost: calcMealCost ? parseFloat(calcMealCost) : 15000,
         calcMarketCost: calcMarketCost ? parseFloat(calcMarketCost) : 100000,
         calcSuppliesCost: calcSuppliesCost ? parseFloat(calcSuppliesCost) : 30000,
-        whatsappApiKey, whatsappGroupPhone
+        whatsappApiKey, whatsappGroupPhone, themeOverride
       }
     });
 

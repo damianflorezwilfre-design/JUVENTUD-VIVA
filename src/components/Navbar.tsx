@@ -7,16 +7,18 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getCurrentTheme } from "@/lib/themeSelector";
 
-export default function Navbar() {
+export default function Navbar({ themeOverride }: { themeOverride?: string | null }) {
   const [isOpen, setIsOpen] = useState(false);
   const [themeIcon, setThemeIcon] = useState<string | null>(null);
 
   useEffect(() => {
-    const theme = getCurrentTheme();
+    const theme = getCurrentTheme(themeOverride);
     if (theme.id !== 'default' && theme.icon) {
       setThemeIcon(theme.icon);
+    } else {
+      setThemeIcon(null);
     }
-  }, []);
+  }, [themeOverride]);
 
   const links = [
     { href: "/", label: "Inicio" },

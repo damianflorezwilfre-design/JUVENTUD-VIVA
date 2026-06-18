@@ -18,6 +18,7 @@ export default async function PublicLayout({
   });
   
   const bgImage = institution?.publicBackground || null;
+  const themeOverride = institution?.themeOverride || "auto";
 
   return (
     <>
@@ -27,9 +28,9 @@ export default async function PublicLayout({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <HolidayThemer />
+      <HolidayThemer themeOverride={themeOverride} />
       <CustomCursor />
-      <Navbar />
+      <Navbar themeOverride={themeOverride} />
       <SmoothScroll>
         <main className="flex-grow pt-20">
           {children}
