@@ -21,6 +21,10 @@ const THEMES: Record<ThemeName, ThemeConfig> = {
 };
 
 export function getCurrentTheme(override?: string | null): ThemeConfig {
+  if (override === 'none') {
+    return THEMES['default'];
+  }
+
   if (override && override !== 'auto' && THEMES[override as ThemeName]) {
     return THEMES[override as ThemeName];
   }

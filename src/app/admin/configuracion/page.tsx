@@ -505,6 +505,7 @@ export default function AdminConfiguracion() {
                   className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-jv-turquoise"
                 >
                   <option value="auto">🤖 Automático (según la fecha real)</option>
+                  <option value="none">🚫 Desactivar Temáticas (Ninguna)</option>
                   <option value="cumpleanos">🎂 Cumpleaños (Pastel y Confeti)</option>
                   <option value="aniversario">🥳 Aniversario de Fundación (Fiesta)</option>
                   <option value="dia-mujer">👩 Día de la Mujer (Morado y Flores)</option>
