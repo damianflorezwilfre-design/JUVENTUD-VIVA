@@ -67,7 +67,7 @@ export default function GaleriaClient({ initialItems }: { initialItems: GalleryI
             >
               <div className="aspect-[4/3] bg-gray-800 relative overflow-hidden">
                 {album.coverUrl ? (
-                  <Image src={album.coverUrl} alt={album.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <Image src={album.coverUrl} alt={album.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" unoptimized={true} className="object-cover group-hover:scale-105 transition-transform duration-700" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-600">
                     <Folder size={64} />
@@ -119,7 +119,7 @@ export default function GaleriaClient({ initialItems }: { initialItems: GalleryI
               >
                 <div className="aspect-square bg-gray-800 relative">
                   {item.type === 'image' || item.type === 'cover' ? (
-                    <Image src={item.url} alt={item.title || "Imagen"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover" />
+                    <Image src={item.url} alt={item.title || "Imagen"} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" unoptimized={true} className="object-cover" />
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
                       <Video size={48} className="mb-2 opacity-50" />
