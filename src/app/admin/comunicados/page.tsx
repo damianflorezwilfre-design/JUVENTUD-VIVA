@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { PlusCircle, Edit2, Trash2, X, Search, Image as ImageIcon } from "lucide-react";
+import { PlusCircle, Edit2, Trash2, X, Search, Image as ImageIcon, UploadCloud } from "lucide-react";
+import { CldUploadWidget } from "next-cloudinary";
 
 type News = {
   id: string;
@@ -26,7 +27,7 @@ export default function AdminNoticias() {
   const fetchNoticias = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/noticias");
+      const res = await fetch("/api/comunicados");
       if (res.ok) {
         const data = await res.json();
         setNoticias(data);
@@ -62,7 +63,7 @@ export default function AdminNoticias() {
     const payload = { title, content, imageUrl: imageUrl || null };
 
     try {
-      const url = editingId ? `/api/noticias/${editingId}` : "/api/noticias";
+      const url = editingId ? `/api/comunicados/${editingId}` : "/api/comunicados";
       const method = editingId ? "PUT" : "POST";
       
       const res = await fetch(url, {
@@ -75,7 +76,7 @@ export default function AdminNoticias() {
         setIsModalOpen(false);
         fetchNoticias();
       } else {
-        alert("Error al guardar la noticia");
+        alert("Error al guardar el comunicado");
       }
     } catch (e) {
       console.error(e);
@@ -83,9 +84,9 @@ export default function AdminNoticias() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("¿Estás seguro de eliminar esta noticia?")) {
+    if (confirm("¿Estás seguro de eliminar este comunicado?")) {
       try {
-        const res = await fetch(`/api/noticias/${id}`, { method: "DELETE" });
+        const res = await fetch(`/api/comunicados/${id}`, { method: "DELETE" });
         if (res.ok) fetchNoticias();
       } catch (e) {
         console.error(e);
@@ -97,15 +98,15 @@ export default function AdminNoticias() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-1">Gestión de Noticias</h2>
-          <p className="text-gray-400">Publica artículos, comunicados y novedades.</p>
+          <h2 className="text-2xl font-bold text-white mb-1">Gestión de Comunicados</h2>
+          <p className="text-gray-400">Publica comunicados, novedades y notas de prensa.</p>
         </div>
         <button 
           onClick={() => openModal()}
           className="bg-jv-purple hover:bg-jv-turquoise text-white px-4 py-2 rounded-xl flex items-center transition-all duration-300 font-semibold shadow-[0_0_15px_rgba(155,28,201,0.3)]"
         >
           <PlusCircle size={20} className="mr-2" />
-          Nueva Noticia
+          Nuevo Comunicado
         </button>
       </div>
 
@@ -115,7 +116,7 @@ export default function AdminNoticias() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
             <input 
               type="text" 
-              placeholder="Buscar noticia..." 
+              placeholder="Buscar comunicado..." 
               className="bg-gray-800 border border-gray-700 text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-jv-purple text-sm w-64 transition-colors"
             />
           </div>
@@ -134,11 +135,11 @@ export default function AdminNoticias() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-gray-500">Cargando noticias...</td>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">Cargando comunicados...</td>
                 </tr>
               ) : noticias.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="p-8 text-center text-gray-500">No hay noticias publicadas.</td>
+                  <td colSpan={4} className="p-8 text-center text-gray-500">No hay comunicados publicados.</td>
                 </tr>
               ) : (
                 noticias.map((noticia) => (
@@ -182,7 +183,7 @@ export default function AdminNoticias() {
             className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col"
           >
             <div className="p-6 border-b border-gray-800 flex justify-between items-center shrink-0">
-              <h3 className="text-xl font-bold text-white">{editingId ? "Editar Noticia" : "Publicar Noticia"}</h3>
+              <h3 className="text-xl font-bold text-white">{editingId ? "Editar Comunicado" : "Publicar Comunicado"}</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X size={24} />
               </button>
@@ -191,38 +192,65 @@ export default function AdminNoticias() {
             <div className="p-6 overflow-y-auto flex-grow">
               <form id="noticias-form" onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Título de la Noticia</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Título del Comunicado</label>
                   <input 
                     required 
                     type="text" 
                     value={title} 
                     onChange={e => setTitle(e.target.value)} 
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                    placeholder="Ej. Nuevo programa de liderazgo juvenil"
+                    placeholder="Ej. Nueva junta directiva 2026"
                   />
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">URL de la Imagen (Opcional)</label>
-                  <input 
-                    type="url" 
-                    value={imageUrl} 
-                    onChange={e => setImageUrl(e.target.value)} 
-                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none" 
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Pega un enlace directo a la imagen. Recomendado: Imgur o Google Drive.</p>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Imagen Adjunta (Opcional)</label>
+                  <div className="flex gap-4 items-center">
+                    {imageUrl && (
+                      <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-700 shrink-0">
+                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        <button 
+                          type="button"
+                          onClick={() => setImageUrl("")}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-lg"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    )}
+                    <div className="flex-grow">
+                      <CldUploadWidget 
+                        uploadPreset="juventud_viva"
+                        onSuccess={(result: any) => {
+                          if (result.info && result.info.secure_url) {
+                            setImageUrl(result.info.secure_url);
+                          }
+                        }}
+                      >
+                        {({ open }) => (
+                          <button
+                            type="button"
+                            onClick={() => open()}
+                            className="w-full h-20 border-2 border-dashed border-gray-600 rounded-lg hover:border-jv-purple flex flex-col items-center justify-center text-gray-400 hover:text-jv-purple transition-colors bg-gray-800/50"
+                          >
+                            <UploadCloud size={24} className="mb-1" />
+                            <span className="text-sm">Haz clic para subir imagen o archivo</span>
+                          </button>
+                        )}
+                      </CldUploadWidget>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Contenido</label>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Contenido del Comunicado</label>
                   <textarea 
                     required 
                     value={content} 
                     onChange={e => setContent(e.target.value)} 
                     rows={8}
                     className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:border-jv-purple focus:outline-none resize-none" 
-                    placeholder="Escribe el cuerpo de la noticia aquí..."
+                    placeholder="Escribe el cuerpo del comunicado aquí..."
                   />
                 </div>
               </form>

@@ -29,6 +29,7 @@ export default function Navbar({ themeOverride }: { themeOverride?: string | nul
     { href: "/voluntariado", label: "Voluntarios" },
     { href: "/voluntarios/ranking", label: "Ranking" },
     { href: "/apadrina", label: "Apadrina" },
+    { href: "/comunicados", label: "Comunicados" },
     { href: "/oportunidades", label: "Oportunidades" },
     { href: "/muro", label: "Muro" },
     { href: "/mapa", label: "Impacto" },
