@@ -32,10 +32,13 @@ export default async function PublicLayout({
   return (
     <>
       {bgImage && (
-        <div 
-          className="fixed inset-0 z-[-1] bg-cover bg-center bg-no-repeat opacity-40"
-          style={{ backgroundImage: `url(${bgImage})` }}
-        />
+        <>
+          <div 
+            className="fixed inset-0 z-[-2] bg-cover bg-[position:center_top] md:bg-center bg-no-repeat opacity-40"
+            style={{ backgroundImage: `url(${bgImage})` }}
+          />
+          <div className="fixed inset-0 z-[-1] bg-gradient-to-b from-transparent via-jv-dark/50 to-jv-dark pointer-events-none" />
+        </>
       )}
       <HolidayThemerWrapper themeOverride={themeOverride} />
       <Navbar themeOverride={themeOverride} />
