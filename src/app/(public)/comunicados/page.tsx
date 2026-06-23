@@ -55,8 +55,13 @@ export default function Comunicados() {
               className="bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 hover:border-jv-turquoise/50 transition-colors group flex flex-col h-full"
             >
               {comunicado.imageUrl && (
-                <div className="h-48 overflow-hidden relative">
-                  <Image src={comunicado.imageUrl} alt={comunicado.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="h-48 overflow-hidden relative bg-gray-800">
+                  <Image 
+                    src={comunicado.imageUrl.split(',')[0]} 
+                    alt={comunicado.title} 
+                    fill 
+                    className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                  />
                 </div>
               )}
               <div className="p-6 flex flex-col flex-1">
@@ -98,14 +103,7 @@ export default function Comunicados() {
                 <X size={20} />
               </button>
               
-              {selectedComunicado.imageUrl && (
-                <div className="w-full h-64 md:h-80 relative shrink-0">
-                  <Image src={selectedComunicado.imageUrl} alt={selectedComunicado.title} fill className="object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-                </div>
-              )}
-              
-              <div className={`p-6 md:p-10 ${!selectedComunicado.imageUrl ? 'pt-16' : '-mt-20 relative z-10'}`}>
+              <div className="p-6 md:p-10 pt-16">
                 <div className="flex items-center text-sm text-gray-400 mb-4">
                   <Calendar size={16} className="mr-2 text-jv-turquoise" /> 
                   {new Date(selectedComunicado.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -114,6 +112,19 @@ export default function Comunicados() {
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 leading-tight">
                   {selectedComunicado.title}
                 </h2>
+                
+                {selectedComunicado.imageUrl && (
+                  <div className="flex flex-col gap-6 mb-8">
+                    {selectedComunicado.imageUrl.split(',').map((url: string, idx: number) => (
+                      <img 
+                        key={idx} 
+                        src={url} 
+                        alt={`${selectedComunicado.title} - Imagen ${idx + 1}`} 
+                        className="w-full h-auto rounded-xl object-contain bg-black/30 border border-gray-800" 
+                      />
+                    ))}
+                  </div>
+                )}
                 
                 <div className="prose prose-invert prose-lg max-w-none">
                   <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">

@@ -146,7 +146,7 @@ export default function AdminNoticias() {
                   <tr key={noticia.id} className="border-b border-gray-800 hover:bg-gray-800/30 transition-colors">
                     <td className="p-4">
                       {noticia.imageUrl ? (
-                        <img src={noticia.imageUrl} alt={noticia.title} className="w-12 h-12 object-cover rounded-lg border border-gray-700" />
+                        <img src={noticia.imageUrl.split(',')[0]} alt={noticia.title} className="w-12 h-12 object-cover rounded-lg border border-gray-700 bg-gray-800" />
                       ) : (
                         <div className="w-12 h-12 bg-gray-800 rounded-lg flex items-center justify-center border border-gray-700">
                           <ImageIcon size={20} className="text-gray-500" />
@@ -204,26 +204,33 @@ export default function AdminNoticias() {
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">Imagen Adjunta (Opcional)</label>
-                  <div className="flex gap-4 items-center">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Imágenes Adjuntas (Puedes subir varias)</label>
+                  <div className="flex flex-col gap-4">
                     {imageUrl && (
-                      <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-gray-700 shrink-0">
-                        <img src={imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                        <button 
-                          type="button"
-                          onClick={() => setImageUrl("")}
-                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-lg"
-                        >
-                          <X size={12} />
-                        </button>
+                      <div className="flex flex-wrap gap-4">
+                        {imageUrl.split(',').map((url, idx) => (
+                          <div key={idx} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-700 shrink-0">
+                            <img src={url} alt="Preview" className="w-full h-full object-cover" />
+                            <button 
+                              type="button"
+                              onClick={() => {
+                                const newUrls = imageUrl.split(',').filter((_, i) => i !== idx).join(',');
+                                setImageUrl(newUrls);
+                              }}
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-lg"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     )}
-                    <div className="flex-grow">
+                    <div>
                       <CldUploadWidget 
                         uploadPreset="juventud_viva"
                         onSuccess={(result: any) => {
                           if (result.info && result.info.secure_url) {
-                            setImageUrl(result.info.secure_url);
+                            setImageUrl(prev => prev ? `${prev},${result.info.secure_url}` : result.info.secure_url);
                           }
                         }}
                       >
@@ -234,7 +241,7 @@ export default function AdminNoticias() {
                             className="w-full h-20 border-2 border-dashed border-gray-600 rounded-lg hover:border-jv-purple flex flex-col items-center justify-center text-gray-400 hover:text-jv-purple transition-colors bg-gray-800/50"
                           >
                             <UploadCloud size={24} className="mb-1" />
-                            <span className="text-sm">Haz clic para subir imagen o archivo</span>
+                            <span className="text-sm">Haz clic para subir imagen(es) o archivo(s)</span>
                           </button>
                         )}
                       </CldUploadWidget>
