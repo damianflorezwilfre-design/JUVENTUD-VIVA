@@ -25,6 +25,10 @@ export default function AdminGaleria() {
   const [type, setType] = useState("image");
   const [album, setAlbum] = useState("General");
   
+  // Renaming Album State
+  const [renamingAlbum, setRenamingAlbum] = useState(false);
+  const [newAlbumName, setNewAlbumName] = useState("");
+  
   // New States for files and urls
   const [coverPhoto, setCoverPhoto] = useState<{name: string, data: string} | null>(null);
   const [additionalPhotos, setAdditionalPhotos] = useState<{name: string, data: string}[]>([]);
@@ -78,6 +82,29 @@ export default function AdminGaleria() {
     setAdditionalPhotos([]);
     setVideoUrls("");
     setIsModalOpen(true);
+  };
+
+  const handleRenameAlbum = async () => {
+    if (!newAlbumName.trim() || newAlbumName === selectedAlbum) {
+      setRenamingAlbum(false);
+      return;
+    }
+    try {
+      const res = await fetch("/api/galeria/album", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ oldAlbum: selectedAlbum, newAlbum: newAlbumName }),
+      });
+      if (res.ok) {
+        setSelectedAlbum(newAlbumName);
+        setRenamingAlbum(false);
+        fetchGaleria();
+      } else {
+        alert("Error al renombrar el álbum");
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   // ... (keep compressImage, handleCoverUpload, handleAdditionalUpload, handleSubmit)
@@ -374,16 +401,51 @@ export default function AdminGaleria() {
             <div className="flex items-center justify-between mb-8 border-b border-gray-800 pb-4">
               <div className="flex items-center">
                 <button 
-                  onClick={() => setSelectedAlbum(null)}
+                  onClick={() => {
+                    setSelectedAlbum(null);
+                    setRenamingAlbum(false);
+                  }}
                   className="mr-4 text-gray-400 hover:text-jv-turquoise transition-colors font-medium bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700 hover:border-jv-turquoise flex items-center"
                 >
                   <ArrowLeft size={18} className="mr-2" />
                   Volver
                 </button>
-                <h2 className="text-2xl font-bold text-white flex items-center">
-                  <Folder size={24} className="mr-3 text-jv-purple" />
-                  {selectedAlbum}
-                </h2>
+                {renamingAlbum ? (
+                  <div className="flex items-center">
+                    <Folder size={24} className="mr-3 text-jv-purple" />
+                    <input
+                      type="text"
+                      value={newAlbumName}
+                      onChange={(e) => setNewAlbumName(e.target.value)}
+                      className="bg-gray-800 border border-gray-700 text-white px-3 py-1 rounded-lg focus:outline-none focus:border-jv-purple text-xl font-bold w-64 md:w-96"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleRenameAlbum();
+                        if (e.key === 'Escape') setRenamingAlbum(false);
+                      }}
+                    />
+                    <button onClick={handleRenameAlbum} className="ml-2 text-green-400 hover:text-green-300">
+                      <Save size={20} />
+                    </button>
+                    <button onClick={() => setRenamingAlbum(false)} className="ml-2 text-gray-400 hover:text-white">
+                      <X size={20} />
+                    </button>
+                  </div>
+                ) : (
+                  <h2 className="text-2xl font-bold text-white flex items-center group">
+                    <Folder size={24} className="mr-3 text-jv-purple" />
+                    {selectedAlbum}
+                    <button 
+                      onClick={() => {
+                        setNewAlbumName(selectedAlbum || "");
+                        setRenamingAlbum(true);
+                      }}
+                      className="ml-3 text-gray-500 hover:text-jv-turquoise opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                  </h2>
+                )}
               </div>
             </div>
 
