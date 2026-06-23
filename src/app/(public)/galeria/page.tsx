@@ -1,20 +1,32 @@
-import { prisma } from "@/lib/prisma";
+"use client";
+
+import { useEffect, useState } from "react";
 import GaleriaClient from "./GaleriaClient";
 
-export const revalidate = 60; // ISR cache every 60 seconds
+export default function GaleriaPage() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-export default async function GaleriaPage() {
-  const items = await prisma.gallery.findMany({
-    orderBy: [
-      { order: 'asc' },
-      { createdAt: 'desc' }
-    ]
-  });
+  useEffect(() => {
+    fetch('/api/galeria')
+      .then(res => res.json())
+      .then(data => {
+        setItems(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
-  const plainItems = items.map(item => ({
-    ...item,
-    createdAt: item.createdAt.toISOString()
-  }));
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-jv-turquoise"></div>
+      </div>
+    );
+  }
 
-  return <GaleriaClient initialItems={plainItems} />;
+  return <GaleriaClient initialItems={items} />;
 }
