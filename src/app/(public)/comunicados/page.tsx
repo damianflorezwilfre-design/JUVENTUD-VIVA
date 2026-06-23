@@ -1,13 +1,14 @@
 "use client"
 
-import { motion } from "framer-motion";
-import { Calendar, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Calendar, User, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Comunicados() {
   const [comunicados, setComunicados] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedComunicado, setSelectedComunicado] = useState<any | null>(null);
 
   useEffect(() => {
     fetch("/api/comunicados")
@@ -67,7 +68,10 @@ export default function Comunicados() {
                 <h3 className="text-xl font-bold text-white mb-3 group-hover:text-jv-purple transition-colors">{comunicado.title}</h3>
                 <p className="text-gray-400 text-sm mb-4 whitespace-pre-wrap line-clamp-3">{comunicado.content}</p>
                 <div className="mt-auto pt-4">
-                  <button className="text-sm font-semibold text-white bg-gray-800 hover:bg-jv-purple px-4 py-2 rounded-lg transition-colors">
+                  <button 
+                    onClick={() => setSelectedComunicado(comunicado)}
+                    className="text-sm font-semibold text-white bg-gray-800 hover:bg-jv-purple px-4 py-2 rounded-lg transition-colors"
+                  >
                     Leer más
                   </button>
                 </div>
@@ -76,6 +80,51 @@ export default function Comunicados() {
           ))}
         </div>
       )}
+
+      {/* Modal for Full Content */}
+      <AnimatePresence>
+        {selectedComunicado && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col relative shadow-2xl"
+            >
+              <button 
+                onClick={() => setSelectedComunicado(null)}
+                className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black text-white p-2 rounded-full transition-colors backdrop-blur-md"
+              >
+                <X size={20} />
+              </button>
+              
+              {selectedComunicado.imageUrl && (
+                <div className="w-full h-64 md:h-80 relative shrink-0">
+                  <Image src={selectedComunicado.imageUrl} alt={selectedComunicado.title} fill className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
+                </div>
+              )}
+              
+              <div className={`p-6 md:p-10 ${!selectedComunicado.imageUrl ? 'pt-16' : '-mt-20 relative z-10'}`}>
+                <div className="flex items-center text-sm text-gray-400 mb-4">
+                  <Calendar size={16} className="mr-2 text-jv-turquoise" /> 
+                  {new Date(selectedComunicado.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
+                
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-8 leading-tight">
+                  {selectedComunicado.title}
+                </h2>
+                
+                <div className="prose prose-invert prose-lg max-w-none">
+                  <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                    {selectedComunicado.content}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
