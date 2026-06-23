@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import MobileBottomNav from "@/components/MobileBottomNav";
-import HolidayThemer from "@/components/HolidayThemer";
+import HolidayThemerWrapper from "@/components/HolidayThemerWrapper";
 import { prisma } from "@/lib/prisma";
 
 export default async function PublicLayout({
@@ -28,7 +28,7 @@ export default async function PublicLayout({
           style={{ backgroundImage: `url(${bgImage})` }}
         />
       )}
-      <HolidayThemer themeOverride={themeOverride} />
+      <HolidayThemerWrapper themeOverride={themeOverride} />
       <CustomCursor />
       <Navbar themeOverride={themeOverride} />
       <SmoothScroll>
