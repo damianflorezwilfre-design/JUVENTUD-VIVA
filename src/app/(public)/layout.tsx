@@ -3,7 +3,6 @@ export const dynamic = "force-dynamic";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
-import CustomCursor from "@/components/CustomCursor";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import HolidayThemerWrapper from "@/components/HolidayThemerWrapper";
 import { prisma } from "@/lib/prisma";
@@ -29,7 +28,6 @@ export default async function PublicLayout({
         />
       )}
       <HolidayThemerWrapper themeOverride={themeOverride} />
-      <CustomCursor />
       <Navbar themeOverride={themeOverride} />
       <SmoothScroll>
         <main className="flex-grow pt-20">

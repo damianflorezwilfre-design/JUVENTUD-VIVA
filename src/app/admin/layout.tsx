@@ -74,7 +74,6 @@ export default function AdminLayout({
     { name: "Certificados", icon: <FileText size={20} />, path: "/admin/certificados", id: "certificados" },
     { name: "Organigrama", icon: <Users size={20} />, path: "/admin/organigrama", id: "organigrama" },
     { name: "Usuarios", icon: <Users size={20} />, path: "/admin/usuarios", id: "usuarios" },
-    { name: "Chatbot AI", icon: <MessageSquare size={20} />, path: "/admin/chatbot", id: "chatbot" },
   ];
 
   const allowedModules = session?.modules ? session.modules.split(',') : [];
