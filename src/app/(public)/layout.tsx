@@ -7,14 +7,24 @@ import MobileBottomNav from "@/components/MobileBottomNav";
 import HolidayThemerWrapper from "@/components/HolidayThemerWrapper";
 import { prisma } from "@/lib/prisma";
 
+import { unstable_cache } from 'next/cache';
+
+const getCachedInstitution = unstable_cache(
+  async () => {
+    return prisma.institution.findUnique({
+      where: { id: "singleton" }
+    });
+  },
+  ['institution-singleton'],
+  { revalidate: 60 }
+);
+
 export default async function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const institution = await prisma.institution.findUnique({
-    where: { id: "singleton" }
-  });
+  const institution = await getCachedInstitution();
   
   const bgImage = institution?.publicBackground || null;
   const themeOverride = institution?.themeOverride || "auto";

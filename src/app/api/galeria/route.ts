@@ -9,14 +9,24 @@ async function isAuthenticated() {
   return await verifyToken(session) !== null;
 }
 
-export async function GET() {
-  try {
-    const media = await prisma.gallery.findMany({
+import { unstable_cache } from 'next/cache';
+
+const getCachedGallery = unstable_cache(
+  async () => {
+    return await prisma.gallery.findMany({
       orderBy: [
         { order: 'asc' },
         { createdAt: 'desc' }
       ]
     });
+  },
+  ['gallery-items'],
+  { revalidate: 60 }
+);
+
+export async function GET() {
+  try {
+    const media = await getCachedGallery();
     return NextResponse.json(media);
   } catch (error) {
     console.error("Gallery GET error:", error);
