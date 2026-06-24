@@ -94,16 +94,16 @@ export default function Comunicados() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto flex flex-col relative shadow-2xl"
+              className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl"
             >
               <button 
                 onClick={() => setSelectedComunicado(null)}
-                className="absolute top-4 right-4 z-10 bg-black/50 hover:bg-black text-white p-2 rounded-full transition-colors backdrop-blur-md"
+                className="absolute top-4 right-4 z-20 bg-black/50 hover:bg-black text-white p-2 rounded-full transition-colors backdrop-blur-md"
               >
                 <X size={20} />
               </button>
               
-              <div className="p-6 md:p-10 pt-16">
+              <div className="p-6 md:p-10 pt-16 overflow-y-auto h-full">
                 <div className="flex items-center text-sm text-gray-400 mb-4">
                   <Calendar size={16} className="mr-2 text-jv-turquoise" /> 
                   {new Date(selectedComunicado.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
